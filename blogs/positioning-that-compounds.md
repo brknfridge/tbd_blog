@@ -3,10 +3,12 @@ title: "Positioning that compounds, not just converts"
 dek: "A sharper position does more than lift a landing page. It lowers the cost of every message you send after it."
 excerpt: "Most positioning work optimises the first click. The durable kind reduces the price of attention across every channel you own."
 date: 2026-06-18
+updated: 2026-06-18
 author: "Marcus Reyes"
 authorRole: "Principal, Brand Strategy"
 authorBio: "Spent a decade naming the thing the market could not yet name. Writes about positioning as an operating system, not a tagline."
 category: "Positioning"
+image: "/images/positioning-that-compounds.png"
 ---
 
 A landing page A/B test can tell you which headline converts today. It cannot tell you whether the position behind that headline will still be paying you back in a year. The first is a tactic; the second is an asset. Teams that confuse the two keep buying conversions they should have been compounding.

@@ -1,6 +1,33 @@
 ---
 layout: base.njk
 ---
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "@id": {{ (site.url + page.url + "#article") | dump | safe }},
+  "mainEntityOfPage": { "@type": "WebPage", "@id": {{ (site.url + page.url) | dump | safe }} },
+  "url": {{ (site.url + page.url) | dump | safe }},
+  "headline": {{ title | dump | safe }},
+  "description": {{ (dek or excerpt or site.description) | dump | safe }},
+  "datePublished": {{ page.date | dump | safe }},
+  "dateModified": {{ (updated or page.date) | dump | safe }},
+  {% if category %}"articleSection": {{ category | dump | safe }},{% endif %}
+  {% if image %}"image": {{ (site.url + image) | dump | safe }},{% endif %}
+  "author": {
+    "@type": "Person",
+    "name": {{ author | dump | safe }}{% if authorRole %},
+    "jobTitle": {{ authorRole | dump | safe }}{% endif %}{% if authorBio %},
+    "description": {{ authorBio | dump | safe }}{% endif %}
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": {{ (site.url + "/#organization") | dump | safe }},
+    "name": {{ site.publisher | dump | safe }},
+    "url": {{ site.url | dump | safe }}
+  }
+}
+</script>
 <article id="post-article" class="post-wrap" style="max-width: 720px; margin-inline: auto; padding: 56px 48px 0;">
 
   <a href="/" class="tbd-label tbd-text-muted" style="font-size: 12px; text-decoration: none;">← All dispatches</a>

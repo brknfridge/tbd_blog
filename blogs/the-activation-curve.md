@@ -3,10 +3,12 @@ title: "The activation curve nobody talks about"
 dek: "Most teams optimise the wrong end of the funnel. The compounding lives in week two — here is how we instrument it."
 excerpt: "Acquisition gets the budget. Activation gets a footnote. The slope of week two is where retention is quietly won or lost."
 date: 2026-06-12
+updated: 2026-06-12
 author: "Helena Vance"
 authorRole: "Partner, Growth"
 authorBio: "Sixteen years turning ambiguous mandates into compounding revenue. Writes about the unglamorous middle of the funnel — the part that actually pays for itself."
 category: "Analytics"
+image: "/images/the-activation-curve.png"
 ---
 
 Acquisition gets the budget, the dashboards, and the standup minutes. Activation gets a footnote. Yet the slope of the second week — not the size of the first — is where retention is quietly won or lost. Teams pour spend into the top of the funnel while the curve that actually compounds goes uninstrumented.

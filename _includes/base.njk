@@ -3,9 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if pageTitle %}{{ pageTitle }}{% elif title %}{{ title }} — {% endif %}[tbd] Dispatches</title>
-  <meta name="description" content="{{ description or '[tbd] Dispatches — a growth journal. Precise, confident, in motion.' }}">
-  {% if canonical %}<link rel="canonical" href="{{ canonical }}">{% endif %}
+  <title>{% if pageTitle %}{{ pageTitle }}{% elif title %}{{ title }} — [tbd] Dispatches{% else %}[tbd] Dispatches{% endif %}</title>
+  <meta name="description" content="{{ description or dek or excerpt or site.description }}">
+  <link rel="canonical" href="{{ canonical or (site.url + page.url) }}">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": {{ (site.url + "/#organization") | dump | safe }},
+        "name": {{ site.publisher | dump | safe }},
+        "url": {{ site.url | dump | safe }}
+      },
+      {
+        "@type": "WebSite",
+        "@id": {{ (site.url + "/#website") | dump | safe }},
+        "name": {{ site.name | dump | safe }},
+        "description": {{ site.description | dump | safe }},
+        "url": {{ site.url | dump | safe }},
+        "publisher": { "@id": {{ (site.url + "/#organization") | dump | safe }} }
+      }
+    ]
+  }
+  </script>
 
   <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/fonts.css">
   <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/colors.css">

@@ -2,6 +2,7 @@ const markdownIt = require("markdown-it");
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("_ds");
+  eleventyConfig.addPassthroughCopy("images");
 
   eleventyConfig.addCollection("posts", function (api) {
     return api.getFilteredByGlob("blogs/*.md").sort((a, b) => b.date - a.date);
