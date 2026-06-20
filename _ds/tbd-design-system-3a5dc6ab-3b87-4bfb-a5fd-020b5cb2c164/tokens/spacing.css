@@ -1,0 +1,33 @@
+/* ==========================================================================
+   [tbd] — Spacing, radius & border tokens
+   4px base scale. Radius is restrained; borders are hairlines.
+   ========================================================================== */
+
+:root {
+  /* --- Spacing (4px base) ----------------------------------------------- */
+  --tbd-space-0: 0px;
+  --tbd-space-1: 4px;
+  --tbd-space-2: 8px;
+  --tbd-space-3: 12px;
+  --tbd-space-4: 16px;
+  --tbd-space-6: 24px;
+  --tbd-space-8: 32px;
+  --tbd-space-12: 48px;
+  --tbd-space-16: 64px;
+  --tbd-space-24: 96px;
+  --tbd-space-32: 128px;
+
+  /* --- Radius ----------------------------------------------------------- */
+  --tbd-radius-none: 0px;
+  --tbd-radius-sm: 4px;
+  --tbd-radius-md: 8px;
+  --tbd-radius-lg: 16px;
+  --tbd-radius-pill: 999px;
+
+  /* --- Borders ---------------------------------------------------------- */
+  --tbd-border-hairline: 1px;
+  --tbd-border-thick: 2px;
+
+  /* --- Logo constraints ------------------------------------------------- */
+  --tbd-logo-min-screen: 14px;
+}

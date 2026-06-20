@@ -1,0 +1,11 @@
+node_modules/
+_site/
+.DS_Store
+
+# Local artifacts / non-essential (not needed to build or deploy)
+.thumbnail
+Dispatches.dc.html
+support.js
+screenshots/
+*.pdf
+.claude/

@@ -1,0 +1,291 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/buttons/**",
+              "components/data/**",
+              "components/forms/**",
+              "components/identity/**",
+              "components/labels/**",
+              "components/surfaces/**",
+              "ui_kits/portal/**",
+              "ui_kits/website/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Instrument Serif|Geist|Geist Mono))/i]",
+        "message": "Font not provided by the design system. Available: Instrument Serif, Geist, Geist Mono."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|arrow|full|as|children|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: variant, arrow, full, as, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|ghost)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'ghost'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='as'] > Literal[value!=/^(?:button|a)$/]",
+        "message": "<Button> as must be one of 'button' | 'a'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute > JSXIdentifier[name!=/^(?:surface|children|key|ref|className|style|children)$/]",
+        "message": "<Card> doesn't accept that prop. Declared props: surface, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute[name.name='surface'] > Literal[value!=/^(?:ink|paper)$/]",
+        "message": "<Card> surface must be one of 'ink' | 'paper'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Eyebrow'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|key|ref|className|style|children)$/]",
+        "message": "<Eyebrow> doesn't accept that prop. Declared props: children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|key|ref|className|style|children)$/]",
+        "message": "<Input> doesn't accept that prop. Declared props: label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Metric'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|trend|key|ref|className|style|children)$/]",
+        "message": "<Metric> doesn't accept that prop. Declared props: label, value, trend."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Metric'] > JSXAttribute[name.name='trend'] > Literal[value!=/^(?:up|down)$/]",
+        "message": "<Metric> trend must be one of 'up' | 'down'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Pullquote'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|key|ref|className|style|children)$/]",
+        "message": "<Pullquote> doesn't accept that prop. Declared props: children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusDot'] > JSXAttribute > JSXIdentifier[name!=/^(?:tone|children|key|ref|className|style|children)$/]",
+        "message": "<StatusDot> doesn't accept that prop. Declared props: tone, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusDot'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:default|positive|critical)$/]",
+        "message": "<StatusDot> tone must be one of 'default' | 'positive' | 'critical'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tag'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|key|ref|className|style|children)$/]",
+        "message": "<Tag> doesn't accept that prop. Declared props: children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Wordmark'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|variant|size|key|ref|className|style|children)$/]",
+        "message": "<Wordmark> doesn't accept that prop. Declared props: children, variant, size."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Wordmark'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|accent|bracketed)$/]",
+        "message": "<Wordmark> variant must be one of 'primary' | 'accent' | 'bracketed'."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "Button": {
+        "replaces": []
+      },
+      "Card": {
+        "replaces": []
+      },
+      "Eyebrow": {
+        "replaces": []
+      },
+      "Input": {
+        "replaces": []
+      },
+      "Metric": {
+        "replaces": []
+      },
+      "Pullquote": {
+        "replaces": []
+      },
+      "StatusDot": {
+        "replaces": []
+      },
+      "Tag": {
+        "replaces": []
+      },
+      "Wordmark": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--tbd-bg",
+      "--tbd-bg-invert",
+      "--tbd-border-hairline",
+      "--tbd-border-thick",
+      "--tbd-color-blue",
+      "--tbd-color-emerald",
+      "--tbd-color-ink",
+      "--tbd-color-muted",
+      "--tbd-color-muted-invert",
+      "--tbd-color-paper",
+      "--tbd-color-pure",
+      "--tbd-color-red",
+      "--tbd-color-rule",
+      "--tbd-color-rule-invert",
+      "--tbd-critical",
+      "--tbd-focus",
+      "--tbd-font-display",
+      "--tbd-font-mono",
+      "--tbd-font-sans",
+      "--tbd-leading-body",
+      "--tbd-leading-display",
+      "--tbd-leading-label",
+      "--tbd-leading-subhead",
+      "--tbd-link",
+      "--tbd-logo-min-screen",
+      "--tbd-positive",
+      "--tbd-radius-lg",
+      "--tbd-radius-md",
+      "--tbd-radius-none",
+      "--tbd-radius-pill",
+      "--tbd-radius-sm",
+      "--tbd-rule",
+      "--tbd-rule-invert",
+      "--tbd-size-body-lg",
+      "--tbd-size-body-md",
+      "--tbd-size-body-sm",
+      "--tbd-size-display-lg",
+      "--tbd-size-display-md",
+      "--tbd-size-display-sm",
+      "--tbd-size-label-md",
+      "--tbd-size-label-sm",
+      "--tbd-size-subhead-lg",
+      "--tbd-size-subhead-md",
+      "--tbd-size-subhead-sm",
+      "--tbd-space-0",
+      "--tbd-space-1",
+      "--tbd-space-12",
+      "--tbd-space-16",
+      "--tbd-space-2",
+      "--tbd-space-24",
+      "--tbd-space-3",
+      "--tbd-space-32",
+      "--tbd-space-4",
+      "--tbd-space-6",
+      "--tbd-space-8",
+      "--tbd-surface-card",
+      "--tbd-surface-card-border",
+      "--tbd-text",
+      "--tbd-text-invert",
+      "--tbd-text-muted",
+      "--tbd-tracking-body",
+      "--tbd-tracking-display",
+      "--tbd-tracking-label",
+      "--tbd-tracking-subhead",
+      "--tbd-weight-medium",
+      "--tbd-weight-regular"
+    ],
+    "tokenKinds": {
+      "--tbd-color-ink": "color",
+      "--tbd-color-paper": "color",
+      "--tbd-color-pure": "color",
+      "--tbd-color-blue": "color",
+      "--tbd-color-red": "color",
+      "--tbd-color-emerald": "color",
+      "--tbd-color-muted": "color",
+      "--tbd-color-muted-invert": "color",
+      "--tbd-color-rule": "color",
+      "--tbd-color-rule-invert": "color",
+      "--tbd-bg": "color",
+      "--tbd-bg-invert": "color",
+      "--tbd-text": "font",
+      "--tbd-text-invert": "font",
+      "--tbd-text-muted": "font",
+      "--tbd-link": "color",
+      "--tbd-focus": "color",
+      "--tbd-positive": "color",
+      "--tbd-critical": "color",
+      "--tbd-rule": "color",
+      "--tbd-rule-invert": "color",
+      "--tbd-surface-card": "color",
+      "--tbd-surface-card-border": "color",
+      "--tbd-font-display": "font",
+      "--tbd-font-sans": "font",
+      "--tbd-font-mono": "font",
+      "--tbd-weight-regular": "font",
+      "--tbd-weight-medium": "font",
+      "--tbd-size-display-lg": "spacing",
+      "--tbd-size-display-md": "spacing",
+      "--tbd-size-display-sm": "spacing",
+      "--tbd-size-subhead-lg": "spacing",
+      "--tbd-size-subhead-md": "spacing",
+      "--tbd-size-subhead-sm": "spacing",
+      "--tbd-size-body-lg": "spacing",
+      "--tbd-size-body-md": "spacing",
+      "--tbd-size-body-sm": "spacing",
+      "--tbd-size-label-md": "spacing",
+      "--tbd-size-label-sm": "spacing",
+      "--tbd-leading-display": "font",
+      "--tbd-leading-subhead": "font",
+      "--tbd-leading-body": "font",
+      "--tbd-leading-label": "font",
+      "--tbd-tracking-display": "font",
+      "--tbd-tracking-subhead": "font",
+      "--tbd-tracking-body": "font",
+      "--tbd-tracking-label": "font",
+      "--tbd-space-0": "spacing",
+      "--tbd-space-1": "spacing",
+      "--tbd-space-2": "spacing",
+      "--tbd-space-3": "spacing",
+      "--tbd-space-4": "spacing",
+      "--tbd-space-6": "spacing",
+      "--tbd-space-8": "spacing",
+      "--tbd-space-12": "spacing",
+      "--tbd-space-16": "spacing",
+      "--tbd-space-24": "spacing",
+      "--tbd-space-32": "spacing",
+      "--tbd-radius-none": "radius",
+      "--tbd-radius-sm": "radius",
+      "--tbd-radius-md": "radius",
+      "--tbd-radius-lg": "radius",
+      "--tbd-radius-pill": "radius",
+      "--tbd-border-hairline": "spacing",
+      "--tbd-border-thick": "spacing",
+      "--tbd-logo-min-screen": "spacing"
+    },
+    "fontFamilies": [
+      "Geist",
+      "Geist Mono",
+      "Instrument Serif"
+    ]
+  }
+}

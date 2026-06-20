@@ -1,0 +1,16 @@
+{
+  "name": "tbd-dispatches",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "eleventy",
+    "dev": "eleventy --serve --port=3000"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "markdown-it": "^14.1.0"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^10.7.9"
+  }
+}

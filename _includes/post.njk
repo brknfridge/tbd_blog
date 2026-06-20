@@ -1,0 +1,127 @@
+---
+layout: base.njk
+---
+<article id="post-article" class="post-wrap" style="max-width: 720px; margin-inline: auto; padding: 56px 48px 0;">
+
+  <a href="/" class="tbd-label tbd-text-muted" style="font-size: 12px; text-decoration: none;">← All dispatches</a>
+
+  <div style="margin-top: 36px; display: flex; align-items: center; gap: 14px;">
+    <span class="tbd-eyebrow" style="font-size: 12px;">{{ category or "Essay" }}</span>
+  </div>
+
+  <h1 class="tbd-display post-title" style="font-size: 76px; margin-top: 20px; max-width: 18ch;">{{ title }}</h1>
+
+  {% if dek %}
+  <p class="tbd-body tbd-body--lg tbd-text-muted" style="margin-top: 26px; max-width: 56ch;">{{ dek }}</p>
+  {% endif %}
+
+  <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: 34px; padding-bottom: 28px; border-bottom: 1px solid var(--tbd-rule);">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 44px; height: 44px; border: 1px solid var(--tbd-rule); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: var(--tbd-font-mono); font-size: 14px;">{{ author | initials }}</div>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <span class="tbd-label" style="font-size: 12px;">{{ author }}</span>
+        <span class="tbd-label tbd-text-muted" style="font-size: 11px;">{{ authorRole or "Contributor" }}</span>
+      </div>
+    </div>
+    <span class="tbd-label tbd-text-muted" style="font-size: 12px;">{{ date | dateDisplay }}</span>
+    <span class="tbd-label tbd-text-muted" style="font-size: 12px;">{{ content | readTime }} min read</span>
+    <span class="tbd-label tbd-text-muted" id="view-count" data-slug="{{ page.fileSlug }}" style="font-size: 12px;"></span>
+  </div>
+
+  <!-- Share toolbar -->
+  <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 28px;">
+    <div style="flex: 1;"></div>
+    <span class="tbd-label tbd-text-muted" style="font-size: 11px;">Share</span>
+    <button onclick="shareX()" class="tbd-pill-btn" style="padding: 9px 15px;">X</button>
+    <button onclick="shareLI()" class="tbd-pill-btn" style="padding: 9px 15px;">in</button>
+    <button onclick="copyLink()" class="tbd-pill-btn">Copy link</button>
+  </div>
+
+  <!-- Body -->
+  <div class="post-content tbd-body tbd-body--lg" style="margin-top: 48px; line-height: 1.65;">
+    {{ content | safe }}
+  </div>
+
+  <!-- Author card -->
+  {% if authorBio %}
+  <div class="tbd-card" style="margin-top: 56px; display: flex; gap: 20px; align-items: flex-start;">
+    <div style="width: 56px; height: 56px; border: 1px solid var(--tbd-rule); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: var(--tbd-font-mono); font-size: 16px; flex: none;">{{ author | initials }}</div>
+    <div style="display: flex; flex-direction: column; gap: 8px; flex: 1;">
+      <span class="tbd-label" style="font-size: 13px;">{{ author }}</span>
+      <span class="tbd-label tbd-text-muted" style="font-size: 11px;">{{ authorRole or "Contributor" }}</span>
+      <p class="tbd-body tbd-body--sm tbd-text-muted" style="margin: 4px 0 0;">{{ authorBio }}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Related posts -->
+  {% set related = collections.posts | excludeUrl(page.url) | limit(3) %}
+  {% if related.length %}
+  <div style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--tbd-rule); padding-bottom: 64px;">
+    <span class="tbd-eyebrow" style="display: inline-flex; margin-bottom: 24px;">More dispatches</span>
+    <div class="related-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--tbd-rule); border: 1px solid var(--tbd-rule); margin-top: 16px;">
+      {% for post in related %}
+      <a href="{{ post.url }}" style="background: var(--tbd-bg); padding: 24px; display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: inherit; min-height: 180px; transition: background 120ms;" onmouseover="this.style.background='color-mix(in srgb, var(--tbd-text) 4%, var(--tbd-bg))'" onmouseout="this.style.background='var(--tbd-bg)'">
+        <span class="tbd-eyebrow" style="font-size: 11px;">{{ post.data.category or "Essay" }}</span>
+        <span class="tbd-body tbd-body--lg" style="line-height: 1.25; flex: 1;">{{ post.data.title }}</span>
+        <span class="tbd-label tbd-text-muted" style="font-size: 11px;">{{ post.data.author }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</article>
+
+<script>
+var _postUrl = window.location.href;
+
+function shareX() {
+  var u = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent('{{ title | replace("'", "\\'") }}') + '&url=' + encodeURIComponent(_postUrl);
+  window.open(u, '_blank', 'noopener,width=620,height=520');
+}
+function shareLI() {
+  var u = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(_postUrl);
+  window.open(u, '_blank', 'noopener,width=620,height=560');
+}
+function copyLink() {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(_postUrl).then(function () { showToast('Link copied to clipboard'); }).catch(function () { showToast(_postUrl); });
+  } else { showToast(_postUrl); }
+}
+
+// Reading progress bar
+(function () {
+  var bar  = document.getElementById('reading-progress');
+  var fill = document.getElementById('reading-progress-fill');
+  var art  = document.getElementById('post-article');
+  if (!bar || !fill || !art) return;
+  bar.style.display = 'block';
+  function onScroll() {
+    var start = art.offsetTop - 80;
+    var total = Math.max(1, art.offsetHeight - (window.innerHeight - 120));
+    var pct   = Math.max(0, Math.min(100, ((window.scrollY - start) / total) * 100));
+    fill.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
+// View counter (Netlify Function + Blobs). Increments once per browser session
+// per post; silently hides if the function isn't reachable (e.g. local preview).
+(function () {
+  var el = document.getElementById('view-count');
+  if (!el) return;
+  var slug = el.getAttribute('data-slug');
+  if (!slug) return;
+  var key = 'tbd-viewed:' + slug;
+  var method = sessionStorage.getItem(key) ? 'GET' : 'POST';
+  fetch('/api/views?slug=' + encodeURIComponent(slug), { method: method })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || typeof d.count !== 'number') return;
+      try { sessionStorage.setItem(key, '1'); } catch (e) {}
+      el.textContent = d.count.toLocaleString() + (d.count === 1 ? ' view' : ' views');
+    })
+    .catch(function () {});
+})();
+</script>

@@ -1,0 +1,49 @@
+/* ==========================================================================
+   [tbd] — Color tokens
+   Near-black and paper carry everything. Three accents are highlights —
+   never two at once. Color earns its place; it never decorates.
+   ========================================================================== */
+
+:root {
+  /* --- Foundation ------------------------------------------------------- */
+  --tbd-color-ink: #0a0a0a;        /* Ink Black  — primary background */
+  --tbd-color-paper: #f5f3ee;      /* Paper      — off-white, never pure */
+  --tbd-color-pure: #ffffff;       /* Pure White — print, docs, photography */
+
+  /* --- Accent (use sparingly; never two at once) ------------------------ */
+  --tbd-color-blue: #1f4bff;       /* Electric Blue · links, data, focus · ≤ 8% */
+  --tbd-color-red: #c8201f;        /* Deep Red      · pull-quotes, critical · ≤ 5% */
+  --tbd-color-emerald: #0e7c5a;    /* Emerald       · positive deltas, growth · ≤ 5% */
+
+  /* --- Greys ------------------------------------------------------------ */
+  --tbd-color-muted: #8a8a85;      /* muted text on ink */
+  --tbd-color-muted-invert: #6f6e69; /* muted text on paper */
+  --tbd-color-rule: #262626;       /* hairline on ink */
+  --tbd-color-rule-invert: #dad7cf;/* hairline on paper */
+
+  /* --- Semantic (dark surface = default) -------------------------------- */
+  --tbd-bg: var(--tbd-color-ink);
+  --tbd-bg-invert: var(--tbd-color-paper);
+  --tbd-text: var(--tbd-color-paper);
+  --tbd-text-invert: var(--tbd-color-ink);
+  --tbd-text-muted: var(--tbd-color-muted);
+  --tbd-link: var(--tbd-color-blue);
+  --tbd-focus: var(--tbd-color-blue);
+  --tbd-positive: var(--tbd-color-emerald);
+  --tbd-critical: var(--tbd-color-red);
+  --tbd-rule: var(--tbd-color-rule);
+  --tbd-rule-invert: var(--tbd-color-rule-invert);
+
+  /* --- Surface roles ---------------------------------------------------- */
+  --tbd-surface-card: transparent;       /* cards are hairline outlines, not fills */
+  --tbd-surface-card-border: var(--tbd-rule);
+}
+
+/* Inverted context: paper surface, ink text. Drop on any container. */
+[data-tbd-surface="paper"],
+.tbd-surface-paper {
+  --tbd-bg: var(--tbd-color-paper);
+  --tbd-text: var(--tbd-color-ink);
+  --tbd-text-muted: var(--tbd-color-muted-invert);
+  --tbd-rule: var(--tbd-color-rule-invert);
+}

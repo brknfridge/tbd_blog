@@ -1,0 +1,298 @@
+/* ==========================================================================
+   [tbd] — Base, typographic roles, utilities & component classes
+   The CSS layer of the system. Tokens are imported separately via styles.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Reset & base
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--tbd-bg);
+  color: var(--tbd-text);
+  font-family: var(--tbd-font-sans);
+  font-size: var(--tbd-size-body-md);
+  font-weight: var(--tbd-weight-regular);
+  line-height: var(--tbd-leading-body);
+}
+
+::selection { background: var(--tbd-color-blue); color: var(--tbd-color-pure); }
+
+a { color: var(--tbd-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+:focus-visible {
+  outline: var(--tbd-border-thick) solid var(--tbd-focus);
+  outline-offset: 2px;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+hr { border: 0; border-top: var(--tbd-border-hairline) solid var(--tbd-rule); margin: 0; }
+
+/* --------------------------------------------------------------------------
+   2. Typographic roles — the "two voices"
+   -------------------------------------------------------------------------- */
+
+/* Display — Instrument Serif Italic */
+.tbd-display {
+  font-family: var(--tbd-font-display);
+  font-style: italic;
+  font-weight: var(--tbd-weight-regular);
+  font-size: var(--tbd-size-display-md);
+  line-height: var(--tbd-leading-display);
+  letter-spacing: var(--tbd-tracking-display);
+  margin: 0;
+}
+.tbd-display--lg { font-size: var(--tbd-size-display-lg); }
+.tbd-display--sm { font-size: var(--tbd-size-display-sm); }
+
+/* Subhead — Geist Medium */
+.tbd-subhead {
+  font-family: var(--tbd-font-sans);
+  font-weight: var(--tbd-weight-medium);
+  font-size: var(--tbd-size-subhead-md);
+  line-height: var(--tbd-leading-subhead);
+  letter-spacing: var(--tbd-tracking-subhead);
+  margin: 0;
+}
+.tbd-subhead--lg { font-size: var(--tbd-size-subhead-lg); }
+.tbd-subhead--sm { font-size: var(--tbd-size-subhead-sm); }
+
+/* Body — Geist Regular */
+.tbd-body {
+  font-family: var(--tbd-font-sans);
+  font-weight: var(--tbd-weight-regular);
+  font-size: var(--tbd-size-body-md);
+  line-height: var(--tbd-leading-body);
+  letter-spacing: var(--tbd-tracking-body);
+  margin: 0;
+}
+.tbd-body--lg { font-size: var(--tbd-size-body-lg); }
+.tbd-body--sm { font-size: var(--tbd-size-body-sm); }
+
+/* Label / UI — Geist Mono, uppercase, tracked out */
+.tbd-label {
+  font-family: var(--tbd-font-mono);
+  font-weight: var(--tbd-weight-medium);
+  font-size: var(--tbd-size-label-md);
+  line-height: var(--tbd-leading-label);
+  letter-spacing: var(--tbd-tracking-label);
+  text-transform: uppercase;
+  margin: 0;
+}
+.tbd-label--sm { font-size: var(--tbd-size-label-sm); }
+
+/* Eyebrow — muted mono label with the brand square marker */
+.tbd-eyebrow {
+  font-family: var(--tbd-font-mono);
+  font-size: var(--tbd-size-label-md);
+  letter-spacing: var(--tbd-tracking-label);
+  text-transform: uppercase;
+  color: var(--tbd-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tbd-space-2);
+}
+.tbd-eyebrow::before {
+  content: "";
+  width: 7px; height: 7px;
+  background: currentColor;
+  display: inline-block;
+}
+
+/* --------------------------------------------------------------------------
+   3. Color & surface utilities
+   -------------------------------------------------------------------------- */
+.tbd-text-muted    { color: var(--tbd-text-muted); }
+.tbd-text-blue     { color: var(--tbd-color-blue); }
+.tbd-text-positive { color: var(--tbd-positive); }
+.tbd-text-critical { color: var(--tbd-critical); }
+
+/* One accent at a time — emphasizes a single word inside a serif display. */
+.tbd-accent-blue    { color: var(--tbd-color-blue); }
+.tbd-accent-red     { color: var(--tbd-color-red); }
+.tbd-accent-emerald { color: var(--tbd-color-emerald); }
+
+/* --------------------------------------------------------------------------
+   4. The wordmark — brackets are structural, never decorative
+   -------------------------------------------------------------------------- */
+.tbd-wordmark {
+  font-family: var(--tbd-font-sans);
+  font-weight: var(--tbd-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  display: inline-block;
+  min-width: var(--tbd-logo-min-screen);
+  color: var(--tbd-text);
+  white-space: nowrap;
+}
+.tbd-wordmark::before { content: "["; }
+.tbd-wordmark::after  { content: "]"; }
+.tbd-wordmark--accent { color: var(--tbd-color-blue); }
+.tbd-wordmark--bracketed { color: var(--tbd-text); }
+.tbd-wordmark--bracketed::before,
+.tbd-wordmark--bracketed::after { color: var(--tbd-color-blue); }
+
+/* --------------------------------------------------------------------------
+   5. Rules & layout helpers
+   -------------------------------------------------------------------------- */
+.tbd-rule { border-top: var(--tbd-border-hairline) solid var(--tbd-rule); }
+.tbd-rule--accent { border-top: var(--tbd-border-thick) solid var(--tbd-color-blue); }
+
+.tbd-container {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--tbd-space-12);
+}
+
+/* --------------------------------------------------------------------------
+   6. Component classes (CSS twins of the React components)
+   -------------------------------------------------------------------------- */
+
+/* Button — primary (electric blue), the only loud control on a surface. */
+.tbd-btn {
+  font-family: var(--tbd-font-mono);
+  font-weight: var(--tbd-weight-medium);
+  font-size: var(--tbd-size-label-md);
+  letter-spacing: var(--tbd-tracking-label);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tbd-space-4);
+  padding: var(--tbd-space-4) var(--tbd-space-6);
+  border: var(--tbd-border-hairline) solid transparent;
+  border-radius: var(--tbd-radius-md);
+  background: var(--tbd-color-blue);
+  color: var(--tbd-color-pure);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+.tbd-btn:hover { filter: brightness(1.1); text-decoration: none; }
+.tbd-btn:active { filter: brightness(0.95); }
+.tbd-btn:disabled, .tbd-btn[aria-disabled="true"] {
+  opacity: 0.4; cursor: not-allowed; filter: none; pointer-events: none;
+}
+
+/* Button — secondary (outline). */
+.tbd-btn--ghost {
+  background: transparent;
+  color: var(--tbd-text);
+  border-color: var(--tbd-rule);
+}
+.tbd-btn--ghost:hover { border-color: var(--tbd-text); filter: none; }
+
+/* Tag / pill label */
+.tbd-tag {
+  font-family: var(--tbd-font-mono);
+  font-size: var(--tbd-size-label-sm);
+  letter-spacing: var(--tbd-tracking-label);
+  text-transform: uppercase;
+  padding: var(--tbd-space-1) var(--tbd-space-3);
+  border: var(--tbd-border-hairline) solid var(--tbd-rule);
+  border-radius: var(--tbd-radius-pill);
+  color: var(--tbd-text-muted);
+  display: inline-block;
+}
+
+/* Status dot — pairs with a label, e.g. "LIVE" */
+.tbd-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tbd-space-2);
+  font-family: var(--tbd-font-mono);
+  font-size: var(--tbd-size-label-md);
+  letter-spacing: var(--tbd-tracking-label);
+  text-transform: uppercase;
+}
+.tbd-status::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: var(--tbd-radius-pill);
+  background: var(--tbd-color-blue);
+}
+.tbd-status--positive::before { background: var(--tbd-positive); }
+.tbd-status--critical::before { background: var(--tbd-critical); }
+
+/* Card — hairline-bordered container */
+.tbd-card {
+  border: var(--tbd-border-hairline) solid var(--tbd-rule);
+  border-radius: var(--tbd-radius-md);
+  padding: var(--tbd-space-8);
+  background: var(--tbd-surface-card);
+}
+
+/* Metric row — label left, delta right */
+.tbd-metric {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--tbd-space-4);
+  padding: var(--tbd-space-4) 0;
+  border-bottom: var(--tbd-border-hairline) solid var(--tbd-rule);
+}
+.tbd-metric__label {
+  font-family: var(--tbd-font-mono);
+  font-size: var(--tbd-size-label-md);
+  letter-spacing: var(--tbd-tracking-label);
+  text-transform: uppercase;
+  color: var(--tbd-text);
+}
+.tbd-metric__value {
+  font-family: var(--tbd-font-mono);
+  font-size: var(--tbd-size-label-md);
+  font-weight: var(--tbd-weight-medium);
+  white-space: nowrap;
+}
+.tbd-metric__value--up   { color: var(--tbd-positive); }
+.tbd-metric__value--down { color: var(--tbd-critical); }
+
+/* Field — a mono label stacked over a hairline input */
+.tbd-field { display: flex; flex-direction: column; gap: var(--tbd-space-2); }
+.tbd-field__label {
+  font-family: var(--tbd-font-mono);
+  font-size: var(--tbd-size-label-sm);
+  letter-spacing: var(--tbd-tracking-label);
+  text-transform: uppercase;
+  color: var(--tbd-text-muted);
+}
+.tbd-input {
+  font-family: var(--tbd-font-sans);
+  font-size: var(--tbd-size-body-md);
+  color: var(--tbd-text);
+  background: transparent;
+  border: var(--tbd-border-hairline) solid var(--tbd-rule);
+  border-radius: var(--tbd-radius-md);
+  padding: var(--tbd-space-3) var(--tbd-space-4);
+  width: 100%;
+  transition: border-color 120ms ease;
+}
+.tbd-input::placeholder { color: var(--tbd-text-muted); }
+.tbd-input:hover { border-color: var(--tbd-text-muted); }
+.tbd-input:focus-visible {
+  outline: none;
+  border-color: var(--tbd-color-blue);
+  box-shadow: 0 0 0 1px var(--tbd-color-blue);
+}
+
+/* Pull-quote — the one place Deep Red earns the spotlight */
+.tbd-pullquote {
+  font-family: var(--tbd-font-display);
+  font-style: italic;
+  font-size: var(--tbd-size-subhead-lg);
+  line-height: var(--tbd-leading-subhead);
+  letter-spacing: var(--tbd-tracking-subhead);
+  border-left: var(--tbd-border-thick) solid var(--tbd-color-red);
+  padding-left: var(--tbd-space-6);
+  margin: 0;
+}

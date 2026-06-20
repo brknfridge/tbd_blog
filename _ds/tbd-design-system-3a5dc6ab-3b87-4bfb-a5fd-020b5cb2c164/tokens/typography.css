@@ -1,0 +1,41 @@
+/* ==========================================================================
+   [tbd] — Typography tokens
+   Two voices: an italic serif for statements that matter (Instrument Serif),
+   a geometric sans for everything else (Geist), mono for labels (Geist Mono).
+   ========================================================================== */
+
+:root {
+  /* --- Families --------------------------------------------------------- */
+  --tbd-font-display: "Instrument Serif", Georgia, serif;
+  --tbd-font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --tbd-font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- Weights ---------------------------------------------------------- */
+  --tbd-weight-regular: 400;
+  --tbd-weight-medium: 500;
+
+  /* --- Sizes ------------------------------------------------------------ */
+  --tbd-size-display-lg: 132px;
+  --tbd-size-display-md: 96px;
+  --tbd-size-display-sm: 64px;
+  --tbd-size-subhead-lg: 56px;
+  --tbd-size-subhead-md: 40px;
+  --tbd-size-subhead-sm: 28px;
+  --tbd-size-body-lg: 22px;
+  --tbd-size-body-md: 18px;
+  --tbd-size-body-sm: 16px;
+  --tbd-size-label-md: 14px;
+  --tbd-size-label-sm: 12px;
+
+  /* --- Line height ------------------------------------------------------ */
+  --tbd-leading-display: 0.95;
+  --tbd-leading-subhead: 1.05;
+  --tbd-leading-body: 1.55;
+  --tbd-leading-label: 1.2;
+
+  /* --- Letter spacing --------------------------------------------------- */
+  --tbd-tracking-display: -0.025em;  /* -2.5% */
+  --tbd-tracking-subhead: -0.02em;   /* -2%   */
+  --tbd-tracking-body: 0em;
+  --tbd-tracking-label: 0.16em;      /* +16%  */
+}

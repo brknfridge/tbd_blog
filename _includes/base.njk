@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if pageTitle %}{{ pageTitle }}{% elif title %}{{ title }} — {% endif %}[tbd] Dispatches</title>
+  <meta name="description" content="{{ description or '[tbd] Dispatches — a growth journal. Precise, confident, in motion.' }}">
+  {% if canonical %}<link rel="canonical" href="{{ canonical }}">{% endif %}
+
+  <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/fonts.css">
+  <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/colors.css">
+  <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/typography.css">
+  <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/spacing.css">
+  <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/base.css">
+  <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    /* Paper is the default canvas — never pure white. Brand: Paper #f5f3ee. */
+    html { background: #f5f3ee; }
+    html[data-tbd-surface="dark"] { background: #0a0a0a; }
+
+    body[data-tbd-surface="dark"]  { background: #0a0a0a; }
+    body[data-tbd-surface="paper"] { background: #f5f3ee; }
+
+    #reading-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--tbd-rule); z-index: 60; display: none; }
+    #reading-progress-fill { height: 100%; background: var(--tbd-color-blue); width: 0%; transition: width 80ms linear; }
+
+    #toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(8px); z-index: 70; background: var(--tbd-color-paper, #f5f3ee); color: var(--tbd-color-ink, #0a0a0a); padding: 14px 22px; border-radius: 8px; font-family: var(--tbd-font-mono); font-size: 12px; letter-spacing: 0.08em; box-shadow: 0 8px 30px rgba(0,0,0,0.4); opacity: 0; pointer-events: none; transition: opacity 200ms, transform 200ms; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+    .tbd-nav-link { text-decoration: none; color: inherit; }
+    .tbd-nav-link:hover { color: var(--tbd-text); }
+
+    /* Post markdown body */
+    .post-content h2 { font-family: var(--tbd-font-sans); font-weight: 600; font-size: 1.4rem; margin: 2em 0 0.5em; letter-spacing: -0.01em; }
+    .post-content h3 { font-family: var(--tbd-font-sans); font-weight: 600; font-size: 1.1rem; margin: 1.5em 0 0.4em; }
+    .post-content p  { margin: 0 0 1.5em; }
+    .post-content a  { color: var(--tbd-color-blue); }
+    .post-content blockquote { border-left: 3px solid var(--tbd-color-blue); margin: 2em 0; padding: 1em 1.5em; color: var(--tbd-text); }
+    .post-content code { font-family: var(--tbd-font-mono); font-size: 0.85em; background: color-mix(in srgb, var(--tbd-text) 8%, transparent); padding: 2px 5px; border-radius: 3px; }
+    .post-content pre { background: color-mix(in srgb, var(--tbd-text) 5%, transparent); border: 1px solid var(--tbd-rule); border-radius: 6px; padding: 1.25em 1.5em; overflow-x: auto; margin: 0 0 1.5em; }
+    .post-content pre code { background: none; padding: 0; }
+    .post-content ul, .post-content ol { padding-left: 1.5em; margin-bottom: 1.5em; }
+    .post-content li { margin-bottom: 0.4em; }
+    .post-content hr { border: none; border-top: 1px solid var(--tbd-rule); margin: 2.5em 0; }
+    .post-content img { max-width: 100%; border-radius: 4px; border: 1px solid var(--tbd-rule); }
+
+    .tbd-pill-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 16px; border: 1px solid var(--tbd-rule); border-radius: 999px;
+      background: transparent; color: var(--tbd-text); cursor: pointer;
+      font-family: var(--tbd-font-mono); font-size: 12px; letter-spacing: 0.16em;
+      text-transform: uppercase; text-decoration: none;
+      transition: border-color 120ms ease;
+    }
+    .tbd-pill-btn:hover { border-color: var(--tbd-text); }
+
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+    @media (max-width: 900px) {
+      .index-layout  { grid-template-columns: 1fr !important; }
+      .post-grid-2   { grid-template-columns: 1fr !important; }
+      .related-grid  { grid-template-columns: 1fr 1fr !important; }
+      .author-layout { grid-template-columns: 1fr !important; }
+      .nav-wrap      { padding: 14px 20px !important; }
+      .main-wrap     { padding-inline: 20px !important; }
+      .post-wrap     { padding: 40px 20px 0 !important; }
+      .hero-title    { font-size: 56px !important; }
+      .post-title    { font-size: 44px !important; }
+    }
+  </style>
+</head>
+<body data-tbd-surface="paper" style="min-height: 100vh; color: var(--tbd-text); font-family: var(--tbd-font-sans); padding-bottom: 80px; transition: background 200ms ease;">
+
+  <div id="reading-progress"><div id="reading-progress-fill"></div></div>
+
+  <header style="position: sticky; top: 0; z-index: 40; border-bottom: 1px solid var(--tbd-rule); background: color-mix(in srgb, var(--tbd-bg) 88%, transparent); backdrop-filter: blur(10px);">
+    <div class="nav-wrap" style="max-width: 1180px; margin-inline: auto; padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; gap: 32px;">
+      <a href="/" class="tbd-nav-link" style="display: flex; align-items: baseline; gap: 12px;">
+        <span class="tbd-wordmark" style="font-size: 26px;">tbd</span>
+        <span class="tbd-label tbd-text-muted" style="font-size: 13px;">Dispatches</span>
+      </a>
+      <nav style="display: flex; gap: 28px; align-items: center;">
+        <a href="/" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">Latest</a>
+        <a href="/about/" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">About</a>
+        <button id="theme-toggle" onclick="toggleTheme()" class="tbd-pill-btn" style="padding: 8px 14px; font-size: 11px;">
+          <span style="width: 8px; height: 8px; border-radius: 999px; background: var(--tbd-color-blue); display: inline-block;"></span>
+          <span id="theme-label">Dark</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  {{ content | safe }}
+
+  <div id="toast"></div>
+
+<script>
+(function () {
+  var stored = localStorage.getItem('tbd-theme') || 'paper';
+  document.documentElement.setAttribute('data-tbd-surface', stored);
+  document.body.setAttribute('data-tbd-surface', stored);
+  var lbl = document.getElementById('theme-label');
+  if (lbl) lbl.textContent = stored === 'dark' ? 'Light' : 'Dark';
+})();
+
+function toggleTheme() {
+  var cur  = document.body.getAttribute('data-tbd-surface');
+  var next = cur === 'dark' ? 'paper' : 'dark';
+  document.documentElement.setAttribute('data-tbd-surface', next);
+  document.body.setAttribute('data-tbd-surface', next);
+  document.getElementById('theme-label').textContent = next === 'dark' ? 'Light' : 'Dark';
+  localStorage.setItem('tbd-theme', next);
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(function () { t.classList.remove('show'); }, 2400);
+}
+</script>
+
+</body>
+</html>

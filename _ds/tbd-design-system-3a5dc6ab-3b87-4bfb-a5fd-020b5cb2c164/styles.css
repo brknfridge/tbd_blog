@@ -1,0 +1,11 @@
+/* ==========================================================================
+   [tbd] — Design System · global entry point
+   Identity System Vol. 01 / 2026 Edition
+   Consumers link this one file. It is a manifest of @imports only.
+   ========================================================================== */
+
+@import "./tokens/fonts.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/base.css";
