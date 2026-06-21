@@ -231,9 +231,9 @@ function showToast(msg) {
   window._tt = setTimeout(function () { t.classList.remove('show'); }, 2400);
 }
 
-// Newsletter — set to your ESP form-action URL (Mailchimp / ConvertKit / Buttondown)
-// to capture real signups. Left null, submissions succeed client-side only.
-var NEWSLETTER_ENDPOINT = null;
+// Newsletter — Vercel serverless function that stores the email in Supabase
+// and sends a Resend welcome email. See /api/subscribe.mjs.
+var NEWSLETTER_ENDPOINT = '/api/subscribe';
 
 function markNewsletterSeen() {
   try { localStorage.setItem('tbd-newsletter-seen', '1'); } catch (e) {}
@@ -241,23 +241,38 @@ function markNewsletterSeen() {
 
 function submitNewsletter(e) {
   e.preventDefault();
-  var form  = e.target;
-  var email = (form.email.value || '').trim();
+  var form   = e.target;
+  var email  = (form.email.value || '').trim();
+  var btn    = form.querySelector('button[type="submit"]');
+  var source = form.closest('#nl-modal') ? 'popup' : 'footer';
+
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showToast('Enter a valid email');
     return false;
   }
-  markNewsletterSeen();
-  if (NEWSLETTER_ENDPOINT) {
-    fetch(NEWSLETTER_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
-    }).catch(function () {});
-  }
-  form.reset();
-  closeNewsletterModal();
-  showToast('Subscribed — welcome aboard.');
+
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+
+  fetch(NEWSLETTER_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, source: source })
+  }).then(function (r) {
+    if (!r.ok) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        throw new Error((d && d.error) || 'Could not subscribe. Try again.');
+      });
+    }
+    markNewsletterSeen();
+    form.reset();
+    closeNewsletterModal();
+    showToast('Subscribed — check your inbox.');
+  }).catch(function (err) {
+    showToast(err.message || 'Could not subscribe. Try again.');
+  }).finally(function () {
+    if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+  });
+
   return false;
 }
 

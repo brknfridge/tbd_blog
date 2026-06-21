@@ -4,6 +4,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("_ds");
   eleventyConfig.addPassthroughCopy("images");
 
+  // Server-side only — Vercel runs these, Eleventy must not bundle them.
+  eleventyConfig.ignores.add("api");
+  eleventyConfig.ignores.add("supabase");
+
   eleventyConfig.addCollection("posts", function (api) {
     return api.getFilteredByGlob("blogs/*.md").sort((a, b) => b.date - a.date);
   });
