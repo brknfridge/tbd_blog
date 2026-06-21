@@ -8,6 +8,14 @@ create table if not exists public.subscribers (
   created_at  timestamptz not null default now()
 );
 
+-- Unsubscribe support. The token is an opaque per-subscriber id used in the
+-- email's unsubscribe link (never the email address itself). Adding these with
+-- a default backfills any rows that already exist.
+alter table public.subscribers
+  add column if not exists unsubscribe_token uuid not null default gen_random_uuid();
+alter table public.subscribers
+  add column if not exists unsubscribed_at timestamptz;
+
 -- One row per email. Repeat signups hit this constraint and are treated as
 -- "already subscribed" by the API (no error, no duplicate welcome email).
 create unique index if not exists subscribers_email_key

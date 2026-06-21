@@ -9,6 +9,8 @@
 // Optional:
 //   NEWSLETTER_FROM             From header, default uses Resend's test sender
 //                               e.g. "[tbd] Dispatches <hello@tbdonline.in>"
+//   SITE_URL                    Base URL for unsubscribe links; defaults to the
+//                               request host. e.g. https://tbdonline.in
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -38,9 +40,11 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Server is not configured." });
   }
 
-  // Insert. A unique constraint on `email` turns repeat signups into a 409,
-  // which we treat as success (idempotent) and skip the welcome email.
+  // Insert. The unique email index turns repeat signups into a 409, which we
+  // treat as success (idempotent) and skip the welcome email. return=representation
+  // hands back the new row's unsubscribe_token for the email's unsubscribe link.
   let isNew = false;
+  let unsubscribeToken = null;
   try {
     const dbResp = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
       method: "POST",
@@ -48,13 +52,15 @@ export default async function handler(req, res) {
         apikey: SUPABASE_SERVICE_ROLE_KEY,
         Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
         "Content-Type": "application/json",
-        Prefer: "return=minimal",
+        Prefer: "return=representation",
       },
       body: JSON.stringify([{ email, source }]),
     });
 
     if (dbResp.status === 201) {
       isNew = true;
+      const rows = await dbResp.json().catch(() => []);
+      unsubscribeToken = rows[0] && rows[0].unsubscribe_token;
     } else if (dbResp.status === 409) {
       isNew = false; // already subscribed
     } else {
@@ -71,7 +77,11 @@ export default async function handler(req, res) {
   // must not fail the signup — the address is already stored.
   if (isNew && RESEND_API_KEY) {
     try {
-      await sendWelcomeEmail(email, RESEND_API_KEY);
+      const base = siteBaseUrl(req);
+      const unsubscribeUrl = unsubscribeToken
+        ? `${base}/api/unsubscribe?token=${unsubscribeToken}`
+        : `${base}/`;
+      await sendWelcomeEmail(email, RESEND_API_KEY, unsubscribeUrl);
     } catch (err) {
       console.error("Resend send error", err);
     }
@@ -80,7 +90,14 @@ export default async function handler(req, res) {
   return res.status(200).json({ ok: true, isNew });
 }
 
-async function sendWelcomeEmail(to, apiKey) {
+function siteBaseUrl(req) {
+  if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/$/, "");
+  const proto = req.headers["x-forwarded-proto"] || "https";
+  const host = req.headers["x-forwarded-host"] || req.headers.host;
+  return `${proto}://${host}`;
+}
+
+async function sendWelcomeEmail(to, apiKey, unsubscribeUrl) {
   const from = process.env.NEWSLETTER_FROM || "[tbd] Dispatches <onboarding@resend.dev>";
   const resp = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -92,8 +109,14 @@ async function sendWelcomeEmail(to, apiKey) {
       from,
       to,
       subject: "You're on the list — [tbd] Dispatches",
-      html: welcomeHtml(),
-      text: welcomeText(),
+      html: welcomeHtml(unsubscribeUrl),
+      text: welcomeText(unsubscribeUrl),
+      // One-click unsubscribe in Gmail / Apple Mail (RFC 8058). Improves
+      // deliverability and keeps you compliant.
+      headers: {
+        "List-Unsubscribe": `<${unsubscribeUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
     }),
   });
   if (!resp.ok) {
@@ -101,7 +124,7 @@ async function sendWelcomeEmail(to, apiKey) {
   }
 }
 
-function welcomeHtml() {
+function welcomeHtml(unsubscribeUrl) {
   return `<!DOCTYPE html>
 <html lang="en">
   <body style="margin:0;background:#f5f3ee;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#0a0a0a;">
@@ -119,14 +142,14 @@ function welcomeHtml() {
       <hr style="border:none;border-top:1px solid #ddd9d0;margin:0 0 24px;">
       <p style="font-size:13px;line-height:1.6;color:#8a8678;margin:0;">
         You received this because you signed up at tbdonline.in.
-        Not you? Just ignore this email.
+        <a href="${unsubscribeUrl}" style="color:#8a8678;text-decoration:underline;">Unsubscribe</a>.
       </p>
     </div>
   </body>
 </html>`;
 }
 
-function welcomeText() {
+function welcomeText(unsubscribeUrl) {
   return [
     "[tbd] Dispatches",
     "",
@@ -136,7 +159,8 @@ function welcomeText() {
     "",
     "No filler, no weekly cadence for its own sake.",
     "",
-    "You received this because you signed up at tbdonline.in. Not you? Just ignore this email.",
+    "You received this because you signed up at tbdonline.in.",
+    "Unsubscribe: " + unsubscribeUrl,
   ].join("\n");
 }
 
