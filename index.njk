@@ -1,141 +1,17 @@
 ---
-layout: base.njk
-pageTitle: "[tbd] Dispatches"
-description: "A growth journal — precise, confident, in motion. Essays on marketing that compounds."
+permalink: /index.html
+eleventyExcludeFromCollections: true
 ---
-
-<main class="main-wrap" style="max-width: 1180px; margin-inline: auto; padding-inline: 48px;">
-
-  {% set allPosts = collections.posts %}
-  {% set featured = allPosts | first %}
-
-  <!-- ── Masthead ── -->
-  {% if featured %}
-  <section style="padding: 72px 0 56px; border-bottom: 1px solid var(--tbd-rule);">
-    <span class="tbd-eyebrow" style="margin-bottom: 28px; display: inline-flex;">01 — Featured dispatch</span>
-    <h1 class="tbd-display tbd-display--lg hero-title" style="max-width: 16ch; margin: 22px 0 0; font-size: 104px;">{{ featured.data.title }}</h1>
-    {% if featured.data.dek or featured.data.excerpt %}
-    <p class="tbd-body tbd-body--lg" style="max-width: 52ch; margin-top: 32px;">{{ featured.data.dek or featured.data.excerpt }}</p>
-    {% endif %}
-    <div style="display: flex; align-items: center; gap: 28px; flex-wrap: wrap; margin-top: 40px;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 40px; height: 40px; border: 1px solid var(--tbd-rule); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: var(--tbd-font-mono); font-size: 13px;">{{ featured.data.author | initials }}</div>
-        <div style="display: flex; flex-direction: column; gap: 2px;">
-          <span class="tbd-label" style="font-size: 12px;">{{ featured.data.author }}</span>
-          <span class="tbd-label tbd-text-muted" style="font-size: 11px;">{{ featured.data.authorRole or "Contributor" }}</span>
-        </div>
-      </div>
-      <span class="tbd-label tbd-text-muted" style="font-size: 12px;">{{ featured.date | dateDisplay }}</span>
-      <span class="tbd-label tbd-text-muted" style="font-size: 12px;">{{ featured.content | readTime }} min read</span>
-    </div>
-    <div style="margin-top: 40px;">
-      <a href="{{ featured.url }}" class="tbd-pill-btn" style="background: var(--tbd-text); color: var(--tbd-bg); border-color: transparent; border-radius: 4px; padding: 14px 24px; font-size: 12px;">Read essay →</a>
-    </div>
-  </section>
-  {% endif %}
-
-  <!-- ── Topic filter ── -->
-  <section style="padding: 28px 0; border-bottom: 1px solid var(--tbd-rule); display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
-    <span class="tbd-label tbd-text-muted" style="font-size: 12px;">Topics</span>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-      {% set topics = ["All", "Analytics", "Positioning", "Lifecycle", "Acquisition", "Retention", "Brand"] %}
-      {% for t in topics %}
-      <button
-        onclick="filterTopic('{{ t }}')"
-        data-topic="{{ t }}"
-        class="topic-btn"
-        style="padding: 7px 14px; border-radius: 999px; cursor: pointer; font-family: var(--tbd-font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; transition: all 120ms; {% if loop.first %}background: var(--tbd-color-blue); color: #fff; border: 1px solid transparent;{% else %}background: transparent; color: var(--tbd-text-muted); border: 1px solid var(--tbd-rule);{% endif %}">
-        {{ t }}
-      </button>
-      {% endfor %}
-    </div>
-  </section>
-
-  <!-- ── Grid + Sidebar ── -->
-  <section class="index-layout" style="display: grid; grid-template-columns: 1.55fr 0.85fr; gap: 56px; padding: 56px 0;">
-
-    <!-- Post grid -->
-    <div id="posts-grid" class="post-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--tbd-rule); border: 1px solid var(--tbd-rule); align-content: start;">
-      {% set gridPosts = allPosts %}
-      {% if gridPosts.length > 1 %}
-        {% for post in gridPosts %}
-          {% if not loop.first %}
-          <article
-            data-category="{{ post.data.category }}"
-            onclick="window.location='{{ post.url }}'"
-            style="background: var(--tbd-bg); padding: 32px; display: flex; flex-direction: column; gap: 16px; cursor: pointer; min-height: 280px; transition: background 120ms;"
-            onmouseover="this.style.background='color-mix(in srgb, var(--tbd-text) 4%, var(--tbd-bg))'"
-            onmouseout="this.style.background='var(--tbd-bg)'">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-              <span class="tbd-eyebrow" style="font-size: 12px;">{{ loop.index | padNum }} — {{ post.data.category or "Essay" }}</span>
-            </div>
-            <h2 class="tbd-subhead tbd-subhead--sm" style="font-size: 27px; margin: 0;">{{ post.data.title }}</h2>
-            <p class="tbd-body tbd-body--sm tbd-text-muted" style="flex: 1; margin: 0;">{{ post.data.excerpt }}</p>
-            <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid var(--tbd-rule);">
-              <span class="tbd-label" style="font-size: 11px;">{{ post.data.author }}</span>
-              <span class="tbd-label tbd-text-muted" style="font-size: 11px;">{{ post.content | readTime }} min read</span>
-            </div>
-          </article>
-          {% endif %}
-        {% endfor %}
-      {% else %}
-        <div style="background: var(--tbd-bg); padding: 32px; grid-column: 1 / -1;">
-          <p class="tbd-body tbd-body--sm tbd-text-muted" style="margin: 0;">More dispatches coming soon.</p>
-        </div>
-      {% endif %}
-    </div>
-
-    <!-- Sidebar -->
-    <aside style="display: flex; flex-direction: column; gap: 24px;">
-
-      <div class="tbd-card">
-        <span class="tbd-eyebrow" style="margin-bottom: 20px; display: inline-flex;">Recent dispatches</span>
-        <div style="display: flex; flex-direction: column; margin-top: 16px;">
-          {% for post in allPosts | limit(5) %}
-          <a href="{{ post.url }}" style="text-decoration: none; color: inherit; display: flex; gap: 16px; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--tbd-rule);">
-            <span class="tbd-label tbd-text-muted" style="font-size: 13px; min-width: 24px; flex: none;">{{ loop.index | padNum }}</span>
-            <span class="tbd-body tbd-body--sm" style="line-height: 1.35;">{{ post.data.title }}</span>
-          </a>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="tbd-card">
-        <span class="tbd-eyebrow" style="margin-bottom: 20px; display: inline-flex;">Contributors</span>
-        <div style="display: flex; flex-direction: column; margin-top: 16px;">
-          {% for post in allPosts | uniqueAuthors %}
-          <div style="display: flex; gap: 14px; align-items: center; padding: 14px 0; border-top: 1px solid var(--tbd-rule);">
-            <div style="width: 36px; height: 36px; border: 1px solid var(--tbd-rule); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: var(--tbd-font-mono); font-size: 12px; flex: none;">{{ post.data.author | initials }}</div>
-            <div style="display: flex; flex-direction: column; gap: 3px; flex: 1;">
-              <span class="tbd-label" style="font-size: 12px;">{{ post.data.author }}</span>
-              <span class="tbd-label tbd-text-muted" style="font-size: 11px;">{{ post.data.authorRole or "Contributor" }}</span>
-            </div>
-            <span class="tbd-label tbd-text-muted" style="font-size: 16px;">→</span>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-
-    </aside>
-  </section>
-
-</main>
-
-<script>
-var currentTopic = 'All';
-
-function filterTopic(topic) {
-  currentTopic = topic;
-  document.querySelectorAll('.topic-btn').forEach(function (btn) {
-    var active = btn.getAttribute('data-topic') === topic;
-    btn.style.background     = active ? 'var(--tbd-color-blue)' : 'transparent';
-    btn.style.color          = active ? '#fff'                  : 'var(--tbd-text-muted)';
-    btn.style.borderColor    = active ? 'transparent'           : 'var(--tbd-rule)';
-  });
-  document.querySelectorAll('#posts-grid article').forEach(function (card) {
-    var cat  = card.getAttribute('data-category');
-    var show = topic === 'All' || cat === topic;
-    card.style.display = show ? 'flex' : 'none';
-  });
-}
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=/blog/">
+  <link rel="canonical" href="/blog/">
+  <title>Redirecting… — [tbd] Dispatches</title>
+  <script>location.replace('/blog/')</script>
+</head>
+<body>
+  <a href="/blog/">Redirecting to /blog/…</a>
+</body>
+</html>

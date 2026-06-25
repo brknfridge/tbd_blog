@@ -2,5 +2,13 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": "_site",
-  "trailingSlash": true
+  "trailingSlash": true,
+  "redirects": [
+    { "source": "/", "destination": "/blog/", "permanent": true },
+    { "source": "/about/", "destination": "/blog/about/", "permanent": true },
+    { "source": "/p/:slug/", "destination": "/blog/p/:slug/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/qr", "destination": "/api/qr" }
+  ]
 }
