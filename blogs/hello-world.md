@@ -8,8 +8,10 @@ author: "Madan Varun"
 authorRole: "Founder, TBD"
 authorBio: "Helping founders build the digital side of their business without losing the plot on the business itself."
 category: "Founder Essentials"
-image: "/images/hello-world.png"
+image: "/images/Hello World.jpg"
 ---
+
+![Hello World](/images/Hello World.jpg)
 
 There is a particular kind of overwhelm that hits founders somewhere around month three. The product is real. The idea is sound. Customers who have used it like it. And then you open a browser, start searching for "how to set up a Shopify store," and three hours later you are reading a forum thread from 2019 about deprecated theme code and wondering if you have made a terrible mistake.
 

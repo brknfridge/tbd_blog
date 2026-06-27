@@ -8,8 +8,10 @@ author: "Varun Madan"
 authorRole: "Founder, TBD"
 authorBio: "Helping founders build the digital side of their business without losing the plot on the business itself."
 category: "Founder Essentials"
-image: "/images/your-image.png"
+image: "/images/Getting Started.jpg"
 ---
+
+![Getting Started](/images/Getting Started.jpg)
 
 The product is almost ready and now its time to go to market. Well what's next? You need to start marketing, make a website, figure out logsitics. Trust me the 0-1 of building your business starts here. Here are a few essentials you need to focus on and handy tips that I have seen work well for first time founders. And if you're an experienced one, you probably know all of these things 
 
