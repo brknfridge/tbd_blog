@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hello World — [tbd]</title>
+
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/fonts.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/colors.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/typography.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/spacing.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/base.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css">
+
+<style>
+  html, body { margin: 0; padding: 0; background: var(--tbd-bg); overflow: hidden; }
+
+  @keyframes hwEyebrow {
+    0%, 3%     { opacity: 0; transform: translateY(8px); }
+    12%, 88%   { opacity: 1; transform: translateY(0); }
+    96%, 100%  { opacity: 0; transform: translateY(8px); }
+  }
+  @keyframes hwWordmark {
+    0%, 8%     { opacity: 0; transform: scale(0.92); }
+    20%, 88%   { opacity: 1; transform: scale(1); }
+    96%, 100%  { opacity: 0; transform: scale(0.92); }
+  }
+  @keyframes hwTitle {
+    0%, 22%    { opacity: 0; transform: translateY(10px); }
+    34%, 88%   { opacity: 1; transform: translateY(0); }
+    96%, 100%  { opacity: 0; transform: translateY(10px); }
+  }
+  @keyframes hwRule {
+    0%, 34%    { width: 0%;   opacity: 1; }
+    50%, 88%   { width: 100%; opacity: 1; }
+    96%, 100%  { width: 100%; opacity: 0; }
+  }
+
+  .hw-outer { width: 100%; aspect-ratio: 16 / 9; background: var(--tbd-bg); overflow: hidden; position: relative; }
+  .hw-root  { width: 1920px; height: 1080px; background: var(--tbd-bg); color: var(--tbd-text);
+              display: flex; flex-direction: column; justify-content: space-between; padding: 80px;
+              overflow: hidden; position: absolute; top: 0; left: 0;
+              font-family: var(--tbd-font-sans); transform-origin: top left; }
+  .hw-root * { box-sizing: border-box; }
+
+  /* Respect users who ask for less motion: hold the composed final frame. */
+  @media (prefers-reduced-motion: reduce) {
+    .hw-root [style*="animation"], .hw-rule { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .hw-rule { width: 320px !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hw-outer" id="hw-outer">
+  <div class="hw-root" id="hw-root">
+    <div class="tbd-eyebrow" style="animation: hwEyebrow 4s ease-in-out infinite;">01 — Hello World</div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 32px;">
+      <span class="tbd-wordmark" style="font-size: 56px; animation: hwWordmark 4s ease-in-out infinite;">tbd</span>
+      <h1 class="tbd-display tbd-display--lg" style="margin: 0; text-align: center; animation: hwTitle 4s ease-in-out infinite;">Hello <span class="tbd-accent-blue">world.</span></h1>
+      <div class="hw-rule" style="width: 320px; height: 2px; background: var(--tbd-color-blue); animation: hwRule 4s ease-in-out infinite;"></div>
+    </div>
+
+    <div class="tbd-label" style="color: var(--tbd-text-muted); animation: hwEyebrow 4s ease-in-out infinite;">tbdonline.in — a growth firm</div>
+  </div>
+</div>
+
+<script>
+// The design is authored at a fixed 1920x1080 and scaled to fit its container.
+// The original used the Claude Design React runtime purely for this; a
+// ResizeObserver does the same job without the 69KB dependency.
+(function () {
+  var outer = document.getElementById('hw-outer');
+  var root  = document.getElementById('hw-root');
+  function fit() {
+    root.style.transform = 'scale(' + (outer.getBoundingClientRect().width / 1920) + ')';
+  }
+  if (window.ResizeObserver) { new ResizeObserver(fit).observe(outer); }
+  else { window.addEventListener('resize', fit); }
+  fit();
+
+  // Follow the parent site's surface. Same origin, so we read the same key the
+  // site's theme toggle writes; `storage` fires on other same-origin documents
+  // (this frame) when the parent flips it, so the cover stays in sync live.
+  function applySurface() {
+    var s = localStorage.getItem('tbd-theme') || 'paper';
+    document.documentElement.setAttribute('data-tbd-surface', s);
+    document.body.setAttribute('data-tbd-surface', s);
+  }
+  window.addEventListener('storage', function (e) { if (e.key === 'tbd-theme') applySurface(); });
+  applySurface();
+})();
+</script>
+
+</body>
+</html>

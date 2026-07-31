@@ -11,3 +11,8 @@ Calculator/
 blog/Template.md
 *.pdf
 .claude/
+
+# Design-export archives and partial downloads. images/ is passthrough-copied
+# wholesale, so anything left here ships publicly — keep sources out of the repo.
+*.zip
+*.crdownload
