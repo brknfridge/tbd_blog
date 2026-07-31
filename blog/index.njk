@@ -119,6 +119,46 @@ description: "A growth journal — precise, confident, in motion. Essays on mark
     </aside>
   </section>
 
+  <!-- ── Tools ── -->
+  {% set tools = [
+    {
+      title: "Unit Economics Calculator",
+      excerpt: "Enter price, COGS, packaging, delivery and CAC. Get contribution margin, break-even volume and the price you actually need to hit your target margin.",
+      url: "/unit-economics-calculator/",
+      category: "Profitability"
+    }
+  ] %}
+
+  <section id="tools" style="padding: 56px 0; border-top: 1px solid var(--tbd-rule);">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 28px;">
+      <span class="tbd-eyebrow">02 — Tools</span>
+      <span class="tbd-label tbd-text-muted" style="font-size: 12px;">Free — no signup</span>
+    </div>
+
+    <div class="post-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--tbd-rule); border: 1px solid var(--tbd-rule); align-content: start;">
+      {% for tool in tools %}
+      <a
+        href="{{ tool.url }}"
+        style="background: var(--tbd-bg); padding: 32px; display: flex; flex-direction: column; gap: 16px; min-height: 280px; text-decoration: none; color: inherit; transition: background 120ms;"
+        onmouseover="this.style.background='color-mix(in srgb, var(--tbd-text) 4%, var(--tbd-bg))'"
+        onmouseout="this.style.background='var(--tbd-bg)'">
+        <span class="tbd-eyebrow" style="font-size: 12px;">{{ loop.index | padNum }} — {{ tool.category }}</span>
+        <h2 class="tbd-subhead tbd-subhead--sm" style="font-size: 27px; margin: 0;">{{ tool.title }}</h2>
+        <p class="tbd-body tbd-body--sm tbd-text-muted" style="flex: 1; margin: 0;">{{ tool.excerpt }}</p>
+        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid var(--tbd-rule);">
+          <span class="tbd-label" style="font-size: 11px;">Open calculator →</span>
+        </div>
+      </a>
+      {% endfor %}
+
+      {% if tools.length is odd %}
+      <div class="tools-filler" style="background: var(--tbd-bg); padding: 32px; display: flex; align-items: flex-end; min-height: 280px;">
+        <p class="tbd-body tbd-body--sm tbd-text-muted" style="margin: 0;">More tools coming soon.</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
 </main>
 
 <script>
