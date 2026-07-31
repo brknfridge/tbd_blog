@@ -1,0 +1,428 @@
+---
+layout: base.njk
+pageTitle: "Unit Economics Calculator — [tbd]"
+description: "Enter your numbers. Margin, break-even and the price you actually need — recalculated on every keystroke."
+canonical: "https://tbdonline.com/unit-economics-calculator/"
+---
+
+<style>
+  input[type=range].tbd-range { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--tbd-rule); border-radius: 999px; outline: none; margin: 8px 0; }
+  input[type=range].tbd-range::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 999px; background: var(--tbd-color-blue); cursor: pointer; border: none; }
+  input[type=range].tbd-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 999px; background: var(--tbd-color-blue); cursor: pointer; border: none; }
+  input[type=number]::-webkit-inner-spin-button { opacity: 0.5; }
+
+  .uec-row { display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-bottom: 1px solid var(--tbd-rule); }
+  .uec-row__head { display: flex; justify-content: space-between; align-items: baseline; }
+  .uec-bar { height: 6px; background: var(--tbd-rule); border-radius: 2px; overflow: hidden; }
+  .uec-bar > div { height: 100%; width: 0%; }
+  .uec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 28px; align-items: start; }
+  .uec-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+  .uec-legend span.tbd-label { display: flex; align-items: center; gap: 6px; color: var(--tbd-text-muted); }
+  .uec-swatch { width: 12px; height: 2px; display: inline-block; }
+
+  @media (max-width: 640px) {
+    .uec-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
+
+<main class="main-wrap" style="max-width: 1180px; margin-inline: auto; padding: 48px 48px 96px; display: flex; flex-direction: column; gap: 40px;">
+
+  <!-- ── Masthead ── -->
+  <div style="display: flex; flex-direction: column; gap: 14px; max-width: 640px;">
+    <span class="tbd-eyebrow">01 — Unit economics</span>
+    <h1 class="tbd-display tbd-display--sm" style="margin: 0; color: var(--tbd-text);">Unit Economics Calculator</h1>
+    <p class="tbd-body tbd-text-muted" style="max-width: 520px; margin: 0;">Enter your numbers. Margin, break-even and the price you actually need — recalculated on every keystroke.</p>
+  </div>
+
+  <!-- ── Verdict ── -->
+  <div class="tbd-card" style="display: flex; flex-direction: column; gap: 10px;">
+    <span id="uec-status" class="tbd-status">LIVE</span>
+    <p id="uec-headline" class="tbd-subhead tbd-subhead--sm" style="margin: 0;"></p>
+    <p id="uec-detail" class="tbd-body tbd-text-muted" style="margin: 0; max-width: 760px;"></p>
+  </div>
+
+  <!-- ── Inputs + waterfall ── -->
+  <div class="uec-grid">
+
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="tbd-card" style="display: flex; flex-direction: column; gap: 16px;">
+        <span class="tbd-eyebrow">Revenue</span>
+        <label class="tbd-field">
+          <span class="tbd-field__label">Price / unit (₹)</span>
+          <input class="tbd-input" id="in-price" type="number" step="any" min="0" value="999">
+        </label>
+        <label class="tbd-field">
+          <span class="tbd-field__label">Units / order</span>
+          <input class="tbd-input" id="in-units" type="number" step="any" min="1" value="2">
+        </label>
+      </div>
+
+      <div class="tbd-card" style="display: flex; flex-direction: column; gap: 16px;">
+        <span class="tbd-eyebrow">Costs</span>
+        <label class="tbd-field"><span class="tbd-field__label">COGS / unit (₹)</span><input class="tbd-input" id="in-cogs" type="number" step="any" min="0" value="250"></label>
+        <label class="tbd-field"><span class="tbd-field__label">Packaging / order (₹)</span><input class="tbd-input" id="in-packaging" type="number" step="any" min="0" value="40"></label>
+        <label class="tbd-field"><span class="tbd-field__label">Delivery / order (₹)</span><input class="tbd-input" id="in-delivery" type="number" step="any" min="0" value="60"></label>
+        <label class="tbd-field"><span class="tbd-field__label">CAC / customer (₹)</span><input class="tbd-input" id="in-cac" type="number" step="any" min="0" value="300"></label>
+        <label class="tbd-field"><span class="tbd-field__label">Fixed costs / month (₹)</span><input class="tbd-input" id="in-fixedCosts" type="number" step="any" min="0" value="150000"></label>
+      </div>
+
+      <div class="tbd-card" style="display: flex; flex-direction: column; gap: 16px;">
+        <span class="tbd-eyebrow">Retention</span>
+        <label class="tbd-field"><span class="tbd-field__label">Repeat orders / customer</span><input class="tbd-input" id="in-repeatOrders" type="number" step="any" min="1" value="1.8"></label>
+        <label class="tbd-field"><span class="tbd-field__label">Current volume (units/mo)</span><input class="tbd-input" id="in-monthlyVolume" type="number" step="any" min="0" value="150"></label>
+      </div>
+    </div>
+
+    <div class="tbd-card" style="display: flex; flex-direction: column; gap: 0;">
+      <span class="tbd-eyebrow" style="margin-bottom: 14px;">02 — Per-order waterfall</span>
+
+      <div class="uec-row">
+        <div class="uec-row__head"><span class="tbd-label" style="color: var(--tbd-text-muted);">Revenue / order</span><span class="tbd-label" style="font-weight: 500;" id="v-revenue"></span></div>
+        <div class="uec-bar"><div id="b-revenue" style="background: var(--tbd-text);"></div></div>
+      </div>
+
+      <div class="uec-row">
+        <div class="uec-row__head"><span class="tbd-label" style="color: var(--tbd-text-muted);">− Product cost</span><span class="tbd-label" style="font-weight: 500;" id="v-productCost"></span></div>
+        <div class="uec-bar"><div id="b-productCost" style="background: var(--tbd-text-muted);"></div></div>
+      </div>
+
+      <div class="uec-row">
+        <div class="uec-row__head"><span class="tbd-label" style="color: var(--tbd-text-muted);">− Packaging</span><span class="tbd-label" style="font-weight: 500;" id="v-packaging"></span></div>
+        <div class="uec-bar"><div id="b-packaging" style="background: var(--tbd-text-muted);"></div></div>
+      </div>
+
+      <div class="uec-row">
+        <div class="uec-row__head"><span class="tbd-label" style="color: var(--tbd-text-muted);">− Delivery</span><span class="tbd-label" style="font-weight: 500;" id="v-delivery"></span></div>
+        <div class="uec-bar"><div id="b-delivery" style="background: var(--tbd-text-muted);"></div></div>
+      </div>
+
+      <div class="uec-row" style="padding: 12px 0;">
+        <div class="uec-row__head"><span class="tbd-label" style="color: var(--tbd-color-blue);">= Contribution</span><span class="tbd-label" style="font-weight: 500; color: var(--tbd-color-blue);" id="v-contribution"></span></div>
+        <div class="uec-bar"><div id="b-contribution" style="background: var(--tbd-color-blue);"></div></div>
+      </div>
+
+      <div class="uec-row">
+        <div class="uec-row__head"><span class="tbd-label" style="color: var(--tbd-text-muted);">− Acquisition</span><span class="tbd-label" style="font-weight: 500;" id="v-acquisition"></span></div>
+        <div class="uec-bar"><div id="b-acquisition" style="background: var(--tbd-text-muted);"></div></div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 20px;">
+        <span class="tbd-eyebrow">Profit per customer</span>
+        <span class="tbd-display tbd-display--sm" id="v-profit"></span>
+      </div>
+      <div class="tbd-metric" style="border-bottom: none; padding-top: 16px;">
+        <span class="tbd-metric__label">Margin</span>
+        <span class="tbd-metric__value" id="v-margin"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Sliders ── -->
+  <div class="uec-grid">
+    <div class="tbd-card" style="display: flex; flex-direction: column; gap: 16px;">
+      <span class="tbd-eyebrow">03 — Target margin → required price</span>
+      <input class="tbd-range" id="in-tm1" type="range" min="-50" max="90" step="1" value="55" aria-label="Target margin on revenue for required price">
+      <div style="display: flex; justify-content: space-between;"><span class="tbd-label" style="color: var(--tbd-text-muted);">Target margin on revenue</span><span class="tbd-label" id="v-tm1"></span></div>
+      <div class="tbd-metric"><span class="tbd-metric__label">Required price</span><span class="tbd-metric__value" id="v-requiredPrice"></span></div>
+      <div class="tbd-metric" style="border-bottom: none;"><span class="tbd-metric__label">vs. current price</span><span class="tbd-metric__value" id="v-priceDelta"></span></div>
+    </div>
+
+    <div class="tbd-card" style="display: flex; flex-direction: column; gap: 16px;">
+      <span class="tbd-eyebrow">04 — Fix price → max affordable CAC</span>
+      <input class="tbd-range" id="in-tm2" type="range" min="-50" max="90" step="1" value="55" aria-label="Target margin on revenue for maximum CAC">
+      <div style="display: flex; justify-content: space-between;"><span class="tbd-label" style="color: var(--tbd-text-muted);">Target margin on revenue</span><span class="tbd-label" id="v-tm2"></span></div>
+      <div class="tbd-metric"><span class="tbd-metric__label">Max CAC / customer</span><span class="tbd-metric__value" id="v-maxCac"></span></div>
+      <div class="tbd-metric" style="border-bottom: none;"><span class="tbd-metric__label">vs. current CAC</span><span class="tbd-metric__value" id="v-cacDelta"></span></div>
+    </div>
+  </div>
+
+  <!-- ── Chart ── -->
+  <div class="tbd-card" style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px;">
+      <span class="tbd-eyebrow">05 — Profitability by volume</span>
+      <div class="uec-legend">
+        <span class="tbd-label"><span class="uec-swatch" style="background: var(--tbd-text-muted);"></span>Contribution</span>
+        <span class="tbd-label"><span class="uec-swatch" style="background: var(--tbd-color-blue);"></span>Profit after CAC</span>
+        <span class="tbd-label"><span class="uec-swatch" style="background: var(--tbd-text);"></span>EBITDA</span>
+      </div>
+    </div>
+
+    <div style="position: relative; width: 100%;">
+      <svg id="uec-chart" viewBox="0 0 960 380" style="width: 100%; height: auto; display: block; cursor: crosshair; touch-action: none;" role="img" aria-label="Contribution, profit after CAC and EBITDA plotted against units sold per month"></svg>
+      <div id="uec-tooltip" style="position: absolute; display: none; background: var(--tbd-bg); border: 1px solid var(--tbd-rule); border-radius: 8px; padding: 12px 14px; pointer-events: none; white-space: nowrap; z-index: 2;"></div>
+    </div>
+    <div style="display: flex; justify-content: space-between;"><span class="tbd-label" style="color: var(--tbd-text-muted);">Units sold / month</span><span class="tbd-label" style="color: var(--tbd-text-muted);">₹ / month</span></div>
+  </div>
+
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  var num = function (v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; };
+  var clamp = function (v, lo, hi) { return Math.min(hi, Math.max(lo, v)); };
+  var inr = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0, minimumFractionDigits: 0 });
+  var fmtINR = function (v) {
+    if (isNaN(v)) return '—';
+    if (!isFinite(v)) return v > 0 ? '∞' : '−∞';
+    return inr.format(v);
+  };
+  var fmtPct = function (v, d) { return (v * 100).toFixed(d === undefined ? 1 : d) + '%'; };
+  var fmtSignedPct = function (v) { return (v >= 0 ? '+ ' : '− ') + Math.abs(v * 100).toFixed(1) + '%'; };
+  var fmtSignedINR = function (v) { return (v >= 0 ? '+ ' : '− ') + fmtINR(Math.abs(v)); };
+  var fmtNum = function (v) { return Math.round(v).toLocaleString('en-IN'); };
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+
+  var state = {
+    price: 999, units: 2, cogs: 250, packaging: 40, delivery: 60, cac: 300,
+    fixedCosts: 150000, repeatOrders: 1.8, monthlyVolume: 150,
+    targetMargin1: 55, targetMargin2: 55, hoverU: null
+  };
+
+  // Minimum allowed value per field — mirrors the design's setters.
+  var floors = {
+    price: 0, units: 1, cogs: 0, packaging: 0, delivery: 0, cac: 0,
+    fixedCosts: 0, repeatOrders: 1, monthlyVolume: 0
+  };
+
+  Object.keys(floors).forEach(function (key) {
+    var el = $('in-' + key);
+    if (!el) return;
+    el.addEventListener('input', function () {
+      state[key] = Math.max(floors[key], num(el.value));
+      render();
+    });
+  });
+
+  $('in-tm1').addEventListener('input', function (e) {
+    state.targetMargin1 = clamp(num(e.target.value), -50, 90); render();
+  });
+  $('in-tm2').addEventListener('input', function (e) {
+    state.targetMargin2 = clamp(num(e.target.value), -50, 90); render();
+  });
+
+  // ── Core model ─────────────────────────────────────────────────────────
+  function calc() {
+    var price = state.price;
+    var units = Math.max(1, state.units);
+    var cogs = Math.max(0, state.cogs);
+    var packaging = Math.max(0, state.packaging);
+    var delivery = Math.max(0, state.delivery);
+    var cac = Math.max(0, state.cac);
+    var fixedCosts = Math.max(0, state.fixedCosts);
+    var repeatOrders = Math.max(1, state.repeatOrders);
+    var monthlyVolume = Math.max(0, state.monthlyVolume);
+
+    var revenue = price * units;
+    var productCost = cogs * units;
+    var grossProfit = revenue - productCost;
+    var contribution = grossProfit - packaging - delivery;
+    var cacPerOrder = cac / repeatOrders;
+    var profitPerOrder = contribution - cacPerOrder;
+    var marginPct = revenue !== 0 ? profitPerOrder / revenue : 0;
+    var breakevenUnits = profitPerOrder > 0 ? (fixedCosts * units) / profitPerOrder : Infinity;
+
+    var tm1 = clamp(state.targetMargin1, -50, 90) / 100;
+    var denom1 = units * (1 - tm1);
+    var requiredPrice = denom1 !== 0 ? (cogs * units + packaging + delivery + cacPerOrder) / denom1 : NaN;
+
+    var tm2 = clamp(state.targetMargin2, -50, 90) / 100;
+    var maxCacPerCustomer = (contribution - tm2 * revenue) * repeatOrders;
+
+    var xMax = isFinite(breakevenUnits) && breakevenUnits > 0
+      ? breakevenUnits * 3
+      : Math.max(monthlyVolume * 4, units * 200, 1000);
+
+    return {
+      price: price, units: units, cac: cac, fixedCosts: fixedCosts, monthlyVolume: monthlyVolume,
+      revenue: revenue, productCost: productCost, packaging: packaging, delivery: delivery,
+      contribution: contribution, cacPerOrder: cacPerOrder, profitPerOrder: profitPerOrder,
+      marginPct: marginPct, breakevenUnits: breakevenUnits, requiredPrice: requiredPrice,
+      maxCacPerCustomer: maxCacPerCustomer, xMax: xMax
+    };
+  }
+
+  // ── Chart hover ────────────────────────────────────────────────────────
+  var svg = $('uec-chart');
+  svg.addEventListener('pointermove', function (e) {
+    var rect = svg.getBoundingClientRect();
+    var relX = (e.clientX - rect.left) / rect.width * 960;
+    var xMax = calc().xMax;
+    var plotX = clamp(relX, 56, 936);
+    var u = (plotX - 56) / 880 * xMax;
+    var step = xMax / 100;
+    state.hoverU = clamp(step > 0 ? Math.round(u / step) * step : 0, 0, xMax);
+    render();
+  });
+  svg.addEventListener('pointerleave', function () { state.hoverU = null; render(); });
+
+  // ── Render ─────────────────────────────────────────────────────────────
+  function setText(id, text) { var el = $(id); if (el) el.textContent = text; }
+  function setBar(id, pct) { var el = $(id); if (el) el.style.width = pct + '%'; }
+
+  function render() {
+    var k = calc();
+    var base = Math.max(Math.abs(k.revenue), 1);
+    var barPct = function (v) { return clamp(Math.abs(v) / base * 100, 0, 100); };
+
+    // Verdict — ordered so the first thing that breaks is the thing reported.
+    var statusClass = 'tbd-status', statusLabel = 'LIVE', headline = '', detail = '';
+    if (k.contribution < 0) {
+      statusClass = 'tbd-status tbd-status--critical';
+      statusLabel = 'LOSING MONEY';
+      headline = 'Every sale loses money before you spend on marketing.';
+      detail = 'Contribution is ' + fmtINR(k.contribution) + ' per order. Fix COGS, packaging or delivery before touching acquisition spend.';
+    } else if (k.profitPerOrder < 0) {
+      statusClass = 'tbd-status tbd-status--critical';
+      statusLabel = 'GROWTH IS THE PROBLEM';
+      headline = "Product works, growth doesn't.";
+      detail = 'CAC per order (' + fmtINR(k.cacPerOrder) + ') exceeds contribution of ' + fmtINR(k.contribution) + ' by ' + fmtINR(k.cacPerOrder - k.contribution) + '.';
+    } else if (isFinite(k.breakevenUnits) && k.monthlyVolume < k.breakevenUnits) {
+      statusClass = 'tbd-status';
+      statusLabel = 'NOT YET AT SCALE';
+      headline = 'Profitable per order, not yet at scale.';
+      detail = 'Need ' + fmtNum(Math.ceil(k.breakevenUnits)) + ' units/mo to break even — currently at ' + fmtNum(k.monthlyVolume) + '.';
+    } else {
+      statusClass = 'tbd-status tbd-status--positive';
+      statusLabel = 'PROFITABLE';
+      headline = 'Profitable: ' + fmtINR(k.profitPerOrder) + ' per customer, ' + fmtPct(k.marginPct) + ' margin.';
+      detail = 'At ' + fmtNum(k.monthlyVolume) + ' units/mo you are past break-even (' + fmtNum(Math.ceil(isFinite(k.breakevenUnits) ? k.breakevenUnits : 0)) + ' units/mo).';
+    }
+    $('uec-status').className = statusClass;
+    setText('uec-status', statusLabel);
+    setText('uec-headline', headline);
+    setText('uec-detail', detail);
+
+    // Waterfall
+    setText('v-revenue', fmtINR(k.revenue)); setBar('b-revenue', barPct(k.revenue));
+    setText('v-productCost', '− ' + fmtINR(k.productCost)); setBar('b-productCost', barPct(k.productCost));
+    setText('v-packaging', '− ' + fmtINR(k.packaging)); setBar('b-packaging', barPct(k.packaging));
+    setText('v-delivery', '− ' + fmtINR(k.delivery)); setBar('b-delivery', barPct(k.delivery));
+    setText('v-contribution', fmtINR(k.contribution)); setBar('b-contribution', barPct(k.contribution));
+    setText('v-acquisition', '− ' + fmtINR(k.cacPerOrder)); setBar('b-acquisition', barPct(k.cacPerOrder));
+
+    setText('v-profit', fmtINR(k.profitPerOrder));
+    $('v-profit').style.color = k.profitPerOrder >= 0 ? 'var(--tbd-positive)' : 'var(--tbd-critical)';
+    setText('v-margin', fmtPct(k.marginPct));
+    $('v-margin').className = 'tbd-metric__value ' + (k.marginPct >= 0 ? 'tbd-metric__value--up' : 'tbd-metric__value--down');
+
+    // Sliders
+    var priceDelta = k.requiredPrice - k.price;
+    var priceDeltaPct = k.price !== 0 ? priceDelta / k.price : 0;
+    var cacDelta = k.maxCacPerCustomer - k.cac;
+    var cacDeltaPct = k.cac !== 0 ? cacDelta / k.cac : 0;
+
+    setText('v-tm1', (state.targetMargin1 >= 0 ? '+ ' : '− ') + Math.abs(state.targetMargin1) + '%');
+    setText('v-tm2', (state.targetMargin2 >= 0 ? '+ ' : '− ') + Math.abs(state.targetMargin2) + '%');
+    setText('v-requiredPrice', isFinite(k.requiredPrice) ? fmtINR(k.requiredPrice) : '—');
+    setText('v-priceDelta', isFinite(priceDelta) ? fmtSignedINR(priceDelta) + ' (' + fmtSignedPct(priceDeltaPct) + ')' : '—');
+    $('v-priceDelta').className = 'tbd-metric__value ' + (priceDelta <= 0 ? 'tbd-metric__value--up' : 'tbd-metric__value--down');
+    setText('v-maxCac', fmtINR(k.maxCacPerCustomer));
+    setText('v-cacDelta', fmtSignedINR(cacDelta) + ' (' + fmtSignedPct(cacDeltaPct) + ')');
+    $('v-cacDelta').className = 'tbd-metric__value ' + (cacDelta >= 0 ? 'tbd-metric__value--up' : 'tbd-metric__value--down');
+
+    renderChart(k);
+  }
+
+  // ── Chart ──────────────────────────────────────────────────────────────
+  function renderChart(k) {
+    var xScale = function (u) { return 56 + (u / k.xMax) * 880; };
+    var cmAt = function (u) { return k.contribution * (u / k.units); };
+    var profitAt = function (u) { return k.profitPerOrder * (u / k.units); };
+    var ebitdaAt = function (u) { return profitAt(u) - k.fixedCosts; };
+
+    var cm1 = cmAt(k.xMax), pr1 = profitAt(k.xMax);
+    var eb0 = ebitdaAt(0), eb1 = ebitdaAt(k.xMax);
+    var allY = [0, 0, cm1, 0, pr1, eb0, eb1];
+    var yMin = Math.min.apply(null, allY), yMax = Math.max.apply(null, allY);
+    if (yMin === yMax) { yMin -= 1; yMax += 1; }
+    var pad = (yMax - yMin) * 0.08;
+    yMin -= pad; yMax += pad;
+    var yScale = function (v) { return 20 + (yMax - v) / (yMax - yMin) * 320; };
+
+    var zeroY = yScale(0);
+    var out = '';
+
+    // Loss region + zero line
+    out += '<rect x="56" y="' + zeroY + '" width="880" height="' + Math.max(0, 340 - zeroY) + '" fill="var(--tbd-color-red)" opacity="0.06"></rect>';
+    out += '<line x1="56" y1="' + zeroY + '" x2="936" y2="' + zeroY + '" stroke="var(--tbd-rule)" stroke-width="1" stroke-dasharray="3 3"></line>';
+
+    // X gridlines + ticks
+    for (var i = 0; i <= 4; i++) {
+      var u = k.xMax * i / 4;
+      var x = xScale(u);
+      out += '<line x1="' + x + '" y1="20" x2="' + x + '" y2="340" stroke="var(--tbd-rule)" stroke-width="1" opacity="0.4"></line>';
+      out += '<text x="' + x + '" y="358" fill="var(--tbd-text-muted)" font-family="var(--tbd-font-mono)" font-size="11" text-anchor="middle">' + esc(fmtNum(u)) + '</text>';
+    }
+
+    // Break-even marker — the payload of this chart
+    var breakevenVisible = isFinite(k.breakevenUnits) && k.breakevenUnits > 0 && k.breakevenUnits <= k.xMax;
+    if (breakevenVisible) {
+      var bx = xScale(k.breakevenUnits);
+      out += '<line x1="' + bx + '" y1="20" x2="' + bx + '" y2="340" stroke="var(--tbd-color-emerald)" stroke-width="1.5" stroke-dasharray="4 3"></line>';
+      out += '<text x="' + bx + '" y="14" fill="var(--tbd-color-emerald)" font-family="var(--tbd-font-mono)" font-size="11" text-anchor="middle">' + esc('Break-even: ' + fmtNum(k.breakevenUnits) + ' units/mo') + '</text>';
+    } else if (k.profitPerOrder <= 0) {
+      out += '<text x="496" y="14" fill="var(--tbd-color-red)" font-family="var(--tbd-font-mono)" font-size="12" text-anchor="middle">NEVER BREAKS EVEN AT ANY VOLUME</text>';
+    }
+
+    // Current volume marker
+    if (k.monthlyVolume > 0 && k.monthlyVolume <= k.xMax) {
+      var vx = xScale(k.monthlyVolume);
+      out += '<line x1="' + vx + '" y1="20" x2="' + vx + '" y2="340" stroke="var(--tbd-color-blue)" stroke-width="1" stroke-dasharray="2 3" opacity="0.6"></line>';
+    }
+
+    // The three series — all linear in units
+    out += '<line x1="' + xScale(0) + '" y1="' + yScale(0) + '" x2="' + xScale(k.xMax) + '" y2="' + yScale(cm1) + '" stroke="var(--tbd-text-muted)" stroke-width="2" stroke-dasharray="5 3"></line>';
+    out += '<line x1="' + xScale(0) + '" y1="' + yScale(0) + '" x2="' + xScale(k.xMax) + '" y2="' + yScale(pr1) + '" stroke="var(--tbd-color-blue)" stroke-width="2"></line>';
+    out += '<line x1="' + xScale(0) + '" y1="' + yScale(eb0) + '" x2="' + xScale(k.xMax) + '" y2="' + yScale(eb1) + '" stroke="var(--tbd-text)" stroke-width="2.5"></line>';
+
+    // Hover
+    var tip = $('uec-tooltip');
+    if (state.hoverU !== null) {
+      var hu = state.hoverU;
+      var hx = xScale(hu);
+      var cmY = yScale(cmAt(hu)), prY = yScale(profitAt(hu)), ebY = yScale(ebitdaAt(hu));
+      out += '<line x1="' + hx + '" y1="20" x2="' + hx + '" y2="340" stroke="var(--tbd-text-muted)" stroke-width="1"></line>';
+      out += '<circle cx="' + hx + '" cy="' + cmY + '" r="4" fill="var(--tbd-text-muted)"></circle>';
+      out += '<circle cx="' + hx + '" cy="' + prY + '" r="4" fill="var(--tbd-color-blue)"></circle>';
+      out += '<circle cx="' + hx + '" cy="' + ebY + '" r="4" fill="var(--tbd-text)"></circle>';
+
+      tip.style.display = 'block';
+      tip.innerHTML =
+        '<div class="tbd-label" style="color: var(--tbd-text-muted); margin-bottom: 6px;">' + esc(fmtNum(hu) + ' units/mo') + '</div>' +
+        '<div style="display: flex; flex-direction: column; gap: 3px;">' +
+        '<span class="tbd-body tbd-body--sm">Orders: ' + esc((hu / k.units).toFixed(1)) + '</span>' +
+        '<span class="tbd-body tbd-body--sm">Revenue: ' + esc(fmtINR(k.price * hu)) + '</span>' +
+        '<span class="tbd-body tbd-body--sm">Contribution: ' + esc(fmtINR(cmAt(hu))) + '</span>' +
+        '<span class="tbd-body tbd-body--sm" style="color: var(--tbd-color-blue);">Profit: ' + esc(fmtINR(profitAt(hu))) + '</span>' +
+        '<span class="tbd-body tbd-body--sm" style="font-weight: 500;">EBITDA: ' + esc(fmtINR(ebitdaAt(hu))) + '</span>' +
+        '</div>';
+
+      // Keep the tooltip inside the chart card. Measure it now that content is
+      // in the DOM, then clamp horizontally and flip below the curves when
+      // there isn't room above them.
+      var box = tip.offsetParent || tip.parentElement;
+      var boxW = box.clientWidth, boxH = box.clientHeight;
+      var tipW = tip.offsetWidth, tipH = tip.offsetHeight;
+      var gap = 10;
+
+      var px = hx / 960 * boxW;
+      tip.style.left = clamp(px, tipW / 2 + 4, boxW - tipW / 2 - 4) + 'px';
+
+      var aboveY = Math.min(cmY, prY, ebY) / 380 * boxH;
+      var belowY = Math.max(cmY, prY, ebY) / 380 * boxH;
+      var top = aboveY - gap - tipH;
+      if (top < 0) top = belowY + gap;
+      tip.style.top = clamp(top, 0, Math.max(0, boxH - tipH)) + 'px';
+      tip.style.transform = 'translateX(-50%)';
+    } else {
+      tip.style.display = 'none';
+    }
+
+    svg.innerHTML = out;
+  }
+
+  render();
+})();
+</script>
