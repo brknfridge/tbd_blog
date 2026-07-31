@@ -7,6 +7,13 @@ updated: 2026-08-01
 category: "Founder Essentials"
 ---
 
+<iframe
+  src="/images/growth-levers-cover.html"
+  title="Four levers for growth — [tbd]"
+  loading="lazy"
+  scrolling="no"
+  style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--tbd-rule); border-radius: 4px; margin: 0 0 40px;"></iframe>
+
 Every founder has sat through the 4Ps of marketing at some point — Product, Price, Place, Promotion. It gets taught in a classroom, filed away as "marketing theory," and forgotten the moment the business gets real. That's a mistake. The 4Ps were never just a framework for writing marketing plans. They're four distinct growth centres — four separate places you can go looking for growth when the obvious lever, spending more on ads, stops working or stops being affordable.
 
 Most founders only ever pull on one of these four levers. Here's how to think about all of them.

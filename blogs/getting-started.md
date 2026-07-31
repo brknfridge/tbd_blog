@@ -8,7 +8,12 @@ category: "Founder Essentials"
 image: "/images/getting-started.jpg"
 ---
 
-![Getting Started](/images/getting-started.jpg)
+<iframe
+  src="/images/getting-started-cover.html"
+  title="Where to sell, and why? — [tbd]"
+  loading="lazy"
+  scrolling="no"
+  style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--tbd-rule); border-radius: 4px; margin: 0 0 40px;"></iframe>
 
 The product is almost ready and now its time to go to market. Well what's next? You need to start marketing, make a website, figure out logsitics. Trust me the 0-1 of building your business starts here. Here are a few essentials you need to focus on and handy tips that I have seen work well for first time founders. And if you're an experienced one, you probably know all of these things 
 

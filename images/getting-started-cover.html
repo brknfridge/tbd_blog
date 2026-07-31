@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where to sell, and why? — [tbd]</title>
+
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/fonts.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/colors.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/typography.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/spacing.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/base.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css">
+
+<style>
+  html, body { margin: 0; padding: 0; background: var(--tbd-bg); overflow: hidden; }
+
+  @keyframes gsFade {
+    0%, 3%     { opacity: 0; transform: translateY(8px); }
+    10%, 88%   { opacity: 1; transform: translateY(0); }
+    96%, 100%  { opacity: 0; transform: translateY(8px); }
+  }
+  @keyframes gsIcon1Fade { 0%,3%  { opacity: 0; } 8%,88%  { opacity: 1; } 96%,100% { opacity: 0; } }
+  @keyframes gsIcon1Draw { 0%,8%  { stroke-dashoffset: 100; } 20%,88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 100; } }
+  @keyframes gsIcon2Fade { 0%,20% { opacity: 0; } 25%,88% { opacity: 1; } 96%,100% { opacity: 0; } }
+  @keyframes gsIcon2Draw { 0%,25% { stroke-dashoffset: 100; } 37%,88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 100; } }
+  @keyframes gsIcon3Fade { 0%,37% { opacity: 0; } 42%,88% { opacity: 1; } 96%,100% { opacity: 0; } }
+  @keyframes gsIcon3Draw { 0%,42% { stroke-dashoffset: 100; } 54%,88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 100; } }
+  @keyframes gsTitle {
+    0%, 54%    { opacity: 0; transform: translateY(10px); }
+    62%, 88%   { opacity: 1; transform: translateY(0); }
+    96%, 100%  { opacity: 0; transform: translateY(10px); }
+  }
+
+  .gs-outer { width: 100%; aspect-ratio: 16 / 9; background: var(--tbd-bg); overflow: hidden; position: relative; }
+  .gs-root  { width: 1920px; height: 1080px; background: var(--tbd-bg); color: var(--tbd-text);
+              display: flex; flex-direction: column; justify-content: space-between; padding: 80px;
+              overflow: hidden; position: absolute; top: 0; left: 0;
+              font-family: var(--tbd-font-sans); transform-origin: top left; }
+  .gs-root * { box-sizing: border-box; }
+
+  .gs-icon-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .gs-icon-wrap svg { width: 96px; height: 96px; }
+  .gs-icon-wrap path,
+  .gs-icon-wrap circle,
+  .gs-icon-wrap line { stroke: var(--tbd-text); stroke-width: 2; fill: none;
+                       stroke-linecap: round; stroke-linejoin: round;
+                       /* pathLength="100" normalises every shape to 100 units, so a
+                          matching dasharray is what lets dashoffset draw the stroke. */
+                       stroke-dasharray: 100; }
+
+  /* Respect users who ask for less motion: hold the composed final frame. */
+  @media (prefers-reduced-motion: reduce) {
+    .gs-root [style*="animation"] { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .gs-icon-wrap path, .gs-icon-wrap circle, .gs-icon-wrap line { stroke-dashoffset: 0 !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gs-outer" id="gs-outer">
+  <div class="gs-root" id="gs-root">
+
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 56px;">
+      <div style="display: flex; gap: 120px; align-items: flex-start;">
+
+        <div class="gs-icon-wrap" style="animation: gsIcon1Fade 6s ease-in-out infinite;">
+          <svg viewBox="0 0 64 64">
+            <path pathLength="100" d="M8,24 L8,16 L20,10 L44,10 L56,16 L56,24" style="animation: gsIcon1Draw 6s ease-in-out infinite;"></path>
+            <path pathLength="100" d="M10,24 L10,54 L54,54 L54,24" style="animation: gsIcon1Draw 6s ease-in-out infinite;"></path>
+            <path pathLength="100" d="M26,54 L26,36 L38,36 L38,54" style="animation: gsIcon1Draw 6s ease-in-out infinite;"></path>
+          </svg>
+        </div>
+
+        <div class="gs-icon-wrap" style="animation: gsIcon2Fade 6s ease-in-out infinite;">
+          <svg viewBox="0 0 64 64">
+            <path pathLength="100" d="M8,14 h48 a2,2 0 0 1 2,2 v34 a2,2 0 0 1 -2,2 h-48 a2,2 0 0 1 -2,-2 v-34 a2,2 0 0 1 2,-2 z" style="animation: gsIcon2Draw 6s ease-in-out infinite;"></path>
+            <path pathLength="100" d="M6,24 h52" style="animation: gsIcon2Draw 6s ease-in-out infinite;"></path>
+            <circle pathLength="100" cx="13" cy="19" r="1.6" style="animation: gsIcon2Draw 6s ease-in-out infinite;"></circle>
+            <circle pathLength="100" cx="19" cy="19" r="1.6" style="animation: gsIcon2Draw 6s ease-in-out infinite;"></circle>
+            <path pathLength="100" d="M16,33 h32 M16,41 h24" style="animation: gsIcon2Draw 6s ease-in-out infinite;"></path>
+          </svg>
+        </div>
+
+        <div class="gs-icon-wrap" style="animation: gsIcon3Fade 6s ease-in-out infinite;">
+          <svg viewBox="0 0 64 64">
+            <path pathLength="100" d="M6,20 h32 v22 h-32 z" style="animation: gsIcon3Draw 6s ease-in-out infinite;"></path>
+            <path pathLength="100" d="M38,28 h10 l8,9 v5 h-18 z" style="animation: gsIcon3Draw 6s ease-in-out infinite;"></path>
+            <circle pathLength="100" cx="17" cy="46" r="4.5" style="animation: gsIcon3Draw 6s ease-in-out infinite;"></circle>
+            <circle pathLength="100" cx="46" cy="46" r="4.5" style="animation: gsIcon3Draw 6s ease-in-out infinite;"></circle>
+          </svg>
+        </div>
+
+      </div>
+
+      <h1 class="tbd-display tbd-display--lg" style="margin: 0; text-align: center; animation: gsTitle 6s ease-in-out infinite;">Where to sell, <span class="tbd-accent-blue">and why?</span></h1>
+    </div>
+
+    <div class="tbd-label" style="color: var(--tbd-text-muted); animation: gsFade 6s ease-in-out infinite;">tbdonline.in</div>
+  </div>
+</div>
+
+<script>
+// The design is authored at a fixed 1920x1080 and scaled to fit its container.
+// The original used the Claude Design React runtime purely for this; a
+// ResizeObserver does the same job without the 69KB dependency.
+(function () {
+  var outer = document.getElementById('gs-outer');
+  var root  = document.getElementById('gs-root');
+  function fit() {
+    root.style.transform = 'scale(' + (outer.getBoundingClientRect().width / 1920) + ')';
+  }
+  if (window.ResizeObserver) { new ResizeObserver(fit).observe(outer); }
+  else { window.addEventListener('resize', fit); }
+  fit();
+
+  // Follow the parent site's surface. Same origin, so we read the same key the
+  // site's theme toggle writes; `storage` fires on other same-origin documents
+  // (this frame) when the parent flips it, so the cover stays in sync live.
+  function applySurface() {
+    var s = localStorage.getItem('tbd-theme') || 'paper';
+    document.documentElement.setAttribute('data-tbd-surface', s);
+    document.body.setAttribute('data-tbd-surface', s);
+  }
+  window.addEventListener('storage', function (e) { if (e.key === 'tbd-theme') applySurface(); });
+  applySurface();
+})();
+</script>
+
+</body>
+</html>

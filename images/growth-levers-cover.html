@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four levers for growth — [tbd]</title>
+
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/fonts.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/colors.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/typography.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/spacing.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/base.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css">
+
+<style>
+  html, body { margin: 0; padding: 0; background: var(--tbd-bg); overflow: hidden; }
+
+  @keyframes glFade {
+    0%, 3%    { opacity: 0; transform: translateY(8px); }
+    10%, 88%  { opacity: 1; transform: translateY(0); }
+    96%, 100% { opacity: 0; transform: translateY(8px); }
+  }
+  @keyframes glDraw  { 0%,5%  { stroke-dashoffset: 100; } 68%,88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 100; } }
+  @keyframes glNode1 { 0%,20% { opacity: 0; transform: scale(0.4); } 26%,88% { opacity: 1; transform: scale(1); } 96%,100% { opacity: 0; transform: scale(0.4); } }
+  @keyframes glNode2 { 0%,38% { opacity: 0; transform: scale(0.4); } 44%,88% { opacity: 1; transform: scale(1); } 96%,100% { opacity: 0; transform: scale(0.4); } }
+  @keyframes glNode3 { 0%,56% { opacity: 0; transform: scale(0.4); } 62%,88% { opacity: 1; transform: scale(1); } 96%,100% { opacity: 0; transform: scale(0.4); } }
+  @keyframes glNode4 { 0%,68% { opacity: 0; transform: scale(0.4); } 74%,88% { opacity: 1; transform: scale(1); } 96%,100% { opacity: 0; transform: scale(0.4); } }
+  @keyframes glTitle {
+    0%, 76%   { opacity: 0; transform: translateY(10px); }
+    82%, 88%  { opacity: 1; transform: translateY(0); }
+    96%, 100% { opacity: 0; transform: translateY(10px); }
+  }
+
+  .gl-outer { width: 100%; aspect-ratio: 16 / 9; background: var(--tbd-bg); overflow: hidden; position: relative; }
+  .gl-root  { width: 1920px; height: 1080px; background: var(--tbd-bg); color: var(--tbd-text);
+              display: flex; flex-direction: column; justify-content: space-between; padding: 80px;
+              overflow: hidden; position: absolute; top: 0; left: 0;
+              font-family: var(--tbd-font-sans); transform-origin: top left; }
+  .gl-root * { box-sizing: border-box; }
+
+  .gl-node  { transform-origin: center; transform-box: fill-box; }
+  .gl-label { font-family: var(--tbd-font-mono); text-transform: uppercase; letter-spacing: 0.16em; }
+  /* pathLength="100" normalises the trend line to 100 units, so a matching
+     dasharray is what lets dashoffset actually draw it. */
+  .gl-trend { stroke-dasharray: 100; }
+
+  /* Respect users who ask for less motion: hold the composed final frame. */
+  @media (prefers-reduced-motion: reduce) {
+    .gl-root [style*="animation"] { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .gl-trend { stroke-dashoffset: 0 !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gl-outer" id="gl-outer">
+  <div class="gl-root" id="gl-root">
+
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 48px;">
+      <svg viewBox="0 0 800 340" style="width: 820px; height: auto; overflow: visible;">
+        <line x1="60" y1="280" x2="740" y2="280" stroke="var(--tbd-rule)" stroke-width="1"></line>
+        <line x1="60" y1="280" x2="60"  y2="20"  stroke="var(--tbd-rule)" stroke-width="1"></line>
+        <line x1="54" y1="280" x2="60"  y2="280" stroke="var(--tbd-rule)" stroke-width="1"></line>
+        <line x1="54" y1="210" x2="60"  y2="210" stroke="var(--tbd-rule)" stroke-width="1"></line>
+        <line x1="54" y1="140" x2="60"  y2="140" stroke="var(--tbd-rule)" stroke-width="1"></line>
+        <line x1="54" y1="70"  x2="60"  y2="70"  stroke="var(--tbd-rule)" stroke-width="1"></line>
+
+        <path class="gl-trend" pathLength="100" d="M100,240 L280,175 L460,110 L640,40" stroke="var(--tbd-text)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="animation: glDraw 8s ease-in-out infinite;"></path>
+
+        <g class="gl-node" style="animation: glNode1 8s ease-in-out infinite;">
+          <circle cx="100" cy="240" r="7" fill="var(--tbd-bg)" stroke="var(--tbd-text)" stroke-width="2.5"></circle>
+          <text x="100" y="305" text-anchor="middle" class="gl-label" style="font-size: 15px; fill: var(--tbd-text-muted);">01 Product</text>
+        </g>
+        <g class="gl-node" style="animation: glNode2 8s ease-in-out infinite;">
+          <circle cx="280" cy="175" r="7" fill="var(--tbd-bg)" stroke="var(--tbd-text)" stroke-width="2.5"></circle>
+          <text x="280" y="305" text-anchor="middle" class="gl-label" style="font-size: 15px; fill: var(--tbd-text-muted);">02 Pricing</text>
+        </g>
+        <g class="gl-node" style="animation: glNode3 8s ease-in-out infinite;">
+          <circle cx="460" cy="110" r="7" fill="var(--tbd-bg)" stroke="var(--tbd-text)" stroke-width="2.5"></circle>
+          <text x="460" y="305" text-anchor="middle" class="gl-label" style="font-size: 15px; fill: var(--tbd-text-muted);">03 Promotion</text>
+        </g>
+        <g class="gl-node" style="animation: glNode4 8s ease-in-out infinite;">
+          <circle cx="640" cy="40" r="7" fill="var(--tbd-color-blue)" stroke="var(--tbd-color-blue)" stroke-width="2.5"></circle>
+          <text x="640" y="305" text-anchor="middle" class="gl-label" style="font-size: 15px; fill: var(--tbd-text-muted);">04 Distribution</text>
+        </g>
+      </svg>
+
+      <h1 class="tbd-display tbd-display--lg" style="margin: 0; text-align: center; animation: glTitle 8s ease-in-out infinite;">Four levers for <span class="tbd-accent-blue">growth.</span></h1>
+    </div>
+
+    <div class="tbd-label" style="color: var(--tbd-text-muted); animation: glFade 8s ease-in-out infinite;">tbdonline.in</div>
+  </div>
+</div>
+
+<script>
+// The design is authored at a fixed 1920x1080 and scaled to fit its container.
+// The original used the Claude Design React runtime purely for this; a
+// ResizeObserver does the same job without the 69KB dependency.
+(function () {
+  var outer = document.getElementById('gl-outer');
+  var root  = document.getElementById('gl-root');
+  function fit() {
+    root.style.transform = 'scale(' + (outer.getBoundingClientRect().width / 1920) + ')';
+  }
+  if (window.ResizeObserver) { new ResizeObserver(fit).observe(outer); }
+  else { window.addEventListener('resize', fit); }
+  fit();
+
+  // Follow the parent site's surface. Same origin, so we read the same key the
+  // site's theme toggle writes; `storage` fires on other same-origin documents
+  // (this frame) when the parent flips it, so the cover stays in sync live.
+  function applySurface() {
+    var s = localStorage.getItem('tbd-theme') || 'paper';
+    document.documentElement.setAttribute('data-tbd-surface', s);
+    document.body.setAttribute('data-tbd-surface', s);
+  }
+  window.addEventListener('storage', function (e) { if (e.key === 'tbd-theme') applySurface(); });
+  applySurface();
+})();
+</script>
+
+</body>
+</html>
