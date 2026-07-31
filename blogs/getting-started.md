@@ -4,9 +4,6 @@ dek: "You have your product ready, now its time to get started selling, but wher
 excerpt: "Direct to customer, E-commerce, Q-Commerce, is it really necessary, how do you get started"
 date: 2026-06-27
 updated: 2026-06-27
-author: "Varun Madan"
-authorRole: "Founder, TBD"
-authorBio: "Helping founders build the digital side of their business without losing the plot on the business itself."
 category: "Founder Essentials"
 image: "/images/getting-started.jpg"
 ---

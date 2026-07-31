@@ -4,9 +4,6 @@ dek: "The 4Ps of marketing were never just a marketing framework — they're fou
 excerpt: "Product, Pricing, Promotion and Distribution aren't marketing-101 leftovers. They're four distinct growth centres every founder should know how to use — here's how to think about each one."
 date: 2026-08-01
 updated: 2026-08-01
-author: "Madan Varun"
-authorRole: "Founder, TBD"
-authorBio: "Helping founders build the digital side of their business without losing the plot on the business itself."
 category: "Founder Essentials"
 ---
 

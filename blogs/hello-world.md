@@ -4,9 +4,6 @@ dek: "You built something worth selling. Now you need the digital infrastructure
 excerpt: "Founders are supposed to know their product cold. They are not supposed to know how to configure a Shopify theme, run a Meta campaign, or structure a blog post for Google. That's what TBD Online Dispatches is for."
 date: 2026-06-26
 updated: 2026-06-26
-author: "Madan Varun"
-authorRole: "Founder, TBD"
-authorBio: "Helping founders build the digital side of their business without losing the plot on the business itself."
 category: "Founder Essentials"
 image: "/images/hello-world.jpg"
 ---
