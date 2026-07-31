@@ -6,14 +6,8 @@ date: 2026-06-26
 updated: 2026-06-26
 category: "Founder Essentials"
 image: "/images/hello-world.jpg"
+cover: "/images/hello-world-cover.html"
 ---
-
-<iframe
-  src="/images/hello-world-cover.html"
-  title="Hello world — [tbd]"
-  loading="lazy"
-  scrolling="no"
-  style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--tbd-rule); border-radius: 4px; margin: 0 0 40px;"></iframe>
 
 There is a particular kind of overwhelm that hits founders somewhere around month three. The product is real. The idea is sound. Customers who have used it like it. And then you open a browser, start searching for "how to set up a Shopify store," and three hours later you are reading a forum thread from 2019 about deprecated theme code and wondering if you have made a terrible mistake.
 

@@ -28,6 +28,19 @@ layout: base.njk
   }
 }
 </script>
+{% if cover %}
+<!-- Full-bleed cover banner. The cover is authored on a fixed 1920x1080 canvas
+     and letterboxes itself into whatever height this band gives it; the canvas
+     background is the page background, so the letterboxing is invisible. -->
+<div class="post-banner" style="width: 100%; border-bottom: 1px solid var(--tbd-rule); background: var(--tbd-bg); overflow: hidden;">
+  <iframe
+    src="{{ cover }}"
+    title="{{ title }}"
+    scrolling="no"
+    style="display: block; width: 100%; height: clamp(200px, 42vw, 520px); border: 0;"></iframe>
+</div>
+{% endif %}
+
 <article id="post-article" class="post-wrap" style="max-width: 720px; margin-inline: auto; padding: 56px 48px 0;">
 
   <a href="/blog/" class="tbd-label tbd-text-muted" style="font-size: 12px; text-decoration: none;">← All dispatches</a>

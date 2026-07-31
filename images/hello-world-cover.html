@@ -36,7 +36,7 @@
     96%, 100%  { width: 100%; opacity: 0; }
   }
 
-  .hw-outer { width: 100%; aspect-ratio: 16 / 9; background: var(--tbd-bg); overflow: hidden; position: relative; }
+  .hw-outer { position: fixed; inset: 0; background: var(--tbd-bg); overflow: hidden; }
   .hw-root  { width: 1920px; height: 1080px; background: var(--tbd-bg); color: var(--tbd-text);
               display: flex; flex-direction: column; justify-content: space-between; padding: 80px;
               overflow: hidden; position: absolute; top: 0; left: 0;
@@ -73,8 +73,15 @@
 (function () {
   var outer = document.getElementById('hw-outer');
   var root  = document.getElementById('hw-root');
+  // Contain rather than fill: as a banner the frame is wider than 16:9, and
+  // letterboxing is invisible because the canvas background is the page
+  // background. Cropping instead would clip the composition.
   function fit() {
-    root.style.transform = 'scale(' + (outer.getBoundingClientRect().width / 1920) + ')';
+    var r = outer.getBoundingClientRect();
+    var s = Math.min(r.width / 1920, r.height / 1080);
+    var x = (r.width  - 1920 * s) / 2;
+    var y = (r.height - 1080 * s) / 2;
+    root.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + s + ')';
   }
   if (window.ResizeObserver) { new ResizeObserver(fit).observe(outer); }
   else { window.addEventListener('resize', fit); }
