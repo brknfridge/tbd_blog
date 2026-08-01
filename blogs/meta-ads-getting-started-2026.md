@@ -5,6 +5,7 @@ excerpt: "A step-by-step guide to setting up Meta Ads for a D2C brand in 2026, f
 date: 2026-08-02
 updated: 2026-08-02
 category: "Founder Essentials"
+cover: "/images/meta-ads-cover.html"
 ---
 
 Every D2C founder eventually ends up in Meta Ads Manager, usually sooner than they'd like. The problem isn't the ad creative or the targeting. It's that most founders skip the boring setup work and go straight to boosting a post. Then, three weeks in, they can't tell whether the campaign is actually working because the tracking was never built. Here's the setup, in order, so that by the time you spend your first rupee, you actually know what it bought you.

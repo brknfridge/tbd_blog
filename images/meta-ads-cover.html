@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From scroll to sale — [tbd]</title>
+
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/fonts.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/colors.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/typography.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/spacing.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/tokens/base.css">
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css">
+
+<style>
+  html, body { margin: 0; padding: 0; background: var(--tbd-bg); overflow: hidden; }
+
+  @keyframes maFade    { 0%,3%   { opacity: 0; transform: translateY(8px); } 10%,88%  { opacity: 1; transform: translateY(0); } 96%,100% { opacity: 0; transform: translateY(8px); } }
+  @keyframes maScene   { 0%,3%   { opacity: 0; } 8%,88% { opacity: 1; } 96%,100% { opacity: 0; } }
+  @keyframes maCursor  { 0%,6%   { offset-distance: 0%; opacity: 0; } 10% { opacity: 1; } 40% { offset-distance: 38%; } 46% { offset-distance: 38%; } 70% { offset-distance: 76%; } 76% { offset-distance: 76%; } 92% { offset-distance: 100%; } 96%,100% { offset-distance: 100%; opacity: 0; } }
+  @keyframes maPhoneGlow { 0%,36%  { opacity: 0.35; } 40%,46% { opacity: 1; } 60%,100% { opacity: 0.35; } }
+  @keyframes maStoreGlow { 0%,68%  { opacity: 0.35; } 72%,78% { opacity: 1; } 90%,100% { opacity: 0.35; } }
+  @keyframes maGraphGlow { 0%,90%  { opacity: 0.35; } 94%,100% { opacity: 1; } }
+  @keyframes maBar1 { 0%,88% { transform: scaleY(0); } 92%,100% { transform: scaleY(1); } }
+  @keyframes maBar2 { 0%,89% { transform: scaleY(0); } 93%,100% { transform: scaleY(1); } }
+  @keyframes maBar3 { 0%,90% { transform: scaleY(0); } 94%,100% { transform: scaleY(1); } }
+  @keyframes maBar4 { 0%,91% { transform: scaleY(0); } 95%,100% { transform: scaleY(1); } }
+  @keyframes maTitle {
+    0%, 78%   { opacity: 0; transform: translateY(10px); }
+    84%, 88%  { opacity: 1; transform: translateY(0); }
+    96%, 100% { opacity: 0; transform: translateY(10px); }
+  }
+
+  .ma-outer { position: fixed; inset: 0; background: var(--tbd-bg); overflow: hidden; }
+  .ma-root  { width: 1920px; height: 1080px; background: var(--tbd-bg); color: var(--tbd-text);
+              display: flex; flex-direction: column; justify-content: space-between; padding: 80px;
+              overflow: hidden; position: absolute; top: 0; left: 0;
+              font-family: var(--tbd-font-sans); transform-origin: top left; }
+  .ma-root * { box-sizing: border-box; }
+
+  /* Respect users who ask for less motion: hold the composed final frame. */
+  @media (prefers-reduced-motion: reduce) {
+    .ma-root [style*="animation"] { animation: none !important; opacity: 1 !important; transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ma-outer" id="ma-outer">
+  <div class="ma-root" id="ma-root">
+    <div class="tbd-eyebrow" style="font-size: 20px; animation: maFade 8s ease-in-out infinite;">Meta Ads — Getting Started</div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 52px;">
+      <svg viewBox="0 0 900 300" style="width: 980px; height: auto; overflow: visible; animation: maScene 8s ease-in-out infinite;">
+
+        <g style="opacity: 0.35; animation: maPhoneGlow 8s ease-in-out infinite;">
+          <rect x="70" y="70" width="100" height="160" rx="14" stroke="var(--tbd-text)" stroke-width="2.6" fill="none"></rect>
+          <line x1="90" y1="95" x2="150" y2="95" stroke="var(--tbd-text)" stroke-width="2.6"></line>
+          <line x1="90" y1="115" x2="150" y2="115" stroke="var(--tbd-text)" stroke-width="2"></line>
+          <rect x="90" y="130" width="60" height="40" rx="4" stroke="var(--tbd-text)" stroke-width="2" fill="none"></rect>
+          <line x1="90" y1="185" x2="150" y2="185" stroke="var(--tbd-text)" stroke-width="2"></line>
+        </g>
+
+        <g style="opacity: 0.35; animation: maStoreGlow 8s ease-in-out infinite;" transform="translate(360,80)">
+          <path d="M8,34 L8,20 L20,4 L60,4 L72,20 L72,34" stroke="var(--tbd-text)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M6,34 L6,90 L74,90 L74,34" stroke="var(--tbd-text)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M32,90 L32,60 L48,60 L48,90" stroke="var(--tbd-text)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+
+        <g style="opacity: 0.35; animation: maGraphGlow 8s ease-in-out infinite;" transform="translate(600,40)">
+          <line x1="0" y1="0" x2="0" y2="180" stroke="var(--tbd-rule)" stroke-width="1.5"></line>
+          <line x1="0" y1="180" x2="260" y2="180" stroke="var(--tbd-rule)" stroke-width="1.5"></line>
+          <rect x="20" y="130" width="34" height="50" fill="var(--tbd-color-blue)" style="transform-origin: bottom; animation: maBar1 8s ease-in-out infinite;"></rect>
+          <rect x="80" y="105" width="34" height="75" fill="var(--tbd-color-blue)" style="transform-origin: bottom; animation: maBar2 8s ease-in-out infinite;"></rect>
+          <rect x="140" y="70" width="34" height="110" fill="var(--tbd-color-blue)" style="transform-origin: bottom; animation: maBar3 8s ease-in-out infinite;"></rect>
+          <rect x="200" y="30" width="34" height="150" fill="var(--tbd-color-blue)" style="transform-origin: bottom; animation: maBar4 8s ease-in-out infinite;"></rect>
+        </g>
+
+        <path d="M0,0 L0,16 L4,12.5 L6.5,18 L9,17 L6.5,11.5 L11,11.5 Z" fill="var(--tbd-text)" stroke="var(--tbd-bg)" stroke-width="1" style="offset-path: path('M120,150 C 300,150 300,150 400,150 C 500,150 500,150 665,140 C 700,135 700,135 730,120'); offset-rotate: 0deg; animation: maCursor 8s cubic-bezier(0.65,0,0.35,1) infinite;"></path>
+      </svg>
+
+      <h1 class="tbd-display tbd-display--lg" style="margin: 0; text-align: center; animation: maTitle 8s ease-in-out infinite;">From scroll to <span class="tbd-accent-blue">sale.</span></h1>
+    </div>
+
+    <div class="tbd-label" style="font-size: 20px; color: var(--tbd-text-muted); animation: maFade 8s ease-in-out infinite;">tbdonline.in</div>
+  </div>
+</div>
+
+<script>
+// The design is authored at a fixed 1920x1080 and scaled to fit its container.
+// The original used the Claude Design React runtime purely for this; a
+// ResizeObserver does the same job without the 69KB dependency.
+(function () {
+  var outer = document.getElementById('ma-outer');
+  var root  = document.getElementById('ma-root');
+  // Contain rather than fill: as a banner the frame is wider than 16:9, and
+  // letterboxing is invisible because the canvas background is the page
+  // background. Cropping instead would clip the composition.
+  function fit() {
+    var r = outer.getBoundingClientRect();
+    var s = Math.min(r.width / 1920, r.height / 1080);
+    var x = (r.width  - 1920 * s) / 2;
+    var y = (r.height - 1080 * s) / 2;
+    root.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + s + ')';
+  }
+  if (window.ResizeObserver) { new ResizeObserver(fit).observe(outer); }
+  else { window.addEventListener('resize', fit); }
+  fit();
+
+  // Follow the parent site's surface. Same origin, so we read the same key the
+  // site's theme toggle writes; `storage` fires on other same-origin documents
+  // (this frame) when the parent flips it, so the cover stays in sync live.
+  function applySurface() {
+    var s = localStorage.getItem('tbd-theme') || 'paper';
+    document.documentElement.setAttribute('data-tbd-surface', s);
+    document.body.setAttribute('data-tbd-surface', s);
+  }
+  window.addEventListener('storage', function (e) { if (e.key === 'tbd-theme') applySurface(); });
+  applySurface();
+})();
+</script>
+
+</body>
+</html>
