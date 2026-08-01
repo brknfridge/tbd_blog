@@ -46,7 +46,7 @@
   /* Respect users who ask for less motion: hold the composed final frame. */
   @media (prefers-reduced-motion: reduce) {
     .hw-root [style*="animation"], .hw-rule { animation: none !important; opacity: 1 !important; transform: none !important; }
-    .hw-rule { width: 320px !important; }
+    .hw-rule { width: 380px !important; }
   }
 </style>
 </head>
@@ -54,15 +54,15 @@
 
 <div class="hw-outer" id="hw-outer">
   <div class="hw-root" id="hw-root">
-    <div class="tbd-eyebrow" style="animation: hwEyebrow 4s ease-in-out infinite;">01 — Hello World</div>
+    <div class="tbd-eyebrow" style="font-size: 20px; animation: hwEyebrow 4s ease-in-out infinite;">01 — Hello World</div>
 
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 32px;">
-      <span class="tbd-wordmark" style="font-size: 56px; animation: hwWordmark 4s ease-in-out infinite;">tbd</span>
+      <span class="tbd-wordmark" style="font-size: 76px; animation: hwWordmark 4s ease-in-out infinite;">tbd</span>
       <h1 class="tbd-display tbd-display--lg" style="margin: 0; text-align: center; animation: hwTitle 4s ease-in-out infinite;">Hello <span class="tbd-accent-blue">world.</span></h1>
-      <div class="hw-rule" style="width: 320px; height: 2px; background: var(--tbd-color-blue); animation: hwRule 4s ease-in-out infinite;"></div>
+      <div class="hw-rule" style="width: 380px; height: 3px; background: var(--tbd-color-blue); animation: hwRule 4s ease-in-out infinite;"></div>
     </div>
 
-    <div class="tbd-label" style="color: var(--tbd-text-muted); animation: hwEyebrow 4s ease-in-out infinite;">tbdonline.in — a growth firm</div>
+    <div class="tbd-label" style="font-size: 20px; color: var(--tbd-text-muted); animation: hwEyebrow 4s ease-in-out infinite;">tbdonline.in — a growth firm</div>
   </div>
 </div>
 
