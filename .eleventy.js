@@ -3,6 +3,9 @@ const markdownIt = require("markdown-it");
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("_ds");
   eleventyConfig.addPassthroughCopy("images");
+  eleventyConfig.addPassthroughCopy("assets");
+  eleventyConfig.addPassthroughCopy("index.html");
+  eleventyConfig.addPassthroughCopy("services");
 
   // Server-side only — Vercel runs these, Eleventy must not bundle them.
   eleventyConfig.ignores.add("api");

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>[tbd] · Growth marketing</title>
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css" />
+<link rel="stylesheet" href="/assets/site.css" />
+</head>
+<body class="tbd-surface-paper" data-tbd-surface="paper" data-screen-label="HOME">
+
+  <!-- Chrome: corner frames + page-wipe -->
+  <div class="corner-frames" aria-hidden="true"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+  <div class="page-wipe" aria-hidden="true"><span class="page-wipe__label">[tbd]</span></div>
+
+  <!-- Mobile nav overlay -->
+  <div class="nav-overlay" id="navOverlay">
+    <div class="nav-overlay__top">
+      <span class="tbd-wordmark" style="font-size:24px;">tbd</span>
+      <button class="nav-overlay__close" aria-label="Close menu">Close ✕</button>
+    </div>
+    <nav class="nav-overlay__links">
+      <a href="/" data-wipe="HOME">Home</a>
+      <a href="/services/" data-wipe="SERVICES">Services</a>
+      <a href="/blog/" data-wipe="DISPATCHES">Dispatches</a>
+      <a href="mailto:connect@tbdonline.in">Contact</a>
+    </nav>
+    <div class="nav-overlay__foot">
+      <span>connect@tbdonline.in</span>
+      <span>Mumbai · Remote</span>
+    </div>
+  </div>
+
+  <!-- Nav + meta sub-bar -->
+  <div class="nav-stack">
+    <div class="nav-bg">
+      <div class="wrap">
+        <header class="site-nav">
+          <a href="/" data-wipe="HOME" class="tbd-wordmark" style="font-size:24px;text-decoration:none;">tbd</a>
+          <nav class="site-nav__links">
+            <a href="/" data-wipe="HOME" class="site-nav__link tbd-label">Home</a>
+            <a href="/services/" data-wipe="SERVICES" class="site-nav__link tbd-label">Services</a>
+            <a href="/blog/" data-wipe="DISPATCHES" class="site-nav__link tbd-label">Dispatches</a>
+            <a href="mailto:connect@tbdonline.in" class="site-nav__link tbd-label">Contact</a>
+          </nav>
+          <div class="site-nav__right">
+            <span class="nav-status"><span class="nav-status__dot"></span>Available for new briefs</span>
+            <button class="nav-burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+          </div>
+        </header>
+      </div>
+    </div>
+    <div class="meta-bar">
+      <div class="wrap">
+        <div class="meta-bar__cell">Home / 01</div>
+        <div class="meta-bar__cell">tbd.index.001</div>
+        <div class="meta-bar__cell">Mumbai, IN</div>
+        <div class="meta-bar__cell is-right"><span class="dot"></span>Active</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ HERO ============================ -->
+  <main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero__head reveal">
+        <span class="tbd-eyebrow">01 · Introduction</span>
+        <span class="tbd-label tbd-text-muted">Est. Mumbai</span>
+      </div>
+      <div class="hero__grid" style="grid-template-columns:1fr;">
+        <div>
+          <h1 class="tbd-display hero__headline" data-words>We build the systems that make your marketing <span class="tbd-accent-blue">compound.</span></h1>
+          <div class="hero__actions reveal">
+            <span class="magnetic"><a href="mailto:connect@tbdonline.in" class="tbd-btn">Get in touch <span aria-hidden="true">→</span></a></span>
+            <span class="magnetic" data-mag="0.2"><a href="#work" class="tbd-btn tbd-btn--ghost">See our work</a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PARTNERS MARQUEE ====================== -->
+  <section class="marquee" aria-label="Trusted by">
+    <div class="marquee__cap">
+      <span class="dot"></span>
+      <span class="tbd-label tbd-text-muted">Trusted by brands that take growth seriously</span>
+    </div>
+    <div class="marquee__track" id="brandTrack"></div>
+  </section>
+
+  <!-- ===================== SERVICES WE OFFER ====================== -->
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="tbd-eyebrow">02 · Services we offer</span>
+        <p class="tbd-body section__intro">Three outcomes. Everything we run ladders up to one of them.</p>
+      </div>
+      <div class="svc-rows" id="svcRows"></div>
+    </div>
+  </section>
+
+  <!-- ===================== TOOLS IN OUR TOOLKIT ==================== -->
+  <section class="section" id="toolkit">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="tbd-eyebrow">03 · Tools in our toolkit</span>
+        <p class="tbd-body section__intro">The disciplines behind the outcomes above, run as one system.</p>
+      </div>
+      <div class="svc-grid" id="svcGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT CTA (ink) ===================== -->
+  <section class="section section--ink" id="brief">
+    <div class="wrap">
+      <div class="cta-block" style="grid-template-columns:1fr;max-width:640px;">
+        <div>
+          <span class="tbd-eyebrow">04 · Schedule an appointment</span>
+          <h2 class="tbd-display display-lg cta-block__head" data-words style="margin-top:22px;">Tell us where the <span class="tbd-accent-blue">growth is stuck.</span></h2>
+          <p class="tbd-body tbd-body--lg reveal" style="max-width:46ch;margin-top:26px;color:var(--tbd-color-paper);">Three fields. We'll come back with a clear point of view on whether we can help, and by how much.</p>
+          <form class="cta-form reveal" id="briefForm">
+            <div class="flabel"><input type="text" id="bn" autocomplete="name" /><label for="bn">Name</label></div>
+            <div class="flabel"><input type="email" id="be" autocomplete="email" /><label for="be">Email</label></div>
+            <div class="flabel"><input type="text" id="bc" /><label for="bc">What's your biggest growth challenge right now?</label></div>
+            <span class="magnetic" style="margin-top:8px;"><button type="submit" class="tbd-btn">Send brief <span aria-hidden="true">→</span></button></span>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RESULTS STRIP ========================= -->
+  <section class="section" id="results">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="tbd-eyebrow">05 · Results</span>
+        <p class="tbd-body section__intro">Averages across active clients, measured after a structured audit and rebuild. We own the number.</p>
+      </div>
+      <div class="results__grid" id="resultsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS ========================== -->
+  <section class="section" id="voices">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="tbd-eyebrow">06 · In their words</span>
+        <p class="tbd-body section__intro">Founders and marketing leaders on what changed after we embedded.</p>
+      </div>
+      <div class="quotes" id="quoteGrid"></div>
+    </div>
+  </section>
+  </main>
+
+  <!-- ===================== FOOTER ================================ -->
+  <footer class="site-foot">
+    <div class="wrap">
+      <div class="site-foot__cta">
+        <h2 class="tbd-display display-lg" data-words>Ready to stop guessing and start <span class="tbd-accent-blue">growing?</span></h2>
+        <span class="magnetic"><a href="mailto:connect@tbdonline.in" class="tbd-btn">Get in touch <span aria-hidden="true">→</span></a></span>
+      </div>
+      <div class="site-foot__cols">
+        <div class="site-foot__col">
+          <span class="tbd-wordmark" style="font-size:30px;">tbd</span>
+          <p class="tbd-body tbd-body--sm" style="color:var(--tbd-text-muted);max-width:30ch;margin-top:14px;">Growth marketing. Diagnose, decide, deploy: infrastructure that compounds.</p>
+        </div>
+        <div class="site-foot__col">
+          <h4>Services</h4>
+          <a href="/services/" data-wipe="SERVICES" class="site-foot__link">Performance Marketing</a>
+          <a href="/services/" data-wipe="SERVICES" class="site-foot__link">SEO</a>
+          <a href="/services/" data-wipe="SERVICES" class="site-foot__link">Direct Marketing</a>
+          <a href="/services/" data-wipe="SERVICES" class="site-foot__link">CRO</a>
+          <a href="/services/" data-wipe="SERVICES" class="site-foot__link">Audits &amp; Diagnostics</a>
+        </div>
+        <div class="site-foot__col">
+          <h4>Company</h4>
+          <a href="/services/" data-wipe="SERVICES" class="site-foot__link">Approach</a>
+          <a href="/blog/" data-wipe="DISPATCHES" class="site-foot__link">Dispatches</a>
+          <a href="mailto:connect@tbdonline.in" class="site-foot__link">Contact</a>
+        </div>
+        <div class="site-foot__col">
+          <h4>Connect</h4>
+          <a href="mailto:connect@tbdonline.in" class="site-foot__link">connect@tbdonline.in</a>
+          <a href="#" class="site-foot__link">LinkedIn</a>
+          <a href="#" class="site-foot__link">X / Twitter</a>
+        </div>
+      </div>
+      <div class="site-foot__mark">[tbd<span class="br">]</span></div>
+      <div class="site-foot__base">
+        <span>© 2025 [tbd] · All rights reserved · Mumbai, IN</span>
+        <span>Vol. 01 / 2026 Edition</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ---- Data-driven sections (kept in one place for easy edits) ---- */
+    var BRANDS = ["NORTHWIND","AXIOM","FIELDNOTE","LUMEN","BASIS","MERIDIAN","HALDA","KETTLE & CO","VANTA LABS","ORBIT"];
+    var SERVICE_ROWS = [
+      { n:"01", t:"Accelerate online sales", d:"We rebuild the paid and conversion path end to end, account structure, bid strategy, creative testing, checkout and landing-page fixes, so spend turns into revenue, not impressions." },
+      { n:"02", t:"Build awareness and consideration", d:"We plan targeted campaigns against the audiences who actually decide, sequencing reach and message so a buyer moves from unaware to considering, not just aware." },
+      { n:"03", t:"Make marketing a strategic function", d:"We install the audits, reporting, and operating rhythm that turn marketing from a cost line into a function your board trusts and your team can run without us." }
+    ];
+    var TOOLS = [
+      { n:"01", t:"Paid Media", d:"Paid search, paid social, programmatic. Full-funnel paid infrastructure: account architecture, creative testing, bid strategy. We own the number.", tags:["Paid Search","Paid Social","Programmatic"] },
+      { n:"02", t:"Organic Growth", d:"Technical SEO, content strategy, link acquisition. We close the gap between what your buyers search for and what Google serves them.", tags:["Technical SEO","Content","Link Building"] },
+      { n:"03", t:"CRO", d:"We test everything that touches conversion: landing pages, checkout, pricing, onboarding. Data-driven, systematically run, revenue-measured.", tags:["A/B Testing","Landing Pages","Heatmaps"] },
+      { n:"04", t:"Direct & Lifecycle", d:"Email, SMS, lifecycle. Sequences that convert new leads and retain existing customers, without spamming your list into silence.", tags:["Email","SMS","Automation"] },
+      { n:"05", t:"Audits & Diagnostics", d:"Before strategy, comes clarity. Our audits surface the exact leaks in your funnel and hand you a ranked fix list.", tags:["Paid Audit","SEO Audit","CRO Audit"] },
+      { n:"06", t:"Analytics & Tracking", d:"You can't improve what you can't measure. Bulletproof tracking stacks: GA4, GTM, Meta Pixel, and dashboards you'll actually use.", tags:["GA4","GTM","Dashboards"] }
+    ];
+    var RESULTS = [
+      { idx:"Stat 01", pre:"", count:"3.8", suf:"×", label:"Avg. ROAS improvement post-audit" },
+      { idx:"Stat 02", pre:"+ ", count:"184", suf:"%", label:"Avg. organic traffic lift (12 mo.)" },
+      { idx:"Stat 03", pre:"+ ", count:"62", suf:"%", label:"Avg. conversion rate improvement post-CRO" },
+      { idx:"Stat 04", pre:"< ", count:"6", suf:" wk", label:"Time to first measurable result" }
+    ];
+    var QUOTES = [
+      { idx:"Quote 01", body:"They found ₹40L in wasted ad spend in the first audit alone. What followed was the most structured growth engagement we've run as a company.", who:"Rahul Mehta · Founder, [Client]" },
+      { idx:"Quote 02", body:"Our SEO went from an afterthought to our #1 acquisition channel in eight months. They built the system, trained our team, and handed us the keys.", who:"Priya Sharma · VP Marketing, [Client]" },
+      { idx:"Quote 03", body:"The CRO work alone paid for six months of retainer in the first quarter. Finally, a team that actually owns outcomes.", who:"Ankit Verma · CEO, [Client]" }
+    ];
+
+    // Brand marquee (duplicated for seamless loop)
+    var bt = document.getElementById("brandTrack");
+    var bhalf = BRANDS.map(function(b){ return '<span class="marquee__item">'+b+'</span>'; }).join("");
+    bt.innerHTML = bhalf + bhalf;
+
+    // Services we offer (3 rows)
+    document.getElementById("svcRows").innerHTML = SERVICE_ROWS.map(function(s){
+      return '<article class="svc-row reveal">'
+        + '<span class="svc-row__num">'+s.n+' / 03</span>'
+        + '<h3 class="svc-row__title">'+s.t+'</h3>'
+        + '<p class="svc-row__desc">'+s.d+'</p>'
+        + '</article>';
+    }).join("");
+
+    // Tools in our toolkit (grid)
+    document.getElementById("svcGrid").innerHTML = TOOLS.map(function(s){
+      return '<article class="svc-card reveal">'
+        + '<div class="svc-card__top"><span class="svc-card__num">'+s.n+' / 06</span><span class="svc-card__arrow">→</span></div>'
+        + '<h3 class="svc-card__title">'+s.t+'</h3>'
+        + '<p class="svc-card__desc">'+s.d+'</p>'
+        + '<div class="svc-card__tags">'+s.tags.map(function(t){return '<span class="tbd-tag">'+t+'</span>';}).join("")+'</div>'
+        + '</article>';
+    }).join("");
+
+    // Results
+    document.getElementById("resultsGrid").innerHTML = RESULTS.map(function(r){
+      return '<div class="result reveal">'
+        + '<span class="result__idx">'+r.idx+'</span>'
+        + '<div class="result__num" data-count="'+r.count+'" data-pre="'+r.pre+'" data-suf="'+r.suf+'">'+r.pre+'0'+r.suf+'</div>'
+        + '<p class="result__label">'+r.label+'</p>'
+        + '</div>';
+    }).join("");
+
+    // Quotes
+    document.getElementById("quoteGrid").innerHTML = QUOTES.map(function(q){
+      return '<blockquote class="quote reveal">'
+        + '<span class="quote__idx">'+q.idx+'</span>'
+        + '<span class="quote__mark">&ldquo;</span>'
+        + '<p class="quote__body">'+q.body+'</p>'
+        + '<span class="quote__who">'+q.who+'</span>'
+        + '</blockquote>';
+    }).join("");
+
+    // Brief form -> inline confirmation
+    document.getElementById("briefForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      this.innerHTML = '<div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start;">'
+        + '<span class="nav-status" style="color:var(--tbd-color-paper);"><span class="nav-status__dot"></span>Received</span>'
+        + '<p class="tbd-display display-md" style="margin:6px 0 0;">Brief received.</p>'
+        + '<p class="tbd-label tbd-text-muted">We\'ll be back within one business day with a clear point of view.</p>'
+        + '</div>';
+    });
+  </script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>
