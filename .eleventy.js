@@ -21,6 +21,11 @@ module.exports = function (eleventyConfig) {
     });
   });
 
+  eleventyConfig.addFilter("isoDate", function (date) {
+    if (!date) return "";
+    return new Date(date).toISOString().slice(0, 10);
+  });
+
   eleventyConfig.addFilter("readTime", function (content) {
     if (!content) return 5;
     const words = content.replace(/<[^>]*>/g, "").trim().split(/\s+/).length;
