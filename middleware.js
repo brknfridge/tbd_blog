@@ -57,135 +57,78 @@ function gatePage() {
 <title>[tbd] · Private preview</title>
 <link rel="stylesheet" href="${DS}" />
 <style>
-  * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
-    margin: 0;
-    font-family: var(--tbd-font-sans, ui-sans-serif, system-ui, sans-serif);
-    color: var(--tbd-color-ink, #16161a);
-    background: var(--tbd-color-paper, #f4f2ee);
     display: grid;
     place-items: center;
     overflow: hidden;
   }
 
-  /* Blurred stand-in for the page behind the gate. Decorative only — it holds
-     no real copy, which is the point. */
+  /* Stand-in for the page behind the gate. Decorative only — it holds no real
+     copy, which is the point. It fades out as the real page loads. */
   .gate-behind {
     position: fixed;
-    inset: -12vmin;
-    filter: blur(64px);
-    opacity: 0.85;
-    transition: filter 900ms cubic-bezier(0.16, 1, 0.3, 1), opacity 900ms ease;
+    inset: -20vmin;
+    background:
+      linear-gradient(148deg,
+        var(--tbd-color-blue) 0%,
+        rgba(31, 75, 255, 0.35) 26%,
+        var(--tbd-color-paper) 52%,
+        rgba(14, 124, 90, 0.32) 78%,
+        var(--tbd-color-ink) 100%);
+    opacity: 0.55;
+    transition: opacity 900ms ease;
     pointer-events: none;
-  }
-  .gate-behind i {
-    position: absolute;
-    display: block;
-    border-radius: 50%;
-  }
-  .gate-behind i:nth-child(1) {
-    width: 46vmax; height: 46vmax; top: -8vmax; left: -6vmax;
-    background: var(--tbd-color-blue, #2f4cff); opacity: 0.28;
-  }
-  .gate-behind i:nth-child(2) {
-    width: 34vmax; height: 34vmax; bottom: -10vmax; right: -4vmax;
-    background: var(--tbd-color-ink, #16161a); opacity: 0.18;
-  }
-  .gate-behind i:nth-child(3) {
-    width: 26vmax; height: 26vmax; top: 34%; left: 44%;
-    background: var(--tbd-color-emerald, #1f7a5a); opacity: 0.16;
   }
 
   .gate-card {
     position: relative;
     width: min(440px, calc(100vw - 40px));
-    padding: 40px;
-    background: var(--tbd-color-pure, #fff);
-    border: 1px solid var(--tbd-rule, rgba(0,0,0,0.12));
-    border-radius: var(--tbd-radius-md, 4px);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.14);
+    padding: var(--tbd-space-8);
+    background: var(--tbd-color-pure);
+    border: var(--tbd-border-hairline) solid var(--tbd-rule);
+    border-radius: var(--tbd-radius-md);
+    box-shadow: 0 24px 80px rgba(10, 10, 10, 0.16);
     transition: opacity 420ms ease, transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .gate-mark {
-    font-family: var(--tbd-font-display, Georgia, serif);
-    font-size: 24px;
-    line-height: 1;
-    margin: 0 0 28px;
-  }
-  .gate-label {
-    font-family: var(--tbd-font-mono, ui-monospace, monospace);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--tbd-color-muted, #6b6b70);
-    margin: 0 0 10px;
-  }
+  .gate-mark { font-size: 24px; margin: 0 0 var(--tbd-space-6); }
   .gate-title {
-    font-family: var(--tbd-font-display, Georgia, serif);
-    font-size: 30px;
-    line-height: 1.15;
-    font-weight: 400;
-    margin: 0 0 10px;
+    /* --tbd-size-display-sm is 64px — too tall for a 440px card. */
+    font-size: 34px;
+    line-height: 1.08;
+    margin: var(--tbd-space-3) 0 var(--tbd-space-2);
   }
-  .gate-copy {
-    font-size: 14px;
-    line-height: 1.55;
-    color: var(--tbd-color-muted, #6b6b70);
-    margin: 0 0 24px;
-  }
+  .gate-copy { color: var(--tbd-text-muted); margin-bottom: var(--tbd-space-6); }
 
-  .gate-field { display: flex; gap: 8px; }
+  .gate-field { display: flex; gap: var(--tbd-space-2); }
   .gate-input {
     flex: 1;
     min-width: 0;
-    font-family: inherit;
-    font-size: 15px;
-    padding: 12px 14px;
-    color: inherit;
-    background: var(--tbd-color-paper, #f4f2ee);
-    border: 1px solid var(--tbd-rule, rgba(0,0,0,0.12));
-    border-radius: var(--tbd-radius-sm, 3px);
+    font-family: var(--tbd-font-sans);
+    font-size: var(--tbd-size-body-sm);
+    padding: var(--tbd-space-3) var(--tbd-space-4);
+    color: var(--tbd-text);
+    background: var(--tbd-color-paper);
+    border: var(--tbd-border-hairline) solid var(--tbd-rule);
+    border-radius: var(--tbd-radius-sm);
   }
-  .gate-input:focus {
-    outline: 2px solid var(--tbd-color-blue, #2f4cff);
-    outline-offset: 1px;
-  }
-  .gate-submit {
-    font-family: var(--tbd-font-mono, ui-monospace, monospace);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 12px 20px;
-    color: var(--tbd-color-paper, #fff);
-    background: var(--tbd-color-blue, #2f4cff);
-    border: 0;
-    border-radius: var(--tbd-radius-sm, 3px);
-    cursor: pointer;
-  }
-  .gate-submit[disabled] { opacity: 0.55; cursor: default; }
+  .gate-submit { border-radius: var(--tbd-radius-sm); }
 
   .gate-msg {
     min-height: 18px;
-    margin: 12px 0 0;
-    font-family: var(--tbd-font-mono, ui-monospace, monospace);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--tbd-color-red, #c0392b);
+    margin-top: var(--tbd-space-3);
+    color: var(--tbd-color-red);
   }
 
   .gate-foot {
-    margin: 24px 0 0;
-    padding-top: 20px;
-    border-top: 1px solid var(--tbd-rule, rgba(0,0,0,0.12));
-    font-size: 13px;
-    color: var(--tbd-color-muted, #6b6b70);
+    margin-top: var(--tbd-space-6);
+    padding-top: var(--tbd-space-4);
+    border-top: var(--tbd-border-hairline) solid var(--tbd-rule);
+    color: var(--tbd-text-muted);
   }
-  .gate-foot a { color: var(--tbd-color-blue, #2f4cff); }
 
-  body.is-open .gate-behind { filter: blur(0); opacity: 0; }
+  body.is-open .gate-behind { opacity: 0; }
   body.is-open .gate-card { opacity: 0; transform: translateY(-8px); }
 
   @media (prefers-reduced-motion: reduce) {
@@ -193,25 +136,25 @@ function gatePage() {
   }
 </style>
 </head>
-<body>
-  <div class="gate-behind" aria-hidden="true"><i></i><i></i><i></i></div>
+<body data-tbd-surface="paper">
+  <div class="gate-behind" aria-hidden="true"></div>
 
   <main class="gate-card">
-    <p class="gate-mark">[tbd]</p>
-    <p class="gate-label">Private preview</p>
-    <h1 class="gate-title">This part isn't public yet.</h1>
-    <p class="gate-copy">Enter the password to view the site. If you don't have one, the writing is open to everybody.</p>
+    <p class="gate-mark"><span class="tbd-wordmark">tbd</span></p>
+    <p class="tbd-eyebrow">Private preview</p>
+    <h1 class="tbd-display gate-title">This part isn't public yet.</h1>
+    <p class="tbd-body tbd-body--sm gate-copy">Enter the password to view the site. If you don't have one, the writing is open to everybody.</p>
 
     <form id="gateForm" autocomplete="off">
       <div class="gate-field">
         <input class="gate-input" id="gatePassword" type="password" name="password"
                placeholder="Password" aria-label="Password" autofocus required />
-        <button class="gate-submit" type="submit">Enter</button>
+        <button class="tbd-btn gate-submit" type="submit">Enter</button>
       </div>
-      <p class="gate-msg" id="gateMsg" role="status" aria-live="polite"></p>
+      <p class="tbd-label tbd-label--sm gate-msg" id="gateMsg" role="status" aria-live="polite"></p>
     </form>
 
-    <p class="gate-foot">No password? <a href="/blog/">Read Dispatches instead &rarr;</a></p>
+    <p class="tbd-body tbd-body--sm gate-foot">No password? <a href="/blog/">Read Dispatches instead &rarr;</a></p>
   </main>
 
 <script>
