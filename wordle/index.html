@@ -13,8 +13,8 @@
   gtag('config', 'G-T4DT9ES451');
 </script>
 
-<title>[tbd] &middot; Word study</title>
-<meta name="description" content="A five-letter study, six pulls. No dictionary, no hints &mdash; one mark to find.">
+<title>[tbd] &middot; Wordle</title>
+<meta name="description" content="Guess the five-letter word in six tries.">
 <link rel="canonical" href="https://tbdonline.in/wordle/">
 
 <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
@@ -27,8 +27,8 @@
 
 <style>
   /* Layout concept: one [tbd] module on the brand's default ink canvas —
-     wordmark, eyebrow, a serif statement, a composing grid, a type-case
-     keyboard, one hairline result card. No chrome beyond that. */
+     wordmark, a plain serif title, a composing grid, a type-case keyboard,
+     one hairline result card. No chrome beyond that. */
   html, body { margin: 0; padding: 0; }
   body {
     min-height: 100vh;
@@ -50,13 +50,11 @@
   .top-link .tbd-wordmark { font-size: 20px; }
 
   header { width: 100%; text-align: center; }
-  header .tbd-eyebrow { justify-content: center; }
   h1 {
     font-size: clamp(38px, 11vw, 52px);
-    margin: 6px 0 4px;
+    margin: 0;
     text-wrap: balance;
   }
-  .dek { margin: 0; }
 
   .status-row {
     display: flex;
@@ -87,18 +85,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--tbd-font-sans);
+    font-family: var(--tbd-font-mono);
     font-weight: var(--tbd-weight-medium);
-    font-size: 21px;
+    font-size: 22px;
     text-transform: uppercase;
     border: var(--tbd-border-hairline) solid var(--tbd-rule);
     border-radius: var(--tbd-radius-md);
     background: transparent;
-    color: var(--tbd-text);
+    color: var(--tbd-text-muted);
     transform-style: preserve-3d;
-    transition: border-color 120ms ease, background 120ms ease;
+    transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
   }
-  .tile[data-filled="true"] { border-color: var(--tbd-text-muted); }
+  .tile[data-filled="true"] { border-color: var(--tbd-text-muted); color: var(--tbd-text); }
   .tile.pop { animation: tile-pop 120ms ease; }
   @keyframes tile-pop {
     0% { transform: scale(1); }
@@ -185,9 +183,7 @@
   <a href="/" class="top-link tbd-nav-link" aria-label="Back to [tbd]"><span class="tbd-wordmark">tbd</span></a>
 
   <header>
-    <span class="tbd-eyebrow">01 &mdash; Word study</span>
-    <h1 class="tbd-display">Name the <span class="tbd-text-blue">mark.</span></h1>
-    <p class="dek tbd-body tbd-text-muted">One word, six pulls. Color is signal &mdash; never decoration.</p>
+    <h1 class="tbd-display">Wordle</h1>
   </header>
 
   <div class="status-row tbd-label" id="statusRow">
@@ -208,7 +204,7 @@
       <span class="tbd-metric__label">Pulls used</span>
       <span class="tbd-metric__value" id="overlayMetric">3 / 6</span>
     </div>
-    <p id="overlayBody">The mark was <span class="word">GLYPH</span>.</p>
+    <p id="overlayBody">The word was <span class="word">GLYPH</span>.</p>
     <button class="tbd-btn" id="againBtn">Run it back &rarr;</button>
   </div>
 </div>
@@ -251,6 +247,7 @@
       for (var c = 0; c < COLS; c++) {
         var tile = document.createElement("div");
         tile.className = "tile";
+        tile.textContent = "_";
         tile.setAttribute("data-filled", "false");
         rowEl.appendChild(tile);
         tiles.push(tile);
@@ -302,7 +299,7 @@
 
   function setLetter(c, ch) {
     var tile = rowsData[row][c];
-    tile.textContent = ch;
+    tile.textContent = ch || "_";
     tile.setAttribute("data-filled", ch ? "true" : "false");
     if (ch) {
       tile.classList.remove("pop");
@@ -414,13 +411,13 @@
       overlayTitle.textContent = "Set.";
       overlayMetric.textContent = pulls + " / " + ROWS;
       overlayMetric.className = "tbd-metric__value tbd-metric__value--up";
-      overlayBody.innerHTML = "The mark was <span class=\"word\">" + ANSWER + "</span>.";
+      overlayBody.innerHTML = "The word was <span class=\"word\">" + ANSWER + "</span>.";
     } else {
       overlayEyebrow.textContent = "Result — unsolved";
       overlayTitle.textContent = "Unresolved.";
       overlayMetric.textContent = ROWS + " / " + ROWS;
       overlayMetric.className = "tbd-metric__value tbd-metric__value--down";
-      overlayBody.innerHTML = "No clean read in six. The mark was <span class=\"word\">" + ANSWER + "</span>.";
+      overlayBody.innerHTML = "No clean read in six. The word was <span class=\"word\">" + ANSWER + "</span>.";
     }
   }
 
