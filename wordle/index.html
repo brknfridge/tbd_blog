@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T4DT9ES451"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-T4DT9ES451');
+</script>
+
+<title>[tbd] &middot; Word study</title>
+<meta name="description" content="A five-letter study, six pulls. No dictionary, no hints &mdash; one mark to find.">
+<link rel="canonical" href="https://tbdonline.in/wordle/">
+
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512.png">
+
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css">
+
+<style>
+  /* Layout concept: one [tbd] module on the brand's default ink canvas —
+     wordmark, eyebrow, a serif statement, a composing grid, a type-case
+     keyboard, one hairline result card. No chrome beyond that. */
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 48px 20px 64px;
+  }
+
+  .sheet {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .top-link { align-self: flex-start; }
+  .top-link .tbd-wordmark { font-size: 20px; }
+
+  header { width: 100%; text-align: center; }
+  header .tbd-eyebrow { justify-content: center; }
+  h1 {
+    font-size: clamp(38px, 11vw, 52px);
+    margin: 6px 0 4px;
+    text-wrap: balance;
+  }
+  .dek { margin: 0; }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .status-row .dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--tbd-color-blue);
+  }
+  .status-row.is-positive .dot { background: var(--tbd-positive); }
+  .status-row.is-critical .dot { background: var(--tbd-critical); }
+  #toast.danger { color: var(--tbd-critical); }
+
+  .board {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    gap: 7px;
+    width: 100%;
+    max-width: 292px;
+  }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+  .tile {
+    position: relative;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--tbd-font-sans);
+    font-weight: var(--tbd-weight-medium);
+    font-size: 21px;
+    text-transform: uppercase;
+    border: var(--tbd-border-hairline) solid var(--tbd-rule);
+    border-radius: var(--tbd-radius-md);
+    background: transparent;
+    color: var(--tbd-text);
+    transform-style: preserve-3d;
+    transition: border-color 120ms ease, background 120ms ease;
+  }
+  .tile[data-filled="true"] { border-color: var(--tbd-text-muted); }
+  .tile.pop { animation: tile-pop 120ms ease; }
+  @keyframes tile-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  .row.shake { animation: row-shake 220ms ease; }
+  @keyframes row-shake {
+    20%, 80% { transform: translateX(-3px); }
+    40%, 60% { transform: translateX(3px); }
+  }
+  .tile.flip { animation: tile-flip 260ms ease forwards; }
+  @keyframes tile-flip {
+    0% { transform: rotateX(0); }
+    50% { transform: rotateX(90deg); }
+    51% { border-color: transparent; }
+    100% { transform: rotateX(0); }
+  }
+  .tile.status-correct { background: var(--tbd-positive); color: var(--tbd-color-pure); border-color: var(--tbd-positive); }
+  .tile.status-present { background: var(--tbd-color-blue); color: var(--tbd-color-pure); border-color: var(--tbd-color-blue); }
+  .tile.status-absent  { background: var(--tbd-rule); color: var(--tbd-text-muted); border-color: var(--tbd-rule); }
+  .tile.win-pulse { animation: tile-pulse 260ms ease; }
+  @keyframes tile-pulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.35); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile.flip, .tile.win-pulse, .row.shake, .tile.pop { animation: none; }
+  }
+
+  .keyboard { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 440px; }
+  .krow { display: flex; gap: 5px; justify-content: center; }
+  .key {
+    flex: 1;
+    min-width: 0;
+    max-width: 38px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--tbd-font-mono);
+    font-weight: var(--tbd-weight-medium);
+    font-size: 12px;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--tbd-text);
+    border: var(--tbd-border-hairline) solid var(--tbd-rule);
+    border-radius: var(--tbd-radius-md);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 120ms ease, background 120ms ease, filter 120ms ease;
+  }
+  .key:hover { border-color: var(--tbd-text); }
+  .key:active { filter: brightness(0.95); }
+  .key.wide { max-width: 54px; font-size: 9px; letter-spacing: 0.05em; }
+  .key.status-correct { background: var(--tbd-positive); color: var(--tbd-color-pure); border-color: var(--tbd-positive); }
+  .key.status-present  { background: var(--tbd-color-blue); color: var(--tbd-color-pure); border-color: var(--tbd-color-blue); }
+  .key.status-absent   { background: transparent; color: var(--tbd-text-muted); border-color: var(--tbd-rule); opacity: 0.45; }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.72);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 10;
+  }
+  .overlay[hidden] { display: none; }
+  .overlay .tbd-card { max-width: 320px; width: 100%; text-align: center; }
+  .overlay .tbd-eyebrow { justify-content: center; margin-bottom: 10px; }
+  .overlay h2 { font-size: 34px; margin: 0 0 10px; }
+  .overlay p { color: var(--tbd-text-muted); margin: 0 0 20px; }
+  .overlay .word { font-family: var(--tbd-font-mono); letter-spacing: 0.16em; color: var(--tbd-text); font-weight: var(--tbd-weight-medium); }
+  .overlay .tbd-metric { margin-bottom: 20px; }
+  .overlay .tbd-btn { width: 100%; justify-content: center; }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <a href="/" class="top-link tbd-nav-link" aria-label="Back to [tbd]"><span class="tbd-wordmark">tbd</span></a>
+
+  <header>
+    <span class="tbd-eyebrow">01 &mdash; Word study</span>
+    <h1 class="tbd-display">Name the <span class="tbd-text-blue">mark.</span></h1>
+    <p class="dek tbd-body tbd-text-muted">One word, six pulls. Color is signal &mdash; never decoration.</p>
+  </header>
+
+  <div class="status-row tbd-label" id="statusRow">
+    <span class="dot"></span>
+    <span id="toast">Attempt 1 / 6</span>
+  </div>
+
+  <div class="board" id="board" aria-label="Guess board"></div>
+
+  <div class="keyboard" id="keyboard" aria-label="Keyboard"></div>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="tbd-card">
+    <span class="tbd-eyebrow" id="overlayEyebrow">Result &mdash; solved</span>
+    <h2 class="tbd-display" id="overlayTitle">Set.</h2>
+    <div class="tbd-metric">
+      <span class="tbd-metric__label">Pulls used</span>
+      <span class="tbd-metric__value" id="overlayMetric">3 / 6</span>
+    </div>
+    <p id="overlayBody">The mark was <span class="word">GLYPH</span>.</p>
+    <button class="tbd-btn" id="againBtn">Run it back &rarr;</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var ANSWER = "GLYPH";
+  var ROWS = 6, COLS = 5;
+  var rowsData = [];
+  var row = 0, col = 0;
+  var gameOver = false;
+  var keyStatus = {};
+
+  var boardEl = document.getElementById("board");
+  var keyboardEl = document.getElementById("keyboard");
+  var toastEl = document.getElementById("toast");
+  var statusRowEl = document.getElementById("statusRow");
+  var overlayEl = document.getElementById("overlay");
+  var overlayEyebrow = document.getElementById("overlayEyebrow");
+  var overlayTitle = document.getElementById("overlayTitle");
+  var overlayMetric = document.getElementById("overlayMetric");
+  var overlayBody = document.getElementById("overlayBody");
+  var againBtn = document.getElementById("againBtn");
+
+  var KEY_ROWS = [
+    ["Q","W","E","R","T","Y","U","I","O","P"],
+    ["A","S","D","F","G","H","J","K","L"],
+    ["ENTER","Z","X","C","V","B","N","M","BACK"]
+  ];
+
+  function buildBoard() {
+    boardEl.innerHTML = "";
+    rowsData = [];
+    for (var r = 0; r < ROWS; r++) {
+      var rowEl = document.createElement("div");
+      rowEl.className = "row";
+      rowEl.id = "row-" + r;
+      var tiles = [];
+      for (var c = 0; c < COLS; c++) {
+        var tile = document.createElement("div");
+        tile.className = "tile";
+        tile.setAttribute("data-filled", "false");
+        rowEl.appendChild(tile);
+        tiles.push(tile);
+      }
+      boardEl.appendChild(rowEl);
+      rowsData.push(tiles);
+    }
+  }
+
+  function buildKeyboard() {
+    keyboardEl.innerHTML = "";
+    KEY_ROWS.forEach(function (krow) {
+      var krowEl = document.createElement("div");
+      krowEl.className = "krow";
+      krow.forEach(function (k) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "key" + (k === "ENTER" || k === "BACK" ? " wide" : "");
+        btn.textContent = k === "BACK" ? "⌫" : (k === "ENTER" ? "ENTER" : k);
+        btn.setAttribute("data-key", k);
+        btn.setAttribute("aria-label", k === "BACK" ? "Backspace" : k);
+        btn.addEventListener("click", function () { handleKey(this.getAttribute("data-key")); });
+        krowEl.appendChild(btn);
+      });
+      keyboardEl.appendChild(krowEl);
+    });
+  }
+
+  function updateStatus() {
+    statusRowEl.classList.remove("is-positive", "is-critical");
+    toastEl.classList.remove("danger");
+    toastEl.textContent = "Attempt " + (row + 1) + " / " + ROWS;
+  }
+
+  var toastTimer = null;
+  function showToast(msg, danger) {
+    toastEl.textContent = msg;
+    toastEl.classList.toggle("danger", !!danger);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(updateStatus, 1500);
+  }
+
+  function shakeRow(r) {
+    var el = document.getElementById("row-" + r);
+    el.classList.remove("shake");
+    void el.offsetWidth;
+    el.classList.add("shake");
+  }
+
+  function setLetter(c, ch) {
+    var tile = rowsData[row][c];
+    tile.textContent = ch;
+    tile.setAttribute("data-filled", ch ? "true" : "false");
+    if (ch) {
+      tile.classList.remove("pop");
+      void tile.offsetWidth;
+      tile.classList.add("pop");
+    }
+  }
+
+  function handleKey(k) {
+    if (gameOver) return;
+    if (k === "ENTER") { submitGuess(); return; }
+    if (k === "BACK") {
+      if (col > 0) { col--; setLetter(col, ""); }
+      return;
+    }
+    if (/^[A-Z]$/.test(k) && col < COLS) {
+      setLetter(col, k);
+      col++;
+    }
+  }
+
+  function computeStatuses(g) {
+    var answerArr = ANSWER.split("");
+    var guessArr = g.split("");
+    var statuses = new Array(COLS).fill("absent");
+    var used = new Array(COLS).fill(false);
+
+    for (var i = 0; i < COLS; i++) {
+      if (guessArr[i] === answerArr[i]) {
+        statuses[i] = "correct";
+        used[i] = true;
+      }
+    }
+    var answerRemain = [];
+    for (var k = 0; k < COLS; k++) { if (!used[k]) answerRemain.push(answerArr[k]); }
+    for (var m = 0; m < COLS; m++) {
+      if (statuses[m] === "correct") continue;
+      var idx = answerRemain.indexOf(guessArr[m]);
+      if (idx !== -1) {
+        statuses[m] = "present";
+        answerRemain.splice(idx, 1);
+      }
+    }
+    return statuses;
+  }
+
+  function updateKeyboard(statuses, g) {
+    var priority = { absent: 0, present: 1, correct: 2 };
+    for (var i = 0; i < COLS; i++) {
+      var ch = g[i];
+      var s = statuses[i];
+      if (!keyStatus[ch] || priority[s] > priority[keyStatus[ch]]) {
+        keyStatus[ch] = s;
+      }
+    }
+    var buttons = keyboardEl.querySelectorAll(".key");
+    buttons.forEach(function (btn) {
+      var k = btn.getAttribute("data-key");
+      var s = keyStatus[k];
+      btn.classList.remove("status-correct", "status-present", "status-absent");
+      if (s) btn.classList.add("status-" + s);
+    });
+  }
+
+  function submitGuess() {
+    if (col < COLS) {
+      showToast("Set five letters first", true);
+      shakeRow(row);
+      return;
+    }
+    var guess = rowsData[row].map(function (t) { return t.textContent; }).join("");
+    var statuses = computeStatuses(guess);
+    var tiles = rowsData[row];
+
+    tiles.forEach(function (tile, i) {
+      setTimeout(function () {
+        tile.classList.add("flip");
+        setTimeout(function () { tile.classList.add("status-" + statuses[i]); }, 130);
+      }, i * 140);
+    });
+
+    var totalDelay = (COLS - 1) * 140 + 280;
+
+    setTimeout(function () {
+      updateKeyboard(statuses, guess);
+      var won = guess === ANSWER;
+      if (won) {
+        tiles.forEach(function (tile, i) {
+          setTimeout(function () { tile.classList.add("win-pulse"); }, i * 70);
+        });
+        gameOver = true;
+        setTimeout(function () { showOverlay(true); }, 420);
+      } else if (row === ROWS - 1) {
+        gameOver = true;
+        setTimeout(function () { showOverlay(false); }, 150);
+      } else {
+        row++;
+        col = 0;
+        updateStatus();
+      }
+    }, totalDelay);
+  }
+
+  function showOverlay(won) {
+    overlayEl.hidden = false;
+    var pulls = row + 1;
+    if (won) {
+      overlayEyebrow.textContent = "Result — solved";
+      overlayTitle.textContent = "Set.";
+      overlayMetric.textContent = pulls + " / " + ROWS;
+      overlayMetric.className = "tbd-metric__value tbd-metric__value--up";
+      overlayBody.innerHTML = "The mark was <span class=\"word\">" + ANSWER + "</span>.";
+    } else {
+      overlayEyebrow.textContent = "Result — unsolved";
+      overlayTitle.textContent = "Unresolved.";
+      overlayMetric.textContent = ROWS + " / " + ROWS;
+      overlayMetric.className = "tbd-metric__value tbd-metric__value--down";
+      overlayBody.innerHTML = "No clean read in six. The mark was <span class=\"word\">" + ANSWER + "</span>.";
+    }
+  }
+
+  function resetGame() {
+    row = 0; col = 0; gameOver = false;
+    keyStatus = {};
+    overlayEl.hidden = true;
+    buildBoard();
+    buildKeyboard();
+    updateStatus();
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (overlayEl.hidden === false) return;
+    var key = e.key;
+    if (key === "Enter") { handleKey("ENTER"); }
+    else if (key === "Backspace") { handleKey("BACK"); }
+    else if (/^[a-zA-Z]$/.test(key)) { handleKey(key.toUpperCase()); }
+  });
+
+  againBtn.addEventListener("click", resetGame);
+
+  buildBoard();
+  buildKeyboard();
+  updateStatus();
+})();
+</script>
+
+</body>
+</html>
