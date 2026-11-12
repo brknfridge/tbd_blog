@@ -127,6 +127,11 @@
   .chip:hover { border-color: var(--tbd-text); color: var(--tbd-text); }
   .chip[aria-pressed="true"] { background: var(--tbd-text); color: var(--tbd-bg); border-color: var(--tbd-text); }
   .chip:focus-visible { outline: 2px solid var(--tbd-focus); outline-offset: 2px; }
+  .pill { position: relative; }
+  .pill input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .pill .chip { display: inline-block; }
+  .pill input:checked + .chip { background: var(--tbd-text); color: var(--tbd-bg); border-color: var(--tbd-text); }
+  .pill input:focus-visible + .chip { outline: 2px solid var(--tbd-focus); outline-offset: 2px; }
 
   .err { color: var(--tbd-critical); font-size: 13px; margin: 10px 0 0; min-height: 0; }
   .err:empty { display: none; }
@@ -419,6 +424,15 @@
       <fieldset class="q">
         <span class="q__num">06</span>
         <div>
+          <legend class="q__title">Religion</legend>
+          <p class="q__hint">Tap every one you are open to. Leave all off for any.</p>
+          <div class="seg" id="religion"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <span class="q__num">07</span>
+        <div>
           <legend class="q__title">Drinking</legend>
           <div class="radios" role="radiogroup">
             <label class="radio"><input type="radio" name="drink" value="any" checked><span>Doesn&rsquo;t matter</span></label>
@@ -430,7 +444,7 @@
       </fieldset>
 
       <fieldset class="q">
-        <span class="q__num">07</span>
+        <span class="q__num">08</span>
         <div>
           <legend class="q__title">Smoking and drugs</legend>
           <p class="q__hint">Switch on what is a dealbreaker.</p>
@@ -479,7 +493,7 @@
     <ul>
       <li>Start with the adult population of the city, split by single year of age and sex.</li>
       <li>Keep only people who are single &mdash; never married, divorced or widowed &mdash; at each age.</li>
-      <li>Apply each criterion as a share of that pool: height from a normal curve by sex, income from an age-adjusted earnings curve for the city, community from mother-tongue shares, and habits from national survey prevalence.</li>
+      <li>Apply each criterion as a share of that pool: height from a normal curve by sex, income from an age-adjusted earnings curve for the city, community from mother-tongue shares, religion from census shares (within each community you pick, where you pick one), and habits from national survey prevalence.</li>
       <li>Weeks assume you date at random from singles of your chosen sex and age range in the city, one a week, never the same person twice.</li>
     </ul>
     <p>Modelled on public sources &mdash; Census of India, NFHS-5, PLFS and published height studies &mdash; projected to 2026. Criteria are treated as independent. It does not account for whether they like you back. Treat the result as directional, not a headcount.</p>
@@ -546,6 +560,52 @@
     lucknow:    { hindi: .92, punjabi: .02, bengali: .01, sindhi: .01 },
     indore:     { hindi: .80, marathi: .07, sindhi: .03, marwari: .03, gujarati: .02, punjabi: .02, bengali: .005 },
     kochi:      { malayali: .90, tamil: .03, hindi: .02, gujarati: .005, kannadiga: .005 }
+  };
+
+  var RELIGIONS = [
+    { id: "hindu",     name: "Hindu" },
+    { id: "muslim",    name: "Muslim" },
+    { id: "christian", name: "Christian" },
+    { id: "sikh",      name: "Sikh" },
+    { id: "jain",      name: "Jain" },
+    { id: "buddhist",  name: "Buddhist" },
+    { id: "parsi",     name: "Parsi" },
+    { id: "other",     name: "Other or none" }
+  ];
+
+  // Religion by city, used when no community is ticked. Census 2011 shape.
+  var CITY_REL = {
+    mumbai:     { hindu: .66, muslim: .21, christian: .03, sikh: .005, jain: .04, buddhist: .045, parsi: .003, other: .007 },
+    delhi:      { hindu: .81, muslim: .13, christian: .01, sikh: .03, jain: .01, buddhist: .002, parsi: .0002, other: .008 },
+    bengaluru:  { hindu: .79, muslim: .13, christian: .06, sikh: .002, jain: .01, buddhist: .002, parsi: .0003, other: .006 },
+    hyderabad:  { hindu: .64, muslim: .30, christian: .03, sikh: .003, jain: .004, buddhist: .002, parsi: .0005, other: .02 },
+    chennai:    { hindu: .81, muslim: .09, christian: .08, sikh: .001, jain: .006, buddhist: .001, parsi: .0002, other: .012 },
+    pune:       { hindu: .80, muslim: .11, christian: .03, sikh: .005, jain: .02, buddhist: .03, parsi: .001, other: .004 },
+    kolkata:    { hindu: .77, muslim: .21, christian: .009, sikh: .003, jain: .005, buddhist: .002, parsi: .0002, other: .001 },
+    ahmedabad:  { hindu: .81, muslim: .14, christian: .008, sikh: .002, jain: .035, buddhist: .001, parsi: .0005, other: .003 },
+    surat:      { hindu: .87, muslim: .09, christian: .005, sikh: .002, jain: .025, buddhist: .002, parsi: .002, other: .004 },
+    jaipur:     { hindu: .78, muslim: .18, christian: .005, sikh: .005, jain: .03, buddhist: .0005, parsi: .0001, other: .001 },
+    chandigarh: { hindu: .80, muslim: .05, christian: .008, sikh: .13, jain: .002, buddhist: .001, parsi: .0001, other: .009 },
+    lucknow:    { hindu: .71, muslim: .27, christian: .005, sikh: .009, jain: .003, buddhist: .002, parsi: .0001, other: .001 },
+    indore:     { hindu: .80, muslim: .14, christian: .005, sikh: .01, jain: .035, buddhist: .006, parsi: .0001, other: .004 },
+    kochi:      { hindu: .45, muslim: .19, christian: .35, sikh: .0005, jain: .001, buddhist: .0005, parsi: .0001, other: .008 }
+  };
+
+  // Religion within each community. Community and religion overlap heavily
+  // (most Punjabis are Sikh or Hindu), so when communities are ticked the
+  // religion step uses these instead of the city mix.
+  var COMM_REL = {
+    gujarati:  { hindu: .89, muslim: .06, jain: .04, christian: .003, parsi: .005, other: .002 },
+    punjabi:   { hindu: .40, sikh: .57, muslim: .01, christian: .015, other: .005 },
+    marathi:   { hindu: .82, muslim: .04, buddhist: .12, jain: .01, christian: .01 },
+    bengali:   { hindu: .80, muslim: .18, christian: .01, buddhist: .005, other: .005 },
+    tamil:     { hindu: .88, muslim: .05, christian: .06, jain: .005, other: .005 },
+    telugu:    { hindu: .91, muslim: .05, christian: .03, other: .01 },
+    kannadiga: { hindu: .90, muslim: .04, christian: .02, jain: .02, other: .02 },
+    malayali:  { hindu: .55, muslim: .27, christian: .18 },
+    marwari:   { hindu: .88, jain: .10, muslim: .015, other: .005 },
+    sindhi:    { hindu: .93, sikh: .03, muslim: .02, other: .02 },
+    hindi:     { hindu: .84, muslim: .15, sikh: .005, jain: .005, buddhist: .003, christian: .003 }
   };
 
   // Height in cm, urban adults.
@@ -615,7 +675,7 @@
   function ncdf(z) { return 0.5 * (1 + erf(z / Math.SQRT2)); }
 
   var H_MIN = 54, H_MAX = 78;
-  var DEFAULTS = { sex: "f", hMin: 58, hMax: 68, aMin: 25, aMax: 30, city: "mumbai", income: 0, comm: [], drink: "any", cig: "any", weed: "any", drugs: "any" };
+  var DEFAULTS = { sex: "f", hMin: 58, hMax: 68, aMin: 25, aMax: 30, city: "mumbai", income: 0, comm: [], rel: [], drink: "any", cig: "any", weed: "any", drugs: "any" };
   var state = JSON.parse(JSON.stringify(DEFAULTS));
 
   var $ = function (id) { return document.getElementById(id); };
@@ -628,6 +688,10 @@
   $("city").innerHTML = CITIES.map(function (c) { return '<option value="' + c.id + '">' + c.name + "</option>"; }).join("");
   $("community").innerHTML = COMMUNITIES.map(function (c) {
     return '<label class="check"><input type="checkbox" value="' + c.id + '"><span>' + c.name + "</span></label>";
+  }).join("");
+
+  $("religion").innerHTML = RELIGIONS.map(function (r) {
+    return '<label class="pill"><input type="checkbox" value="' + r.id + '"><span class="chip">' + r.name + "</span></label>";
   }).join("");
 
   /* ---- Model ---- */
@@ -657,6 +721,22 @@
       ? state.comm.reduce(function (s, id) { return s + (mix[id] != null ? mix[id] : 0.002); }, 0)
       : 1;
 
+    var rel = 1;
+    if (state.rel.length) {
+      var share = function (dist) { return state.rel.reduce(function (s, id) { return s + (dist[id] || 0); }, 0); };
+      if (state.comm.length) {
+        // Weight each ticked community's religion mix by its size in the city.
+        var w = 0, hit = 0;
+        state.comm.forEach(function (id) {
+          var cw = mix[id] != null ? mix[id] : 0.002;
+          w += cw; hit += cw * share(COMM_REL[id]);
+        });
+        rel = w > 0 ? hit / w : 0;
+      } else {
+        rel = share(CITY_REL[city.id]);
+      }
+    }
+
     var H = HABITS[sex];
     var drink = 1;
     if (state.drink === "never") drink = H.drinkNever;
@@ -665,17 +745,18 @@
 
     var s = [pool, pool * hPass, afterIncome];
     s.push(s[2] * comm);
-    s.push(s[3] * drink);
-    s.push(s[4] * (state.cig === "never" ? 1 - H.cig : 1));
-    s.push(s[5] * (state.weed === "never" ? 1 - H.weed : 1));
-    s.push(s[6] * (state.drugs === "never" ? 1 - H.drugs : 1));
+    s.push(s[3] * rel);
+    s.push(s[4] * drink);
+    s.push(s[5] * (state.cig === "never" ? 1 - H.cig : 1));
+    s.push(s[6] * (state.weed === "never" ? 1 - H.weed : 1));
+    s.push(s[7] * (state.drugs === "never" ? 1 - H.drugs : 1));
     return s;
   }
 
   function compute() {
     var city = cityById(state.city);
     var sexes = state.sex === "any" ? ["f", "m"] : [state.sex];
-    var totals = [0, 0, 0, 0, 0, 0, 0, 0];
+    var totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     sexes.forEach(function (sx) {
       stagesFor(sx, city).forEach(function (v, i) { totals[i] += v; });
     });
@@ -684,6 +765,8 @@
     var commName = state.comm.length === 1
       ? COMMUNITIES.filter(function (c) { return c.id === state.comm[0]; })[0].name
       : state.comm.length + " communities";
+    var relNames = state.rel.map(function (id) { return RELIGIONS.filter(function (r) { return r.id === id; })[0].name; });
+    var relName = relNames.length <= 2 ? relNames.join(" or ") : relNames.length + " religions";
     var drinkNames = { never: "Never drinks", social: "Drinks socially at most", must: "Drinks" };
     var defs = [
       { name: who + ", " + state.aMin + "–" + state.aMax + ", " + city.name, on: true },
@@ -691,6 +774,7 @@
         icon: "\uD83D\uDCCF", short: state.hMax >= H_MAX ? inchLabel(state.hMin) + "+" : state.hMin <= H_MIN ? "Under " + inchLabel(state.hMax + 1) : inchLabel(state.hMin) + "–" + inchLabel(state.hMax) },
       { name: "Income " + incomeItem(state.income).label, on: state.income > 0, icon: "\uD83D\uDCB0", short: incomeItem(state.income).short },
       { name: commName, on: state.comm.length > 0, icon: "\uD83C\uDFE1", short: commName },
+      { name: relName, on: state.rel.length > 0, icon: "\uD83D\uDD4A\uFE0F", short: relName },
       { name: drinkNames[state.drink] || "", on: state.drink !== "any", icon: "\uD83C\uDF77", short: { never: "Sober", social: "Social drinker max", must: "Must drink" }[state.drink] },
       { name: "No cigarettes", on: state.cig === "never", icon: "\uD83D\uDEAD", short: "No cigarettes" },
       { name: "No weed", on: state.weed === "never", icon: "\uD83C\uDF3F", short: "No weed" },
@@ -707,7 +791,7 @@
       steps.push({ name: d.name, n: totals[i] });
     });
 
-    return { pool: totals[0], matches: totals[7], steps: steps, filters: filters, city: city, who: who };
+    return { pool: totals[0], matches: totals[8], steps: steps, filters: filters, city: city, who: who };
   }
 
   /* ---- Render ---- */
@@ -804,14 +888,16 @@
     document.querySelectorAll('input[name="drink"]').forEach(function (r) { r.checked = r.value === state.drink; });
     $("community").querySelectorAll("input").forEach(function (c) { c.checked = state.comm.indexOf(c.value) !== -1; });
     $("commClear").hidden = state.comm.length === 0;
+    $("religion").querySelectorAll("input").forEach(function (c) { c.checked = state.rel.indexOf(c.value) !== -1; });
     ["cig", "weed", "drugs"].forEach(function (k) { $(k).checked = state[k] === "never"; });
   }
 
   function toQuery() {
     var p = new URLSearchParams();
     Object.keys(DEFAULTS).forEach(function (k) {
-      var v = k === "comm" ? state.comm.join(",") : String(state[k]);
-      var d = k === "comm" ? "" : String(DEFAULTS[k]);
+      var list = k === "comm" || k === "rel";
+      var v = list ? state[k].join(",") : String(state[k]);
+      var d = list ? "" : String(DEFAULTS[k]);
       if (v !== d) p.set(k, v);
     });
     var q = p.toString();
@@ -829,6 +915,8 @@
     pick("city", CITIES.map(function (c) { return c.id; }));
     var inc = parseInt(p.get("income"), 10); if (incomeItem(inc)) state.income = inc;
     var ids = COMMUNITIES.map(function (c) { return c.id; });
+    var rids = RELIGIONS.map(function (r) { return r.id; });
+    if (p.get("rel")) state.rel = p.get("rel").split(",").filter(function (r, i, arr) { return rids.indexOf(r) !== -1 && arr.indexOf(r) === i; });
     if (p.get("comm")) state.comm = p.get("comm").split(",").filter(function (c, i, arr) { return ids.indexOf(c) !== -1 && arr.indexOf(c) === i; });
     pick("drink", ["any", "never", "social", "must"]);
     ["cig", "weed", "drugs"].forEach(function (k) { pick(k, ["any", "never"]); });
@@ -870,6 +958,11 @@
     update();
   });
   $("commClear").addEventListener("click", function () { state.comm = []; update(); });
+  $("religion").addEventListener("change", function () {
+    state.rel = Array.prototype.filter.call($("religion").querySelectorAll("input"), function (c) { return c.checked; })
+      .map(function (c) { return c.value; });
+    update();
+  });
   ["cig", "weed", "drugs"].forEach(function (k) {
     $(k).addEventListener("change", function () { state[k] = this.checked ? "never" : "any"; update(); });
   });
@@ -918,7 +1011,8 @@
     lines.push("\uD83D\uDCC5 One date a week: " + eta);
     lines.push(mood);
     lines.push("");
-    lines.push(location.origin + location.pathname + toQuery());
+    // The plain page, not this person's answers: whoever opens it builds their own.
+    lines.push("https://tbdonline.in/matchle/");
     return lines.join("\n");
   }
 
