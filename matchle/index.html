@@ -745,7 +745,7 @@
       if (weeks <= 1) note.textContent = "Your next date is likely the one.";
       else if (weeks < 52) note.textContent = "About " + months + (months === 1 ? " month" : " months") + " of Saturdays.";
       else if (years < 80) note.textContent = "About " + (years < 10 ? years.toFixed(1) : Math.round(years)) + " years of Saturdays.";
-      else note.textContent = "About " + n(years) + " years. Roughly " + n(years / 70) + " lifetimes.";
+      else note.textContent = "About " + n(years) + " years. " + (years / 70 < 1.5 ? "More than a lifetime." : "Roughly " + n(years / 70) + " lifetimes.");
 
       if (weeks <= 4) verdict.textContent = "Barely picky. Next Saturday looks good.";
       else if (weeks <= 26) verdict.textContent = "Within the year. Book the table.";
