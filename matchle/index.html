@@ -26,6 +26,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512.png">
 
+<script>
+  (function () {
+    var t = "light";
+    try { if (localStorage.getItem("tbd-matchle-theme") === "dark") t = "dark"; } catch (e) {}
+    if (t === "light") document.documentElement.setAttribute("data-tbd-surface", "paper");
+  })();
+</script>
 <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css">
 
 <style>
@@ -34,6 +41,22 @@
      accent (electric blue) is left for the data — the funnel bars and the
      primary control. */
   html, body { margin: 0; padding: 0; }
+  :root { color-scheme: dark; --tally-bg: rgba(10, 10, 10, 0.88); }
+  :root[data-tbd-surface="paper"] { color-scheme: light; --tally-bg: rgba(245, 243, 238, 0.9); }
+
+  .theme { display: inline-flex; border: var(--tbd-border-hairline) solid var(--tbd-rule); border-radius: var(--tbd-radius-pill); padding: 3px; gap: 2px; }
+  .theme button {
+    font-family: var(--tbd-font-mono); font-weight: var(--tbd-weight-medium);
+    font-size: var(--tbd-size-label-sm); letter-spacing: var(--tbd-tracking-label); text-transform: uppercase;
+    padding: 6px 12px; border: 0; border-radius: var(--tbd-radius-pill);
+    background: transparent; color: var(--tbd-text-muted); cursor: pointer;
+    transition: background 120ms ease, color 120ms ease;
+  }
+  .theme button:hover { color: var(--tbd-text); }
+  .theme button[aria-pressed="true"] { background: var(--tbd-text); color: var(--tbd-bg); }
+  .theme button:focus-visible { outline: 2px solid var(--tbd-focus); outline-offset: 2px; }
+  .top__right { display: flex; align-items: center; gap: 12px; }
+  @media (max-width: 420px) { .top .tbd-tag { display: none; } }
   body { min-height: 100vh; padding: 40px 16px 96px; }
 
   .sheet { max-width: 1120px; margin: 0 auto; }
@@ -84,7 +107,7 @@
     pointer-events: none;
   }
   .select select { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer; font-size: 16px; }
-  .select select option { background: var(--tbd-color-ink); color: var(--tbd-color-paper); }
+  .select select option { background: var(--tbd-bg); color: var(--tbd-text); }
 
   .seg { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
@@ -164,7 +187,7 @@
     position: fixed; left: 0; right: 0; bottom: 0;
     display: flex; justify-content: space-between; align-items: center; gap: 12px;
     padding: 12px 16px;
-    background: rgba(10, 10, 10, 0.88);
+    background: var(--tally-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-top: var(--tbd-border-hairline) solid var(--tbd-rule);
@@ -215,8 +238,8 @@
     pointer-events: auto;
     width: 20px; height: 20px; margin-top: -9px;
     border-radius: 999px;
-    background: var(--tbd-color-paper);
-    border: 2px solid var(--tbd-color-ink);
+    background: var(--tbd-text);
+    border: 2px solid var(--tbd-bg);
     box-shadow: 0 0 0 1px var(--tbd-text-muted);
     cursor: grab;
     transition: box-shadow 120ms ease;
@@ -225,8 +248,8 @@
     pointer-events: auto;
     width: 16px; height: 16px;
     border-radius: 999px;
-    background: var(--tbd-color-paper);
-    border: 2px solid var(--tbd-color-ink);
+    background: var(--tbd-text);
+    border: 2px solid var(--tbd-bg);
     box-shadow: 0 0 0 1px var(--tbd-text-muted);
     cursor: grab;
   }
@@ -306,7 +329,13 @@
 <div class="sheet">
   <div class="top">
     <a href="/" class="tbd-nav-link" aria-label="Back to [tbd]"><span class="tbd-wordmark">tbd</span></a>
-    <span class="tbd-tag">Matchle</span>
+    <div class="top__right">
+      <span class="tbd-tag">Matchle</span>
+      <div class="theme" role="group" aria-label="Colour theme">
+        <button type="button" data-theme="light">Light</button>
+        <button type="button" data-theme="dark">Dark</button>
+      </div>
+    </div>
   </div>
 
   <header class="intro">
@@ -911,6 +940,25 @@
     $("sharePreview").hidden = false;
     if (typeof gtag === "function") gtag("event", "matchle_share");
   });
+
+  // Light / dark switch. The head script has already applied the saved
+  // choice; this keeps the buttons in step and saves new picks.
+  function paintTheme() {
+    var dark = document.documentElement.getAttribute("data-tbd-surface") !== "paper";
+    document.querySelectorAll(".theme button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String((b.getAttribute("data-theme") === "dark") === dark));
+    });
+  }
+  document.querySelectorAll(".theme button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var t = this.getAttribute("data-theme");
+      if (t === "light") document.documentElement.setAttribute("data-tbd-surface", "paper");
+      else document.documentElement.removeAttribute("data-tbd-surface");
+      try { localStorage.setItem("tbd-matchle-theme", t); } catch (e) {}
+      paintTheme();
+    });
+  });
+  paintTheme();
 
   fromQuery();
   update();
