@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T4DT9ES451"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-T4DT9ES451');
+</script>
+
+<title>[tbd] &middot; Match calculator</title>
+<meta name="description" content="Set your criteria for an ideal partner. See how many people in your city fit, and how many weeks of dating it takes to meet one.">
+<link rel="canonical" href="https://tbdonline.in/match-calculator/">
+<meta property="og:title" content="[tbd] · Match calculator">
+<meta property="og:description" content="How many people in your city fit your list — and how many Saturdays it takes to meet one.">
+<meta property="og:url" content="https://tbdonline.in/match-calculator/">
+
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512.png">
+
+<link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css">
+
+<style>
+  /* Layout concept: a brief on the left, the verdict on the right.
+     Ink canvas, hairline rules, inverted fills for selections so the one
+     accent (electric blue) is left for the data — the funnel bars and the
+     primary control. */
+  html, body { margin: 0; padding: 0; }
+  body { min-height: 100vh; padding: 40px 16px 96px; }
+
+  .sheet { max-width: 1120px; margin: 0 auto; }
+
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 56px; }
+  .top .tbd-wordmark { font-size: 20px; }
+
+  .intro { max-width: 760px; margin-bottom: 56px; }
+  .intro h1 {
+    font-size: clamp(44px, 8vw, 96px);
+    margin: 16px 0 20px;
+    text-wrap: balance;
+  }
+  .intro p { color: var(--tbd-text-muted); margin: 0; max-width: 560px; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  @media (min-width: 920px) {
+    .layout { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 64px; align-items: start; }
+    .result { position: sticky; top: 32px; }
+  }
+
+  /* ---- Brief (form) ---- */
+  .brief { display: flex; flex-direction: column; }
+  .q {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 12px;
+    padding: 24px 0;
+    border-top: var(--tbd-border-hairline) solid var(--tbd-rule);
+  }
+  .q:last-child { border-bottom: var(--tbd-border-hairline) solid var(--tbd-rule); }
+  .q__num { font-family: var(--tbd-font-mono); font-size: var(--tbd-size-label-sm); letter-spacing: var(--tbd-tracking-label); color: var(--tbd-text-muted); padding-top: 3px; }
+  .q__title { font-family: var(--tbd-font-sans); font-weight: var(--tbd-weight-medium); font-size: 18px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .q__hint { color: var(--tbd-text-muted); font-size: 14px; margin: 0 0 14px; line-height: 1.5; }
+
+  .pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
+  .pair__to { font-family: var(--tbd-font-mono); font-size: var(--tbd-size-label-sm); letter-spacing: var(--tbd-tracking-label); color: var(--tbd-text-muted); text-transform: uppercase; }
+
+  .select { position: relative; }
+  .select::after {
+    content: "";
+    position: absolute;
+    right: 16px; top: 50%;
+    width: 7px; height: 7px;
+    border-right: 1.5px solid var(--tbd-text-muted);
+    border-bottom: 1.5px solid var(--tbd-text-muted);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .select select { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer; font-size: 16px; }
+  .select select option { background: var(--tbd-color-ink); color: var(--tbd-color-paper); }
+
+  .seg { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: var(--tbd-font-mono);
+    font-weight: var(--tbd-weight-medium);
+    font-size: var(--tbd-size-label-sm);
+    letter-spacing: var(--tbd-tracking-label);
+    text-transform: uppercase;
+    padding: 10px 14px;
+    background: transparent;
+    color: var(--tbd-text-muted);
+    border: var(--tbd-border-hairline) solid var(--tbd-rule);
+    border-radius: var(--tbd-radius-pill);
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+  }
+  .chip:hover { border-color: var(--tbd-text); color: var(--tbd-text); }
+  .chip[aria-pressed="true"] { background: var(--tbd-text); color: var(--tbd-bg); border-color: var(--tbd-text); }
+  .chip:focus-visible { outline: 2px solid var(--tbd-focus); outline-offset: 2px; }
+
+  .err { color: var(--tbd-critical); font-size: 13px; margin: 10px 0 0; min-height: 0; }
+  .err:empty { display: none; }
+
+  /* ---- Verdict ---- */
+  .result .tbd-card { padding: 32px; }
+  .big {
+    font-family: var(--tbd-font-display);
+    font-style: italic;
+    font-size: clamp(64px, 11vw, 112px);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    margin: 20px 0 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .big-sub { color: var(--tbd-text-muted); margin: 0 0 28px; }
+
+  .weeks { padding: 24px 0; border-top: var(--tbd-border-hairline) solid var(--tbd-rule); border-bottom: var(--tbd-border-hairline) solid var(--tbd-rule); }
+  .weeks__value { font-family: var(--tbd-font-sans); font-weight: var(--tbd-weight-medium); font-size: clamp(32px, 5vw, 44px); letter-spacing: -0.02em; line-height: 1.1; margin: 8px 0 6px; font-variant-numeric: tabular-nums; }
+  .weeks__value .unit { color: var(--tbd-text-muted); font-size: 0.55em; letter-spacing: 0; }
+  .weeks__note { color: var(--tbd-text-muted); font-size: 14px; margin: 0; }
+
+  .verdict { font-family: var(--tbd-font-display); font-style: italic; font-size: 26px; line-height: 1.2; margin: 24px 0 0; text-wrap: balance; }
+
+  .costliest { margin: 20px 0 0; font-size: 14px; color: var(--tbd-text-muted); line-height: 1.5; }
+  .costliest strong { color: var(--tbd-text); font-weight: var(--tbd-weight-medium); }
+
+  .funnel { margin-top: 28px; }
+  .funnel .tbd-eyebrow { margin-bottom: 8px; }
+  .step { padding: 12px 0; border-bottom: var(--tbd-border-hairline) solid var(--tbd-rule); }
+  .step__row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .step__name { font-family: var(--tbd-font-mono); font-size: var(--tbd-size-label-sm); letter-spacing: var(--tbd-tracking-label); text-transform: uppercase; }
+  .step__val { font-family: var(--tbd-font-mono); font-size: var(--tbd-size-label-sm); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .step__cut { color: var(--tbd-text-muted); margin-left: 8px; }
+  .bar { height: 2px; background: var(--tbd-rule); margin-top: 10px; }
+  .bar > span { display: block; height: 100%; background: var(--tbd-color-blue); transition: width 220ms ease; min-width: 1px; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .actions .tbd-btn { flex: 1 1 auto; }
+  #copyMsg { font-size: 13px; color: var(--tbd-text-muted); margin: 10px 0 0; min-height: 18px; }
+
+  .method { margin-top: 96px; max-width: 760px; }
+  .method h2 { font-size: 22px; font-family: var(--tbd-font-sans); font-weight: var(--tbd-weight-medium); margin: 16px 0 12px; letter-spacing: -0.01em; }
+  .method p, .method li { color: var(--tbd-text-muted); font-size: 15px; line-height: 1.6; }
+  .method ul { padding-left: 18px; margin: 0; }
+  .method li { margin-bottom: 6px; }
+
+  /* Mobile: a slim tally pinned to the bottom so the number stays in view
+     while the brief is being filled in. */
+  .tally {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: rgba(10, 10, 10, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: var(--tbd-border-hairline) solid var(--tbd-rule);
+    font-family: var(--tbd-font-mono);
+    font-size: var(--tbd-size-label-sm);
+    letter-spacing: var(--tbd-tracking-label);
+    text-transform: uppercase;
+    z-index: 5;
+  }
+  .tally a { color: var(--tbd-text); }
+  .tally[hidden] { display: none; }
+  @media (min-width: 920px) { .tally { display: none; } }
+
+  @media (max-width: 560px) {
+    .top { margin-bottom: 40px; }
+    .intro { margin-bottom: 40px; }
+    .q { grid-template-columns: 1fr; gap: 6px; }
+    .result .tbd-card { padding: 24px 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bar > span { transition: none; } }
+
+  /* ---- Mixed inputs ---- */
+  fieldset.q { margin: 0; min-width: 0; border-left: 0; border-right: 0; border-bottom: 0; }
+  fieldset.q:last-child { border-bottom: var(--tbd-border-hairline) solid var(--tbd-rule); }
+  legend.q__title { padding: 0; float: left; width: 100%; }
+  legend.q__title + * { clear: both; }
+  .q__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .q__readout { font-family: var(--tbd-font-mono); font-size: var(--tbd-size-label-md); letter-spacing: 0.04em; color: var(--tbd-text); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  /* Sliders: a 2px hairline track, a blue fill for the chosen span, paper thumbs. */
+  .range1, .range2 { position: relative; height: 28px; margin-top: 6px; }
+  .range2__track { position: absolute; left: 0; right: 0; top: 13px; height: 2px; background: var(--tbd-rule); }
+  .range2__fill { position: absolute; top: 0; bottom: 0; background: var(--tbd-color-blue); }
+  .range1 input, .range2 input {
+    -webkit-appearance: none; appearance: none;
+    position: absolute; left: 0; top: 0; width: 100%; height: 28px; margin: 0;
+    background: transparent;
+  }
+  .range2 input { pointer-events: none; }
+  .range1 input { --fill: 0%; }
+  .range1 input::-webkit-slider-runnable-track { height: 2px; background: linear-gradient(to right, var(--tbd-color-blue) var(--fill), var(--tbd-rule) var(--fill)); }
+  .range1 input::-moz-range-track { height: 2px; background: var(--tbd-rule); }
+  .range1 input::-moz-range-progress { height: 2px; background: var(--tbd-color-blue); }
+  .range2 input::-webkit-slider-runnable-track { height: 2px; background: transparent; }
+  .range2 input::-moz-range-track { height: 2px; background: transparent; }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    pointer-events: auto;
+    width: 20px; height: 20px; margin-top: -9px;
+    border-radius: 999px;
+    background: var(--tbd-color-paper);
+    border: 2px solid var(--tbd-color-ink);
+    box-shadow: 0 0 0 1px var(--tbd-text-muted);
+    cursor: grab;
+    transition: box-shadow 120ms ease;
+  }
+  input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    width: 16px; height: 16px;
+    border-radius: 999px;
+    background: var(--tbd-color-paper);
+    border: 2px solid var(--tbd-color-ink);
+    box-shadow: 0 0 0 1px var(--tbd-text-muted);
+    cursor: grab;
+  }
+  input[type="range"]:hover::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--tbd-text); }
+  input[type="range"]:focus-visible { outline: none; }
+  input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--tbd-focus); }
+  input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--tbd-focus); }
+  .ticks { display: flex; justify-content: space-between; margin-top: 4px; font-family: var(--tbd-font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--tbd-text-muted); }
+
+  /* Radio cards (gender) */
+  .radios--cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .rcard { position: relative; cursor: pointer; }
+  .rcard input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .rcard span {
+    display: block; text-align: center;
+    padding: 16px 8px;
+    font-family: var(--tbd-font-sans); font-weight: var(--tbd-weight-medium); font-size: 16px;
+    border: var(--tbd-border-hairline) solid var(--tbd-rule);
+    border-radius: var(--tbd-radius-md);
+    color: var(--tbd-text-muted);
+    transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+  }
+  .rcard:hover span { border-color: var(--tbd-text); color: var(--tbd-text); }
+  .rcard input:checked + span { background: var(--tbd-text); color: var(--tbd-bg); border-color: var(--tbd-text); }
+  .rcard input:focus-visible + span { outline: 2px solid var(--tbd-focus); outline-offset: 2px; }
+
+  /* Classic radios (drinking) */
+  .radios:not(.radios--cards) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  .radio { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 15px; }
+  .radio input, .check input {
+    -webkit-appearance: none; appearance: none; margin: 0; flex: none;
+    width: 18px; height: 18px;
+    border: var(--tbd-border-hairline) solid var(--tbd-text-muted);
+    background: transparent; cursor: pointer;
+    display: grid; place-items: center;
+    transition: border-color 120ms ease;
+  }
+  .radio input { border-radius: 999px; }
+  .radio input::after { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--tbd-text); transform: scale(0); transition: transform 120ms ease; }
+  .radio input:checked { border-color: var(--tbd-text); }
+  .radio input:checked::after { transform: scale(1); }
+  .radio:hover input, .check:hover input { border-color: var(--tbd-text); }
+
+  /* Checkboxes (community) */
+  .checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  .check { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 15px; }
+  .check input { border-radius: 4px; }
+  .check input::after { content: ""; width: 5px; height: 9px; border-right: 2px solid var(--tbd-bg); border-bottom: 2px solid var(--tbd-bg); transform: translateY(-1px) rotate(45deg) scale(0); transition: transform 120ms ease; }
+  .check input:checked { background: var(--tbd-text); border-color: var(--tbd-text); }
+  .check input:checked::after { transform: translateY(-1px) rotate(45deg) scale(1); }
+  .radio input:focus-visible, .check input:focus-visible { outline: 2px solid var(--tbd-focus); outline-offset: 2px; }
+  .linkbtn { margin-top: 14px; padding: 0; background: none; border: 0; color: var(--tbd-text-muted); font-family: var(--tbd-font-mono); font-size: var(--tbd-size-label-sm); letter-spacing: var(--tbd-tracking-label); text-transform: uppercase; cursor: pointer; }
+  .linkbtn:hover { color: var(--tbd-text); }
+  .linkbtn[hidden] { display: none; }
+
+  /* Toggle switches (smoking and drugs) */
+  .toggles { display: flex; flex-direction: column; }
+  .toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; cursor: pointer; font-size: 15px; border-bottom: var(--tbd-border-hairline) solid var(--tbd-rule); }
+  .toggle:last-child { border-bottom: 0; }
+  .toggle input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .toggle__ui { position: relative; width: 40px; height: 22px; flex: none; border-radius: 999px; border: var(--tbd-border-hairline) solid var(--tbd-text-muted); transition: background 120ms ease, border-color 120ms ease; }
+  .toggle__ui::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 999px; background: var(--tbd-text-muted); transition: transform 120ms ease, background 120ms ease; }
+  .toggle input:checked + .toggle__ui { background: var(--tbd-text); border-color: var(--tbd-text); }
+  .toggle input:checked + .toggle__ui::after { transform: translateX(18px); background: var(--tbd-bg); }
+  .toggle input:focus-visible + .toggle__ui { outline: 2px solid var(--tbd-focus); outline-offset: 2px; }
+
+  @media (max-width: 560px) {
+    .checks, .radios:not(.radios--cards) { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .toggle__ui::after, .radio input::after, .check input::after { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="top">
+    <a href="/" class="tbd-nav-link" aria-label="Back to [tbd]"><span class="tbd-wordmark">tbd</span></a>
+    <span class="tbd-tag">Match calculator</span>
+  </div>
+
+  <header class="intro">
+    <span class="tbd-eyebrow">01 &mdash; The brief</span>
+    <h1 class="tbd-display">Your ideal partner, <span class="tbd-accent-blue">to be defined.</span></h1>
+    <p class="tbd-body">Write down what you want. We size the market in your city and tell you how many Saturdays it takes to meet them, one date a week.</p>
+  </header>
+
+  <div class="layout">
+    <form class="brief" id="brief" onsubmit="return false">
+      <fieldset class="q">
+        <span class="q__num">00</span>
+        <div>
+          <legend class="q__title">Gender</legend>
+          <p class="q__hint">Who you want to meet.</p>
+          <div class="radios radios--cards" role="radiogroup">
+            <label class="rcard"><input type="radio" name="sex" value="f" checked><span>A woman</span></label>
+            <label class="rcard"><input type="radio" name="sex" value="m"><span>A man</span></label>
+            <label class="rcard"><input type="radio" name="sex" value="any"><span>Either</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="q">
+        <span class="q__num">01</span>
+        <div>
+          <div class="q__head"><p class="q__title" id="hLabel">Height</p><span class="q__readout" id="hOut"></span></div>
+          <p class="q__hint">The average urban Indian man is about 5&prime;6&Prime;. The average woman, about 5&prime;1&Prime;.</p>
+          <div class="range2" id="hRange">
+            <div class="range2__track"><span class="range2__fill"></span></div>
+            <input type="range" min="54" max="78" step="1" id="hMin" aria-label="Minimum height">
+            <input type="range" min="54" max="78" step="1" id="hMax" aria-label="Maximum height">
+          </div>
+          <div class="ticks"><span>4&prime;6&Prime;</span><span>5&prime;6&Prime;</span><span>6&prime;6&Prime;</span></div>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q__num">02</span>
+        <div>
+          <div class="q__head"><p class="q__title">Age</p><span class="q__readout" id="aOut"></span></div>
+          <div class="range2" id="aRange">
+            <div class="range2__track"><span class="range2__fill"></span></div>
+            <input type="range" min="18" max="60" step="1" id="aMin" aria-label="Minimum age">
+            <input type="range" min="18" max="60" step="1" id="aMax" aria-label="Maximum age">
+          </div>
+          <div class="ticks"><span>18</span><span>39</span><span>60</span></div>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q__num">03</span>
+        <div>
+          <p class="q__title">Location</p>
+          <label class="select"><select class="tbd-input" id="city" aria-label="City"></select></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q__num">04</span>
+        <div>
+          <div class="q__head"><p class="q__title">Minimum income</p><span class="q__readout" id="iOut"></span></div>
+          <p class="q__hint">Annual, before tax.</p>
+          <div class="range1">
+            <input type="range" min="0" max="9" step="1" id="income" aria-label="Minimum annual income">
+          </div>
+          <div class="ticks"><span>Any</span><span>&#8377;15 L</span><span>&#8377;1 Cr</span></div>
+        </div>
+      </div>
+
+      <fieldset class="q">
+        <span class="q__num">05</span>
+        <div>
+          <legend class="q__title">Community</legend>
+          <p class="q__hint">Tick every one you are open to. Leave all unticked for any.</p>
+          <div class="checks" id="community"></div>
+          <button type="button" class="linkbtn" id="commClear">Clear &mdash; any community</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <span class="q__num">06</span>
+        <div>
+          <legend class="q__title">Drinking</legend>
+          <div class="radios" role="radiogroup">
+            <label class="radio"><input type="radio" name="drink" value="any" checked><span>Doesn&rsquo;t matter</span></label>
+            <label class="radio"><input type="radio" name="drink" value="never"><span>Never drinks</span></label>
+            <label class="radio"><input type="radio" name="drink" value="social"><span>Socially at most</span></label>
+            <label class="radio"><input type="radio" name="drink" value="must"><span>Must drink</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="q">
+        <span class="q__num">07</span>
+        <div>
+          <legend class="q__title">Smoking and drugs</legend>
+          <p class="q__hint">Switch on what is a dealbreaker.</p>
+          <div class="toggles">
+            <label class="toggle"><span>No cigarettes</span><input type="checkbox" id="cig" role="switch"><span class="toggle__ui" aria-hidden="true"></span></label>
+            <label class="toggle"><span>No weed</span><input type="checkbox" id="weed" role="switch"><span class="toggle__ui" aria-hidden="true"></span></label>
+            <label class="toggle"><span>No other drugs</span><input type="checkbox" id="drugs" role="switch"><span class="toggle__ui" aria-hidden="true"></span></label>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+
+    <aside class="result" id="result" aria-live="polite">
+      <div class="tbd-card">
+        <span class="tbd-eyebrow">02 &mdash; The verdict</span>
+        <div class="big" id="count">&mdash;</div>
+        <p class="big-sub tbd-body tbd-body--sm" id="countSub">people match your brief.</p>
+
+        <div class="weeks">
+          <span class="tbd-field__label">At one date a week</span>
+          <div class="weeks__value" id="weeks">&mdash;</div>
+          <p class="weeks__note" id="weeksNote"></p>
+        </div>
+
+        <p class="verdict" id="verdict"></p>
+        <p class="costliest" id="costliest"></p>
+
+        <div class="funnel">
+          <span class="tbd-eyebrow">03 &mdash; Where the pool goes</span>
+          <div id="funnel"></div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="tbd-btn" id="copyBtn">Copy my results link <span aria-hidden="true">&rarr;</span></button>
+          <button type="button" class="tbd-btn tbd-btn--ghost" id="resetBtn">Reset</button>
+        </div>
+        <p id="copyMsg" role="status"></p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="method">
+    <span class="tbd-eyebrow">04 &mdash; Method</span>
+    <h2>How the number is built</h2>
+    <ul>
+      <li>Start with the adult population of the city, split by single year of age and sex.</li>
+      <li>Keep only people who are single &mdash; never married, divorced or widowed &mdash; at each age.</li>
+      <li>Apply each criterion as a share of that pool: height from a normal curve by sex, income from an age-adjusted earnings curve for the city, community from mother-tongue shares, and habits from national survey prevalence.</li>
+      <li>Weeks assume you date at random from singles of your chosen sex and age range in the city, one a week, never the same person twice.</li>
+    </ul>
+    <p>Modelled on public sources &mdash; Census of India, NFHS-5, PLFS and published height studies &mdash; projected to 2026. Criteria are treated as independent. It does not account for whether they like you back. Treat the result as directional, not a headcount.</p>
+  </section>
+</div>
+
+<div class="tally" id="tally"><span id="tallyText">&mdash;</span><a href="#result">See verdict &rarr;</a></div>
+
+<style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------
+     Model inputs. Rough, directional estimates for urban India, 2026.
+     ------------------------------------------------------------------ */
+
+  // Urban agglomeration population, millions. tier scales earnings.
+  var CITIES = [
+    { id: "mumbai",     name: "Mumbai (MMR)",       pop: 22.0, tier: 1.00 },
+    { id: "delhi",      name: "Delhi NCR",          pop: 33.0, tier: 1.00 },
+    { id: "bengaluru",  name: "Bengaluru",          pop: 13.6, tier: 1.00 },
+    { id: "hyderabad",  name: "Hyderabad",          pop: 10.8, tier: 0.90 },
+    { id: "chennai",    name: "Chennai",            pop: 11.8, tier: 0.90 },
+    { id: "pune",       name: "Pune",               pop: 7.4,  tier: 0.90 },
+    { id: "kolkata",    name: "Kolkata",            pop: 15.3, tier: 0.75 },
+    { id: "ahmedabad",  name: "Ahmedabad",          pop: 8.6,  tier: 0.75 },
+    { id: "surat",      name: "Surat",              pop: 7.8,  tier: 0.70 },
+    { id: "jaipur",     name: "Jaipur",             pop: 4.2,  tier: 0.65 },
+    { id: "chandigarh", name: "Chandigarh Tricity", pop: 2.0,  tier: 0.75 },
+    { id: "lucknow",    name: "Lucknow",            pop: 3.9,  tier: 0.65 },
+    { id: "indore",     name: "Indore",             pop: 3.3,  tier: 0.65 },
+    { id: "kochi",      name: "Kochi",              pop: 2.3,  tier: 0.70 }
+  ];
+
+  var COMMUNITIES = [
+    { id: "gujarati",  name: "Gujarati" },
+    { id: "punjabi",   name: "Punjabi" },
+    { id: "marathi",   name: "Marathi" },
+    { id: "bengali",   name: "Bengali" },
+    { id: "tamil",     name: "Tamil" },
+    { id: "telugu",    name: "Telugu" },
+    { id: "kannadiga", name: "Kannadiga" },
+    { id: "malayali",  name: "Malayali" },
+    { id: "marwari",   name: "Marwari / Rajasthani" },
+    { id: "sindhi",    name: "Sindhi" },
+    { id: "hindi",     name: "UP / Bihar / MP" }
+  ];
+
+  // Share of each city's population by community. Missing = 0.002.
+  var MIX = {
+    mumbai:     { marathi: .36, gujarati: .12, hindi: .25, punjabi: .02, bengali: .01, tamil: .02, telugu: .01, kannadiga: .01, malayali: .01, marwari: .03, sindhi: .02 },
+    delhi:      { hindi: .55, punjabi: .18, bengali: .03, marwari: .04, gujarati: .01, marathi: .01, tamil: .01, telugu: .005, kannadiga: .003, malayali: .01, sindhi: .01 },
+    bengaluru:  { kannadiga: .42, tamil: .16, telugu: .14, malayali: .06, hindi: .09, marathi: .02, bengali: .02, gujarati: .01, punjabi: .01, marwari: .02, sindhi: .003 },
+    hyderabad:  { telugu: .60, hindi: .10, marathi: .02, tamil: .02, kannadiga: .02, malayali: .01, bengali: .01, gujarati: .01, marwari: .02, punjabi: .005, sindhi: .003 },
+    chennai:    { tamil: .78, telugu: .09, malayali: .03, hindi: .03, kannadiga: .01, marwari: .02, bengali: .005, gujarati: .01, marathi: .003, punjabi: .003 },
+    pune:       { marathi: .65, hindi: .12, gujarati: .03, punjabi: .02, marwari: .03, sindhi: .02, bengali: .01, tamil: .01, telugu: .01, kannadiga: .02, malayali: .02 },
+    kolkata:    { bengali: .65, hindi: .22, marwari: .04, punjabi: .01, gujarati: .005, tamil: .003, telugu: .003 },
+    ahmedabad:  { gujarati: .80, hindi: .09, marwari: .04, sindhi: .03, punjabi: .01, marathi: .01 },
+    surat:      { gujarati: .70, hindi: .15, marathi: .06, marwari: .04, sindhi: .01, telugu: .01, punjabi: .005 },
+    jaipur:     { marwari: .75, hindi: .15, punjabi: .03, sindhi: .03, gujarati: .005, bengali: .005 },
+    chandigarh: { punjabi: .55, hindi: .30, bengali: .01, marwari: .01 },
+    lucknow:    { hindi: .92, punjabi: .02, bengali: .01, sindhi: .01 },
+    indore:     { hindi: .80, marathi: .07, sindhi: .03, marwari: .03, gujarati: .02, punjabi: .02, bengali: .005 },
+    kochi:      { malayali: .90, tamil: .03, hindi: .02, gujarati: .005, kannadiga: .005 }
+  };
+
+  // Height in cm, urban adults.
+  var HEIGHT = { m: { mean: 167.5, sd: 7.0 }, f: { mean: 155.0, sd: 6.3 } };
+
+  // Share of people at an age who are single. Piecewise linear.
+  var SINGLE = {
+    f: [[18, .95], [21, .80], [24, .55], [27, .33], [30, .18], [33, .11], [36, .08], [40, .06], [50, .06], [60, .07]],
+    m: [[18, .99], [21, .96], [24, .85], [27, .62], [30, .38], [33, .21], [36, .13], [40, .08], [50, .06], [60, .05]]
+  };
+
+  // Share with an income at all, by age.
+  var EARNING = {
+    m: [[18, .25], [21, .45], [24, .70], [27, .85], [30, .92], [45, .92], [60, .85]],
+    f: [[18, .08], [21, .18], [24, .30], [27, .32], [30, .30], [40, .28], [60, .18]]
+  };
+  // Median annual earnings at age 30 in a tier-1 metro, in lakh rupees.
+  var MEDIAN_30 = { m: 4.5, f: 4.0 };
+  var AGE_PAY = [[18, .35], [21, .50], [24, .70], [27, .85], [30, 1.0], [35, 1.2], [40, 1.35], [50, 1.45], [60, 1.4]];
+  var PAY_SIGMA = 0.9;
+
+  // Habit prevalence among urban singles.
+  var HABITS = {
+    m: { drinkNever: .62, drinkSocial: .30, cig: .16, weed: .07, drugs: .03 },
+    f: { drinkNever: .80, drinkSocial: .17, cig: .03, weed: .02, drugs: .01 }
+  };
+
+  var INCOMES = [
+    { v: 0,   label: "Any income", short: "Any" },
+    { v: 3,   label: "₹3 lakh+",  short: "₹3 L+" },
+    { v: 5,   label: "₹5 lakh+",  short: "₹5 L+" },
+    { v: 8,   label: "₹8 lakh+",  short: "₹8 L+" },
+    { v: 10,  label: "₹10 lakh+", short: "₹10 L+" },
+    { v: 15,  label: "₹15 lakh+", short: "₹15 L+" },
+    { v: 20,  label: "₹20 lakh+", short: "₹20 L+" },
+    { v: 30,  label: "₹30 lakh+", short: "₹30 L+" },
+    { v: 50,  label: "₹50 lakh+", short: "₹50 L+" },
+    { v: 100, label: "₹1 crore+", short: "₹1 Cr+" }
+  ];
+
+  /* ------------------------------------------------------------------ */
+
+  function interp(points, x) {
+    if (x <= points[0][0]) return points[0][1];
+    for (var i = 1; i < points.length; i++) {
+      if (x <= points[i][0]) {
+        var a = points[i - 1], b = points[i];
+        return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]);
+      }
+    }
+    return points[points.length - 1][1];
+  }
+
+  // Share of the population at each single year of age (both sexes).
+  // Metros pull in young adults, so 20 to 35 gets a bump.
+  function ageShare(age) {
+    var base = 0.019 - (age - 18) * (0.0085 / 42);
+    return age >= 20 && age <= 35 ? base * 1.15 : base;
+  }
+
+  function erf(x) {
+    var s = x < 0 ? -1 : 1; x = Math.abs(x);
+    var t = 1 / (1 + 0.3275911 * x);
+    var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return s * y;
+  }
+  function ncdf(z) { return 0.5 * (1 + erf(z / Math.SQRT2)); }
+
+  var H_MIN = 54, H_MAX = 78;
+  var DEFAULTS = { sex: "f", hMin: 58, hMax: 68, aMin: 25, aMax: 30, city: "mumbai", income: 0, comm: [], drink: "any", cig: "any", weed: "any", drugs: "any" };
+  var state = JSON.parse(JSON.stringify(DEFAULTS));
+
+  var $ = function (id) { return document.getElementById(id); };
+  function inchLabel(n) { return Math.floor(n / 12) + "′" + (n % 12) + "″"; }
+  function cityById(id) { return CITIES.filter(function (c) { return c.id === id; })[0]; }
+  function incomeItem(v) { return INCOMES.filter(function (i) { return i.v === v; })[0]; }
+
+  /* ---- Build controls ---- */
+
+  $("city").innerHTML = CITIES.map(function (c) { return '<option value="' + c.id + '">' + c.name + "</option>"; }).join("");
+  $("community").innerHTML = COMMUNITIES.map(function (c) {
+    return '<label class="check"><input type="checkbox" value="' + c.id + '"><span>' + c.name + "</span></label>";
+  }).join("");
+
+  /* ---- Model ---- */
+
+  // Returns pool size at each stage for one sex:
+  // [singles, height, income, community, drink, cig, weed, drugs]
+  function stagesFor(sex, city) {
+    var hs = HEIGHT[sex];
+    var lo = (state.hMin - 0.5) * 2.54, hi = (state.hMax + 0.5) * 2.54;
+    var hPass = (state.hMin <= H_MIN ? 1 : 1 - ncdf((lo - hs.mean) / hs.sd)) -
+                (state.hMax >= H_MAX ? 0 : 1 - ncdf((hi - hs.mean) / hs.sd));
+
+    var pool = 0, afterIncome = 0;
+    for (var age = state.aMin; age <= state.aMax; age++) {
+      var singles = city.pop * 1e6 * ageShare(age) * 0.5 * interp(SINGLE[sex], age);
+      var inc = 1;
+      if (state.income > 0) {
+        var median = MEDIAN_30[sex] * interp(AGE_PAY, age) * city.tier;
+        inc = interp(EARNING[sex], age) * (1 - ncdf(Math.log(state.income / median) / PAY_SIGMA));
+      }
+      pool += singles;
+      afterIncome += singles * hPass * inc;
+    }
+
+    var mix = MIX[city.id];
+    var comm = state.comm.length
+      ? state.comm.reduce(function (s, id) { return s + (mix[id] != null ? mix[id] : 0.002); }, 0)
+      : 1;
+
+    var H = HABITS[sex];
+    var drink = 1;
+    if (state.drink === "never") drink = H.drinkNever;
+    else if (state.drink === "social") drink = H.drinkNever + H.drinkSocial;
+    else if (state.drink === "must") drink = 1 - H.drinkNever;
+
+    var s = [pool, pool * hPass, afterIncome];
+    s.push(s[2] * comm);
+    s.push(s[3] * drink);
+    s.push(s[4] * (state.cig === "never" ? 1 - H.cig : 1));
+    s.push(s[5] * (state.weed === "never" ? 1 - H.weed : 1));
+    s.push(s[6] * (state.drugs === "never" ? 1 - H.drugs : 1));
+    return s;
+  }
+
+  function compute() {
+    var city = cityById(state.city);
+    var sexes = state.sex === "any" ? ["f", "m"] : [state.sex];
+    var totals = [0, 0, 0, 0, 0, 0, 0, 0];
+    sexes.forEach(function (sx) {
+      stagesFor(sx, city).forEach(function (v, i) { totals[i] += v; });
+    });
+
+    var who = { f: "Single women", m: "Single men", any: "Singles" }[state.sex];
+    var commName = state.comm.length === 1
+      ? COMMUNITIES.filter(function (c) { return c.id === state.comm[0]; })[0].name
+      : state.comm.length + " communities";
+    var drinkNames = { never: "Never drinks", social: "Drinks socially at most", must: "Drinks" };
+    var defs = [
+      { name: who + ", " + state.aMin + "–" + state.aMax + ", " + city.name, on: true },
+      { name: "Height " + inchLabel(state.hMin) + "–" + inchLabel(state.hMax), on: state.hMin > H_MIN || state.hMax < H_MAX },
+      { name: "Income " + incomeItem(state.income).label, on: state.income > 0 },
+      { name: commName, on: state.comm.length > 0 },
+      { name: drinkNames[state.drink] || "", on: state.drink !== "any" },
+      { name: "No cigarettes", on: state.cig === "never" },
+      { name: "No weed", on: state.weed === "never" },
+      { name: "No other drugs", on: state.drugs === "never" }
+    ];
+
+    var steps = [], filters = [];
+    defs.forEach(function (d, i) {
+      if (!d.on) return;
+      if (steps.length) {
+        var prev = steps[steps.length - 1].n;
+        filters.push({ name: d.name, pass: prev > 0 ? totals[i] / prev : 0 });
+      }
+      steps.push({ name: d.name, n: totals[i] });
+    });
+
+    return { pool: totals[0], matches: totals[7], steps: steps, filters: filters, city: city };
+  }
+
+  /* ---- Render ---- */
+
+  var fmt = new Intl.NumberFormat("en-IN");
+  function n(x) { return fmt.format(Math.round(x)); }
+  function pct(x) {
+    var p = x * 100;
+    if (p >= 10) return Math.round(p) + "%";
+    if (p >= 1) return p.toFixed(1) + "%";
+    return p.toFixed(2) + "%";
+  }
+  function escapeHtml(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  function render() {
+    var r = compute();
+    var matches = Math.round(r.matches);
+
+    $("count").textContent = n(matches);
+    $("countSub").textContent = (matches === 1 ? "person" : "people") + " in " + r.city.name + " match your brief.";
+
+    var weeksEl = $("weeks"), note = $("weeksNote"), verdict = $("verdict");
+    var tally;
+    if (matches < 1) {
+      weeksEl.textContent = "Never";
+      note.textContent = "Not one person in " + r.city.name + " ticks every box.";
+      verdict.textContent = "This person has not been born. Or they live elsewhere.";
+      tally = "0 matches · never";
+    } else {
+      // Dating at random without repeats: expected dates until the first match.
+      var weeks = Math.max(1, Math.round((r.pool + 1) / (matches + 1)));
+      var years = weeks / 52;
+      var months = Math.max(1, Math.round(weeks / 4.35));
+      weeksEl.innerHTML = n(weeks) + ' <span class="unit">' + (weeks === 1 ? "week" : "weeks") + "</span>";
+      if (weeks <= 1) note.textContent = "Your next date is likely the one.";
+      else if (weeks < 52) note.textContent = "About " + months + (months === 1 ? " month" : " months") + " of Saturdays.";
+      else if (years < 80) note.textContent = "About " + (years < 10 ? years.toFixed(1) : Math.round(years)) + " years of Saturdays.";
+      else note.textContent = "About " + n(years) + " years. Roughly " + n(years / 70) + " lifetimes.";
+
+      if (weeks <= 4) verdict.textContent = "Barely picky. Next Saturday looks good.";
+      else if (weeks <= 26) verdict.textContent = "Within the year. Book the table.";
+      else if (weeks <= 104) verdict.textContent = "A long season. Keep the calendar open.";
+      else if (weeks <= 520) verdict.textContent = "Years, not weeks. Something has to give.";
+      else verdict.textContent = "Longer than most careers. Revisit the list.";
+      tally = n(matches) + " matches · " + n(weeks) + (weeks === 1 ? " week" : " weeks");
+    }
+    $("tallyText").textContent = tally;
+
+    // The criterion that removes the most of who was left before it.
+    var worst = r.filters.slice().sort(function (a, b) { return a.pass - b.pass; })[0];
+    $("costliest").innerHTML = worst && worst.pass < 0.9
+      ? "Your costliest criterion: <strong>" + escapeHtml(worst.name) + "</strong>. It removes " + pct(1 - worst.pass) + " of who was left."
+      : "";
+
+    var top = r.steps[0].n || 1;
+    $("funnel").innerHTML = r.steps.map(function (s, i) {
+      var prev = i ? r.steps[i - 1].n : 0;
+      var cut = i && prev > 0 ? '<span class="step__cut">− ' + pct(1 - s.n / prev) + "</span>" : "";
+      return '<div class="step"><div class="step__row"><span class="step__name">' + escapeHtml(s.name) + '</span><span class="step__val">' + n(s.n) + cut + "</span></div>" +
+             '<div class="bar"><span style="width:' + Math.max(0, Math.min(100, s.n / top * 100)).toFixed(3) + '%"></span></div></div>';
+    }).join("") + (r.steps.length === 1 ? '<p class="costliest">Add criteria to see the pool shrink.</p>' : "");
+  }
+
+  /* ---- Sync state to controls ---- */
+
+  function paintRange2(wrapId, minEl, maxEl) {
+    var lo = +minEl.min, hi = +minEl.max;
+    var a = (+minEl.value - lo) / (hi - lo) * 100, b = (+maxEl.value - lo) / (hi - lo) * 100;
+    var fill = $(wrapId).querySelector(".range2__fill");
+    fill.style.left = a + "%"; fill.style.width = (b - a) + "%";
+    // Keep the handle you can still move on top when they meet at an end.
+    minEl.style.zIndex = +minEl.value >= hi - 1 ? 3 : 2;
+    maxEl.style.zIndex = 2;
+  }
+
+  function syncControls() {
+    $("hMin").value = state.hMin; $("hMax").value = state.hMax;
+    $("aMin").value = state.aMin; $("aMax").value = state.aMax;
+    paintRange2("hRange", $("hMin"), $("hMax"));
+    paintRange2("aRange", $("aMin"), $("aMax"));
+    var hAll = state.hMin <= H_MIN && state.hMax >= H_MAX;
+    $("hOut").textContent = hAll ? "Any height" : inchLabel(state.hMin) + " – " + inchLabel(state.hMax);
+    $("aOut").textContent = state.aMin + " – " + state.aMax + " yrs";
+
+    var idx = INCOMES.map(function (i) { return i.v; }).indexOf(state.income);
+    $("income").value = idx;
+    $("income").style.setProperty("--fill", (idx / (INCOMES.length - 1) * 100) + "%");
+    $("income").setAttribute("aria-valuetext", INCOMES[idx].label);
+    $("iOut").textContent = INCOMES[idx].short;
+
+    $("city").value = state.city;
+
+    document.querySelectorAll('input[name="sex"]').forEach(function (r) { r.checked = r.value === state.sex; });
+    document.querySelectorAll('input[name="drink"]').forEach(function (r) { r.checked = r.value === state.drink; });
+    $("community").querySelectorAll("input").forEach(function (c) { c.checked = state.comm.indexOf(c.value) !== -1; });
+    $("commClear").hidden = state.comm.length === 0;
+    ["cig", "weed", "drugs"].forEach(function (k) { $(k).checked = state[k] === "never"; });
+  }
+
+  function toQuery() {
+    var p = new URLSearchParams();
+    Object.keys(DEFAULTS).forEach(function (k) {
+      var v = k === "comm" ? state.comm.join(",") : String(state[k]);
+      var d = k === "comm" ? "" : String(DEFAULTS[k]);
+      if (v !== d) p.set(k, v);
+    });
+    var q = p.toString();
+    return q ? "?" + q : "";
+  }
+
+  function fromQuery() {
+    var p = new URLSearchParams(location.search);
+    var num = function (k, lo, hi) { var v = parseInt(p.get(k), 10); if (!isNaN(v) && v >= lo && v <= hi) state[k] = v; };
+    var pick = function (k, allowed) { var v = p.get(k); if (allowed.indexOf(v) !== -1) state[k] = v; };
+    pick("sex", ["f", "m", "any"]);
+    num("hMin", H_MIN, H_MAX); num("hMax", H_MIN, H_MAX); num("aMin", 18, 60); num("aMax", 18, 60);
+    if (state.hMin > state.hMax) { var t = state.hMin; state.hMin = state.hMax; state.hMax = t; }
+    if (state.aMin > state.aMax) { var u = state.aMin; state.aMin = state.aMax; state.aMax = u; }
+    pick("city", CITIES.map(function (c) { return c.id; }));
+    var inc = parseInt(p.get("income"), 10); if (incomeItem(inc)) state.income = inc;
+    var ids = COMMUNITIES.map(function (c) { return c.id; });
+    if (p.get("comm")) state.comm = p.get("comm").split(",").filter(function (c, i, arr) { return ids.indexOf(c) !== -1 && arr.indexOf(c) === i; });
+    pick("drink", ["any", "never", "social", "must"]);
+    ["cig", "weed", "drugs"].forEach(function (k) { pick(k, ["any", "never"]); });
+  }
+
+  function update() {
+    syncControls();
+    render();
+    try { history.replaceState(null, "", location.pathname + toQuery()); } catch (e) {}
+  }
+
+  /* ---- Wire inputs ---- */
+
+  // Dual sliders: the two handles can meet but never cross.
+  function wireRange2(minId, maxId) {
+    $(minId).addEventListener("input", function () {
+      state[minId] = Math.min(+this.value, state[maxId]); update();
+    });
+    $(maxId).addEventListener("input", function () {
+      state[maxId] = Math.max(+this.value, state[minId]); update();
+    });
+  }
+  wireRange2("hMin", "hMax");
+  wireRange2("aMin", "aMax");
+
+  $("income").addEventListener("input", function () { state.income = INCOMES[+this.value].v; update(); });
+  $("city").addEventListener("change", function () { state.city = this.value; update(); });
+
+  document.querySelectorAll('input[name="sex"]').forEach(function (r) {
+    r.addEventListener("change", function () { state.sex = this.value; update(); });
+  });
+  document.querySelectorAll('input[name="drink"]').forEach(function (r) {
+    r.addEventListener("change", function () { state.drink = this.value; update(); });
+  });
+  $("community").addEventListener("change", function () {
+    state.comm = Array.prototype.filter.call($("community").querySelectorAll("input"), function (c) { return c.checked; })
+      .map(function (c) { return c.value; });
+    update();
+  });
+  $("commClear").addEventListener("click", function () { state.comm = []; update(); });
+  ["cig", "weed", "drugs"].forEach(function (k) {
+    $(k).addEventListener("change", function () { state[k] = this.checked ? "never" : "any"; update(); });
+  });
+
+  $("resetBtn").addEventListener("click", function () {
+    state = JSON.parse(JSON.stringify(DEFAULTS));
+    $("copyMsg").textContent = "";
+    update();
+  });
+
+  $("copyBtn").addEventListener("click", function () {
+    var url = location.origin + location.pathname + toQuery();
+    var done = function () { $("copyMsg").textContent = "Link copied. Send it to whoever needs to hear it."; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done, function () { $("copyMsg").textContent = url; });
+    } else { $("copyMsg").textContent = url; }
+    if (typeof gtag === "function") gtag("event", "match_calculator_share");
+  });
+
+  fromQuery();
+  update();
+})();
+</script>
+
+</body>
+</html>
