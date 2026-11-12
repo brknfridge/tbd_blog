@@ -13,12 +13,12 @@
   gtag('config', 'G-T4DT9ES451');
 </script>
 
-<title>[tbd] &middot; Match calculator</title>
+<title>[tbd] &middot; Matchle</title>
 <meta name="description" content="Set your criteria for an ideal partner. See how many people in your city fit, and how many weeks of dating it takes to meet one.">
-<link rel="canonical" href="https://tbdonline.in/match-calculator/">
-<meta property="og:title" content="[tbd] · Match calculator">
+<link rel="canonical" href="https://tbdonline.in/matchle/">
+<meta property="og:title" content="[tbd] · Matchle">
 <meta property="og:description" content="How many people in your city fit your list — and how many Saturdays it takes to meet one.">
-<meta property="og:url" content="https://tbdonline.in/match-calculator/">
+<meta property="og:url" content="https://tbdonline.in/matchle/">
 
 <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
@@ -144,6 +144,13 @@
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
   .actions .tbd-btn { flex: 1 1 auto; }
   #copyMsg { font-size: 13px; color: var(--tbd-text-muted); margin: 10px 0 0; min-height: 18px; }
+  .share-preview {
+    margin: 12px 0 0; padding: 16px;
+    border: var(--tbd-border-hairline) solid var(--tbd-rule); border-radius: var(--tbd-radius-md);
+    font-family: var(--tbd-font-mono); font-size: 13px; line-height: 1.6; color: var(--tbd-text);
+    white-space: pre-wrap; word-break: break-word; user-select: all;
+  }
+  .share-preview[hidden] { display: none; }
 
   .method { margin-top: 96px; max-width: 760px; }
   .method h2 { font-size: 22px; font-family: var(--tbd-font-sans); font-weight: var(--tbd-weight-medium); margin: 16px 0 12px; letter-spacing: -0.01em; }
@@ -299,7 +306,7 @@
 <div class="sheet">
   <div class="top">
     <a href="/" class="tbd-nav-link" aria-label="Back to [tbd]"><span class="tbd-wordmark">tbd</span></a>
-    <span class="tbd-tag">Match calculator</span>
+    <span class="tbd-tag">Matchle</span>
   </div>
 
   <header class="intro">
@@ -428,10 +435,11 @@
         </div>
 
         <div class="actions">
-          <button type="button" class="tbd-btn" id="copyBtn">Copy my results link <span aria-hidden="true">&rarr;</span></button>
+          <button type="button" class="tbd-btn" id="copyBtn">Copy my results <span aria-hidden="true">&rarr;</span></button>
           <button type="button" class="tbd-btn tbd-btn--ghost" id="resetBtn">Reset</button>
         </div>
         <p id="copyMsg" role="status"></p>
+        <pre class="share-preview" id="sharePreview" hidden></pre>
       </div>
     </aside>
   </div>
@@ -650,13 +658,14 @@
     var drinkNames = { never: "Never drinks", social: "Drinks socially at most", must: "Drinks" };
     var defs = [
       { name: who + ", " + state.aMin + "–" + state.aMax + ", " + city.name, on: true },
-      { name: "Height " + inchLabel(state.hMin) + "–" + inchLabel(state.hMax), on: state.hMin > H_MIN || state.hMax < H_MAX },
-      { name: "Income " + incomeItem(state.income).label, on: state.income > 0 },
-      { name: commName, on: state.comm.length > 0 },
-      { name: drinkNames[state.drink] || "", on: state.drink !== "any" },
-      { name: "No cigarettes", on: state.cig === "never" },
-      { name: "No weed", on: state.weed === "never" },
-      { name: "No other drugs", on: state.drugs === "never" }
+      { name: "Height " + inchLabel(state.hMin) + "–" + inchLabel(state.hMax), on: state.hMin > H_MIN || state.hMax < H_MAX,
+        icon: "\uD83D\uDCCF", short: state.hMax >= H_MAX ? inchLabel(state.hMin) + "+" : state.hMin <= H_MIN ? "Under " + inchLabel(state.hMax + 1) : inchLabel(state.hMin) + "–" + inchLabel(state.hMax) },
+      { name: "Income " + incomeItem(state.income).label, on: state.income > 0, icon: "\uD83D\uDCB0", short: incomeItem(state.income).short },
+      { name: commName, on: state.comm.length > 0, icon: "\uD83C\uDFE1", short: commName },
+      { name: drinkNames[state.drink] || "", on: state.drink !== "any", icon: "\uD83C\uDF77", short: { never: "Sober", social: "Social drinker max", must: "Must drink" }[state.drink] },
+      { name: "No cigarettes", on: state.cig === "never", icon: "\uD83D\uDEAD", short: "No cigarettes" },
+      { name: "No weed", on: state.weed === "never", icon: "\uD83C\uDF3F", short: "No weed" },
+      { name: "No other drugs", on: state.drugs === "never", icon: "\uD83D\uDC8A", short: "No other drugs" }
     ];
 
     var steps = [], filters = [];
@@ -664,12 +673,12 @@
       if (!d.on) return;
       if (steps.length) {
         var prev = steps[steps.length - 1].n;
-        filters.push({ name: d.name, pass: prev > 0 ? totals[i] / prev : 0 });
+        filters.push({ name: d.name, icon: d.icon, short: d.short, pass: prev > 0 ? totals[i] / prev : 0 });
       }
       steps.push({ name: d.name, n: totals[i] });
     });
 
-    return { pool: totals[0], matches: totals[7], steps: steps, filters: filters, city: city };
+    return { pool: totals[0], matches: totals[7], steps: steps, filters: filters, city: city, who: who };
   }
 
   /* ---- Render ---- */
@@ -797,6 +806,7 @@
   }
 
   function update() {
+    if ($("sharePreview")) { $("sharePreview").hidden = true; $("copyMsg").textContent = ""; }
     syncControls();
     render();
     try { history.replaceState(null, "", location.pathname + toQuery()); } catch (e) {}
@@ -837,17 +847,69 @@
 
   $("resetBtn").addEventListener("click", function () {
     state = JSON.parse(JSON.stringify(DEFAULTS));
-    $("copyMsg").textContent = "";
     update();
   });
 
+  // Ten squares per criterion: green for the share of the pool it keeps,
+  // black for what it cuts. A criterion that keeps under 5% gets one red
+  // square, so the brutal filters read as brutal at a glance.
+  function squares(pass) {
+    var keep = Math.round(pass * 10);
+    if (pass > 0 && pass < 0.05) return "\uD83D\uDFE5" + "\u2B1B".repeat(9);
+    if (keep === 0 && pass > 0) keep = 1;
+    return "\uD83D\uDFE9".repeat(keep) + "\u2B1B".repeat(10 - keep);
+  }
+
+  function shareText() {
+    var r = compute();
+    var matches = Math.round(r.matches);
+    var weeks = matches < 1 ? Infinity : Math.max(1, Math.round((r.pool + 1) / (matches + 1)));
+    var years = weeks / 52;
+    var eta, mood;
+    if (!isFinite(weeks)) { eta = "never"; mood = "\uD83D\uDC7B Does not exist"; }
+    else {
+      eta = n(weeks) + (weeks === 1 ? " week" : " weeks") +
+        (weeks >= 52 ? " (" + (years < 10 ? years.toFixed(1) : n(years)) + " yrs)" : "");
+      mood = weeks <= 4 ? "\uD83D\uDD25 Barely picky"
+        : weeks <= 26 ? "\uD83E\uDD42 Book the table"
+        : weeks <= 104 ? "\u23F3 A long season"
+        : weeks <= 520 ? "\uD83E\uDDD3 Something has to give"
+        : weeks <= 52 * 80 ? "\uD83E\uDEA6 Longer than a career"
+        : "\uD83E\uDD96 See you in the next era";
+    }
+
+    var lines = ["[tbd] Matchle", r.who + ", " + state.aMin + "\u2013" + state.aMax + " \u00B7 " + r.city.name, ""];
+    if (r.filters.length) {
+      r.filters.forEach(function (f) { lines.push(squares(f.pass) + " " + f.icon + " " + f.short); });
+    } else {
+      lines.push("\uD83D\uDFE9".repeat(10) + " No dealbreakers");
+    }
+    lines.push("");
+    lines.push("\uD83D\uDC98 " + n(matches) + (matches === 1 ? " match" : " matches"));
+    lines.push("\uD83D\uDCC5 One date a week: " + eta);
+    lines.push(mood);
+    lines.push("");
+    lines.push(location.origin + location.pathname + toQuery());
+    return lines.join("\n");
+  }
+
   $("copyBtn").addEventListener("click", function () {
-    var url = location.origin + location.pathname + toQuery();
-    var done = function () { $("copyMsg").textContent = "Link copied. Send it to whoever needs to hear it."; };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(done, function () { $("copyMsg").textContent = url; });
-    } else { $("copyMsg").textContent = url; }
-    if (typeof gtag === "function") gtag("event", "match_calculator_share");
+    var text = shareText();
+    var done = function () { $("copyMsg").textContent = "Copied. Paste it in the group chat."; };
+    var fallback = function () {
+      // Older browsers and denied clipboard permission: select a hidden textarea.
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      if (ok) done(); else $("copyMsg").textContent = "Copy failed. Select the text below.";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+    $("sharePreview").textContent = text;
+    $("sharePreview").hidden = false;
+    if (typeof gtag === "function") gtag("event", "matchle_share");
   });
 
   fromQuery();

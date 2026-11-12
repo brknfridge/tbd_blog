@@ -5,7 +5,8 @@
   "trailingSlash": true,
   "redirects": [
     { "source": "/about/", "destination": "/blog/about/", "permanent": true },
-    { "source": "/p/:slug/", "destination": "/blog/p/:slug/", "permanent": true }
+    { "source": "/p/:slug/", "destination": "/blog/p/:slug/", "permanent": true },
+    { "source": "/match-calculator/", "destination": "/matchle/", "permanent": true }
   ],
   "rewrites": [
     { "source": "/qr", "destination": "/api/qr" }
