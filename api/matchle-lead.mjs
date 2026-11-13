@@ -44,9 +44,13 @@ export default async function handler(req, res) {
   const brief = String(body.brief || "").slice(0, 600);
   const r = body.result && typeof body.result === "object" ? body.result : {};
 
-  if (name.length < 2) return res.status(400).json({ error: "Tell us your name." });
+  // "email": the idle lightbox, email only. "full" (default): the Done
+  // pop-up, which also needs a name and phone.
+  const kind = body.kind === "email" ? "email" : "full";
+
+  if (kind === "full" && name.length < 2) return res.status(400).json({ error: "Tell us your name." });
   if (!EMAIL_RE.test(email)) return res.status(400).json({ error: "Enter a valid email address." });
-  if (!PHONE_RE.test(phone)) return res.status(400).json({ error: "Enter a phone number with 7 to 15 digits." });
+  if (kind === "full" && !PHONE_RE.test(phone)) return res.status(400).json({ error: "Enter a phone number with 7 to 15 digits." });
 
   const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
@@ -55,9 +59,10 @@ export default async function handler(req, res) {
   }
 
   const row = {
-    name,
+    kind,
+    name: name || null,
     email,
-    phone,
+    phone: kind === "full" ? phone : null,
     brief,
     city: str(r.city, 40),
     looking_for: str(r.looking_for, 10),
@@ -161,9 +166,10 @@ async function notify(row, apiKey, to) {
   const text = [
     "New Matchle lead",
     "",
-    `Name:    ${row.name}`,
+    `Source:  ${row.kind === "email" ? "Email lightbox" : "Done pop-up"}`,
+    `Name:    ${row.name || "-"}`,
     `Email:   ${row.email}`,
-    `Phone:   ${row.phone}`,
+    `Phone:   ${row.phone || "-"}`,
     `City:    ${row.city || "-"}`,
     `Looking: ${row.looking_for || "-"}`,
     `Matches: ${row.matches ?? "-"} · ${row.weeks ?? "-"} weeks`,
@@ -173,7 +179,7 @@ async function notify(row, apiKey, to) {
   const resp = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to, reply_to: row.email, subject: `Matchle lead: ${row.name}`, text }),
+    body: JSON.stringify({ from, to, reply_to: row.email, subject: `Matchle lead: ${row.name || row.email}`, text }),
   });
   if (!resp.ok) throw new Error(`Resend ${resp.status}: ${await resp.text()}`);
 }

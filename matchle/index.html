@@ -323,6 +323,9 @@
   .lead__fine { font-size: 12px; line-height: 1.5; color: var(--tbd-text-muted); margin: 12px 0 0; }
   .lead__share-label { display: block; margin-top: 24px; }
   .modal .lead__share-label + .share-preview { margin-top: 10px; }
+  .modal__card--sm { max-width: 420px; }
+  .email__title { margin-top: 4px; padding-right: 44px; font-size: 24px; }
+  .email__done { color: var(--tbd-text); font-size: 15px; margin: 0; }
   @media (max-width: 560px) { .modal__card { padding: 24px 20px; } }
 
   @media (max-width: 560px) {
@@ -694,6 +697,29 @@
       <button type="button" class="tbd-btn tbd-btn--ghost" id="modalEdit">Edit brief</button>
     </div>
     <p id="modalMsg" role="status"></p>
+  </div>
+</div>
+
+<!-- Email lightbox: opens once, after someone has started the brief and then
+     gone 5 seconds without touching anything. -->
+<div class="modal" id="emailModal" hidden>
+  <div class="modal__card modal__card--sm" role="dialog" aria-modal="true" aria-labelledby="emailTitle" tabindex="-1">
+    <button type="button" class="modal__close" id="emailClose" aria-label="Close">&#x2715;</button>
+    <h2 class="lead__title email__title" id="emailTitle">Want Matchle updates?</h2>
+    <form id="emailForm" novalidate>
+      <p class="lead__copy">Leave your email and we&rsquo;ll keep you posted on Matchle.</p>
+      <label class="tbd-field lead__fields">
+        <span class="tbd-field__label">Email</span>
+        <input class="tbd-input" id="emailInput" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required>
+      </label>
+      <label class="lead__trap" aria-hidden="true">Company<input type="text" name="company" id="emailTrap" tabindex="-1" autocomplete="off"></label>
+      <button type="submit" class="tbd-btn lead__submit" id="emailSubmit">Keep me posted <span aria-hidden="true">&rarr;</span></button>
+      <p class="lead__msg" id="emailMsg" role="status" aria-live="polite"></p>
+      <p class="lead__fine">Only Matchle emails. Unsubscribe anytime.</p>
+    </form>
+    <div id="emailDone" hidden>
+      <p class="lead__copy email__done">You&rsquo;re on the list. Back to your brief.</p>
+    </div>
   </div>
 </div>
 
@@ -1515,19 +1541,108 @@
   $("doneBtn").addEventListener("click", openModal);
   $("modalClose").addEventListener("click", closeModal);
   $("modalEdit").addEventListener("click", closeModal);
+
+  /* ---- Email lightbox ---- */
+  // Opens once per visitor: after the first touch on the brief, then 5
+  // seconds with no input at all. Never over the results pop-up, and never
+  // for someone who has already given us their email.
+  var EMAIL_KEY = "tbd-matchle-email";
+  var IDLE_MS = 5000;
+  var emailTimer = null, emailStarted = false, emailFocus = null;
+  function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function emailDue() { return !storeGet(EMAIL_KEY) && !storeGet(LEAD_KEY); }
+
+  function armEmail() {
+    if (!emailStarted || !emailDue()) return;
+    clearTimeout(emailTimer);
+    emailTimer = setTimeout(openEmail, IDLE_MS);
+  }
+  function openEmail() {
+    if (!emailDue() || !$("modal").hidden || !$("emailModal").hidden) return;
+    storeSet(EMAIL_KEY, "shown");
+    emailFocus = document.activeElement;
+    $("emailModal").hidden = false;
+    document.body.classList.add("has-modal");
+    $("emailModal").querySelector(".modal__card").focus();
+    track("matchle_email_prompt", {});
+  }
+  function closeEmail() {
+    clearTimeout(emailTimer);
+    $("emailModal").hidden = true;
+    if ($("modal").hidden) document.body.classList.remove("has-modal");
+    if (emailFocus && emailFocus.focus) emailFocus.focus();
+  }
+
+  // Any interaction with the brief starts the clock; any input anywhere
+  // restarts it.
+  var doneOpened = false;
+  $("doneBtn").addEventListener("click", function () { doneOpened = true; });
+  ["input", "change", "pointerdown"].forEach(function (type) {
+    $("brief").addEventListener(type, function () { if (!doneOpened) { emailStarted = true; armEmail(); } });
+  });
+  ["pointerdown", "keydown", "input"].forEach(function (type) {
+    document.addEventListener(type, function () { if (emailStarted) armEmail(); }, true);
+  });
+  // The Done pop-up asks for an email itself, so once someone has opened it
+  // the lightbox stays away for the rest of the visit.
+  $("doneBtn").addEventListener("click", function () { clearTimeout(emailTimer); emailStarted = false; });
+
+  $("emailClose").addEventListener("click", closeEmail);
+  $("emailModal").addEventListener("click", function (e) { if (e.target === this) closeEmail(); });
+  $("emailInput").addEventListener("input", function () { this.removeAttribute("aria-invalid"); $("emailMsg").textContent = ""; });
+
+  $("emailForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var btn = $("emailSubmit");
+    if (btn.disabled) return;
+    var email = $("emailInput").value.trim();
+    if (!EMAIL_RE.test(email)) {
+      $("emailInput").setAttribute("aria-invalid", "true");
+      $("emailInput").focus();
+      $("emailMsg").textContent = "Enter a valid email address.";
+      return;
+    }
+    btn.disabled = true;
+    $("emailMsg").textContent = "";
+    var params = resultParams();
+    fetch(LEAD_ENDPOINT, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ kind: "email", email: email, company: $("emailTrap").value, brief: toQuery().replace(/^\?/, ""), result: params })
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (d) {
+          if (!res.ok) throw new Error((d && d.error) || "Could not save your email. Try again.");
+        });
+      })
+      .then(function () {
+        storeSet(EMAIL_KEY, "given");
+        // Save them retyping it in the Done pop-up.
+        if (!$("leadEmail").value) $("leadEmail").value = email;
+        $("emailForm").hidden = true;
+        $("emailDone").hidden = false;
+        $("emailModal").querySelector(".modal__card").focus();
+        track("matchle_email_signup", params);
+        setTimeout(closeEmail, 1800);
+      })
+      .catch(function (err) { $("emailMsg").textContent = err.message || "Could not save your email. Try again."; })
+      .then(function () { btn.disabled = false; });
+  });
   $("modal").addEventListener("click", function (e) { if (e.target === this) closeModal(); });
   $("modalCopy").addEventListener("click", function () { copyResults($("modalMsg"), null, "popup"); });
   document.addEventListener("keydown", function (e) {
-    if ($("modal").hidden) return;
-    if (e.key === "Escape") { closeModal(); return; }
+    var open = !$("emailModal").hidden ? $("emailModal") : !$("modal").hidden ? $("modal") : null;
+    if (!open) return;
+    if (e.key === "Escape") { if (open === $("modal")) closeModal(); else closeEmail(); return; }
     if (e.key === "Tab") {
       // Keep focus inside the popup.
       var f = Array.prototype.filter.call(
-        $("modal").querySelectorAll("button, input:not([tabindex='-1'])"),
+        open.querySelectorAll("button, input:not([tabindex='-1'])"),
         function (el) { return el.offsetParent !== null && !el.disabled; }
       );
       var first = f[0], last = f[f.length - 1];
-      var onCard = document.activeElement === $("modal").querySelector(".modal__card");
+      var onCard = document.activeElement === open.querySelector(".modal__card");
       if (e.shiftKey && (document.activeElement === first || onCard)) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }

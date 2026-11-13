@@ -51,3 +51,10 @@ alter table public.matchle_leads
   add column if not exists unsubscribe_token uuid not null default gen_random_uuid();
 alter table public.matchle_leads
   add column if not exists unsubscribed_at timestamptz;
+
+-- Email-only signups from the Matchle lightbox: name and phone are optional,
+-- and kind records which form a row came from ('full' = Done pop-up).
+alter table public.matchle_leads alter column name drop not null;
+alter table public.matchle_leads alter column phone drop not null;
+alter table public.matchle_leads
+  add column if not exists kind text not null default 'full';
