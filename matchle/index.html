@@ -67,7 +67,7 @@
         {
           "@type": "Question",
           "name": "How does Matchle calculate the number of matches?",
-          "acceptedAnswer": { "@type": "Answer", "text": "It starts with the adult population of the city by age and sex, keeps only people who are single, then applies each criterion as a share of that pool: height from a normal curve by sex, income from an age-adjusted earnings curve for the city, community from mother-tongue shares, religion from census shares, and habits from national survey prevalence. Sources are the Census of India, NFHS-5, PLFS and published height studies, projected to 2026." }
+          "acceptedAnswer": { "@type": "Answer", "text": "It starts with the adult population of the city by age, using the city's own sex ratio and migration-adjusted age structure, and keeps only people who are single. It then applies each criterion: height from a normal curve by sex, income from city-specific earnings for single people, community from identity-adjusted language shares, religion from census shares, and habits from survey prevalence adjusted for city and religion. Related criteria, such as height and income or drinking and smoking, are counted together rather than multiplied. Sources are the Census of India, NFHS-5, PLFS and published height studies, projected to 2026." }
         },
         {
           "@type": "Question",
@@ -77,7 +77,7 @@
         {
           "@type": "Question",
           "name": "Is the Matchle result an exact count?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. It is a directional model, not a headcount. Criteria are treated as independent, and it does not account for whether the other person likes you back." }
+          "acceptedAnswer": { "@type": "Answer", "text": "No. It is a directional model, not a headcount, and it does not account for whether the other person likes you back." }
         }
       ]
     }
@@ -121,7 +121,6 @@
   .theme button[aria-pressed="true"] { background: var(--tbd-text); color: var(--tbd-bg); }
   .theme button:focus-visible { outline: 2px solid var(--tbd-focus); outline-offset: 2px; }
   .top__right { display: flex; align-items: center; gap: 12px; }
-  @media (max-width: 420px) { .top .tbd-tag { display: none; } }
   body { min-height: 100vh; padding: 40px 16px 120px; }
 
   .sheet { max-width: 1120px; margin: 0 auto; }
@@ -225,7 +224,6 @@
   .costliest strong { color: var(--tbd-text); font-weight: var(--tbd-weight-medium); }
 
   .funnel { margin-top: 28px; }
-  .funnel .tbd-eyebrow { margin-bottom: 8px; }
   .step { padding: 12px 0; border-bottom: var(--tbd-border-hairline) solid var(--tbd-rule); }
   .step__row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
   .step__name { font-family: var(--tbd-font-mono); font-size: var(--tbd-size-label-sm); letter-spacing: var(--tbd-tracking-label); text-transform: uppercase; }
@@ -244,12 +242,6 @@
     white-space: pre-wrap; word-break: break-word; user-select: all;
   }
   .share-preview[hidden] { display: none; }
-
-  .method { margin-top: 96px; max-width: 760px; }
-  .method h2 { font-size: 22px; font-family: var(--tbd-font-sans); font-weight: var(--tbd-weight-medium); margin: 16px 0 12px; letter-spacing: -0.01em; }
-  .method p, .method li { color: var(--tbd-text-muted); font-size: 15px; line-height: 1.6; }
-  .method ul { padding-left: 18px; margin: 0; }
-  .method li { margin-bottom: 6px; }
 
   /* A tally pinned to the bottom with the Done button, so the number and
      the way to the results stay in view while the brief is filled in. */
@@ -462,7 +454,6 @@
   <div class="top">
     <a href="/" class="tbd-nav-link" aria-label="Back to [tbd]"><span class="tbd-wordmark">tbd</span></a>
     <div class="top__right">
-      <span class="tbd-tag">Matchle</span>
       <div class="theme" role="group" aria-label="Colour theme">
         <button type="button" data-theme="light">Light</button>
         <button type="button" data-theme="dark">Dark</button>
@@ -471,7 +462,6 @@
   </div>
 
   <header class="intro">
-    <span class="tbd-eyebrow">01 &mdash; The brief</span>
     <h1 class="tbd-display">Your ideal partner, <span class="tbd-accent-blue">to be defined.</span></h1>
     <p class="tbd-body">Write down what you want. We size the market in your city and tell you how many Saturdays it takes to meet them, one date a week.</p>
   </header>
@@ -622,7 +612,6 @@
 
     <aside class="result" id="result" aria-live="polite">
       <div class="tbd-card">
-        <span class="tbd-eyebrow">02 &mdash; The verdict</span>
         <div class="big" id="count">&mdash;</div>
         <p class="big-sub tbd-body tbd-body--sm" id="countSub">people match your brief.</p>
 
@@ -636,7 +625,6 @@
         <p class="costliest" id="costliest"></p>
 
         <div class="funnel">
-          <span class="tbd-eyebrow">03 &mdash; Where the pool goes</span>
           <div id="funnel"></div>
         </div>
 
@@ -649,18 +637,6 @@
       </div>
     </aside>
   </div>
-
-  <section class="method">
-    <span class="tbd-eyebrow">04 &mdash; Method</span>
-    <h2>How the number is built</h2>
-    <ul>
-      <li>Start with the adult population of the city, split by single year of age and sex.</li>
-      <li>Keep only people who are single &mdash; never married, divorced or widowed &mdash; at each age.</li>
-      <li>Apply each criterion as a share of that pool: height from a normal curve by sex, income from an age-adjusted earnings curve for the city, community from mother-tongue shares, religion from census shares (within each community you pick, where you pick one), and habits from national survey prevalence.</li>
-      <li>Weeks assume you date at random from singles of your chosen sex and age range in the city, one a week, never the same person twice.</li>
-    </ul>
-    <p>Modelled on public sources &mdash; Census of India, NFHS-5, PLFS and published height studies &mdash; projected to 2026. Criteria are treated as independent. It does not account for whether they like you back. Treat the result as directional, not a headcount.</p>
-  </section>
 </div>
 
 <div class="tally" id="tally">
@@ -731,22 +707,36 @@
      Model inputs. Rough, directional estimates for urban India, 2026.
      ------------------------------------------------------------------ */
 
-  // Urban agglomeration population, millions. tier scales earnings.
+  // Per city:
+  //   pop    urban agglomeration population, millions.
+  //   sr     women per 1,000 men (Census 2011). Metros that draw migrant
+  //          workers have far more men than women; the pool is split on this,
+  //          not 50/50.
+  //   young  how much bigger the 22–35 age band is than the national shape,
+  //          from migration into the city for study and work.
+  //   earn   share of single people at peak working age with any income.
+  //          Single women in metros work at far higher rates than the
+  //          national female average, which is mostly married women.
+  //   med    median annual earnings at 30 among those earning, lakh rupees.
+  //   sigma  spread of earnings (log scale). Wider where tech and finance pay
+  //          stretch the top end.
+  //   drink  drinking relative to the national urban average (Gujarat is dry;
+  //          Kerala and Punjab drink more).
   var CITIES = [
-    { id: "mumbai",     name: "Mumbai (MMR)",       pop: 22.0, tier: 1.00 },
-    { id: "delhi",      name: "Delhi NCR",          pop: 33.0, tier: 1.00 },
-    { id: "bengaluru",  name: "Bengaluru",          pop: 13.6, tier: 1.00 },
-    { id: "hyderabad",  name: "Hyderabad",          pop: 10.8, tier: 0.90 },
-    { id: "chennai",    name: "Chennai",            pop: 11.8, tier: 0.90 },
-    { id: "pune",       name: "Pune",               pop: 7.4,  tier: 0.90 },
-    { id: "kolkata",    name: "Kolkata",            pop: 15.3, tier: 0.75 },
-    { id: "ahmedabad",  name: "Ahmedabad",          pop: 8.6,  tier: 0.75 },
-    { id: "surat",      name: "Surat",              pop: 7.8,  tier: 0.70 },
-    { id: "jaipur",     name: "Jaipur",             pop: 4.2,  tier: 0.65 },
-    { id: "chandigarh", name: "Chandigarh Tricity", pop: 2.0,  tier: 0.75 },
-    { id: "lucknow",    name: "Lucknow",            pop: 3.9,  tier: 0.65 },
-    { id: "indore",     name: "Indore",             pop: 3.3,  tier: 0.65 },
-    { id: "kochi",      name: "Kochi",              pop: 2.3,  tier: 0.70 }
+    { id: "mumbai",     name: "Mumbai (MMR)",       pop: 22.0, sr: 860,  young: 1.25, earn: { f: .58, m: .90 }, med: { f: 4.8, m: 5.2 }, sigma: 1.00, drink: 1.00 },
+    { id: "delhi",      name: "Delhi NCR",          pop: 33.0, sr: 868,  young: 1.25, earn: { f: .48, m: .88 }, med: { f: 4.6, m: 5.0 }, sigma: 1.00, drink: 1.00 },
+    { id: "bengaluru",  name: "Bengaluru",          pop: 13.6, sr: 916,  young: 1.45, earn: { f: .62, m: .91 }, med: { f: 5.5, m: 5.8 }, sigma: 1.00, drink: 1.00 },
+    { id: "hyderabad",  name: "Hyderabad",          pop: 10.8, sr: 945,  young: 1.35, earn: { f: .52, m: .89 }, med: { f: 4.8, m: 5.2 }, sigma: 1.00, drink: 1.05 },
+    { id: "chennai",    name: "Chennai",            pop: 11.8, sr: 989,  young: 1.20, earn: { f: .55, m: .88 }, med: { f: 4.2, m: 4.6 }, sigma: 0.95, drink: 0.95 },
+    { id: "pune",       name: "Pune",               pop: 7.4,  sr: 910,  young: 1.35, earn: { f: .58, m: .89 }, med: { f: 4.8, m: 5.0 }, sigma: 0.95, drink: 1.00 },
+    { id: "kolkata",    name: "Kolkata",            pop: 15.3, sr: 908,  young: 1.00, earn: { f: .45, m: .85 }, med: { f: 3.4, m: 3.8 }, sigma: 0.90, drink: 1.00 },
+    { id: "ahmedabad",  name: "Ahmedabad",          pop: 8.6,  sr: 904,  young: 1.15, earn: { f: .40, m: .88 }, med: { f: 3.6, m: 4.2 }, sigma: 0.90, drink: 0.55 },
+    { id: "surat",      name: "Surat",              pop: 7.8,  sr: 787,  young: 1.30, earn: { f: .32, m: .90 }, med: { f: 3.2, m: 3.9 }, sigma: 0.85, drink: 0.55 },
+    { id: "jaipur",     name: "Jaipur",             pop: 4.2,  sr: 900,  young: 1.10, earn: { f: .38, m: .84 }, med: { f: 3.2, m: 3.6 }, sigma: 0.90, drink: 0.95 },
+    { id: "chandigarh", name: "Chandigarh Tricity", pop: 2.0,  sr: 818,  young: 1.15, earn: { f: .50, m: .86 }, med: { f: 4.0, m: 4.4 }, sigma: 0.90, drink: 1.25 },
+    { id: "lucknow",    name: "Lucknow",            pop: 3.9,  sr: 917,  young: 1.05, earn: { f: .38, m: .82 }, med: { f: 3.2, m: 3.5 }, sigma: 0.90, drink: 0.95 },
+    { id: "indore",     name: "Indore",             pop: 3.3,  sr: 924,  young: 1.15, earn: { f: .40, m: .85 }, med: { f: 3.2, m: 3.6 }, sigma: 0.90, drink: 0.95 },
+    { id: "kochi",      name: "Kochi",              pop: 2.3,  sr: 1028, young: 0.95, earn: { f: .50, m: .82 }, med: { f: 3.6, m: 4.0 }, sigma: 0.90, drink: 1.20 }
   ];
 
   var COMMUNITIES = [
@@ -763,21 +753,26 @@
     { id: "hindi",     name: "UP / Bihar / MP" }
   ];
 
-  // Share of each city's population by community. Missing = 0.002.
+  // Share of each city's population by community identity. Missing = 0.003.
+  // Starts from census mother-tongue shares, then moves part of the Hindi
+  // share to Marwari / Rajasthani, Punjabi and Sindhi: many families in those
+  // communities report Hindi as their mother tongue, so the census alone
+  // undercounts them, most of all in Delhi, Mumbai and Kolkata.
+  var MISSING_COMM = 0.003;
   var MIX = {
-    mumbai:     { marathi: .36, gujarati: .12, hindi: .25, punjabi: .02, bengali: .01, tamil: .02, telugu: .01, kannadiga: .01, malayali: .01, marwari: .03, sindhi: .02 },
-    delhi:      { hindi: .55, punjabi: .18, bengali: .03, marwari: .04, gujarati: .01, marathi: .01, tamil: .01, telugu: .005, kannadiga: .003, malayali: .01, sindhi: .01 },
-    bengaluru:  { kannadiga: .42, tamil: .16, telugu: .14, malayali: .06, hindi: .09, marathi: .02, bengali: .02, gujarati: .01, punjabi: .01, marwari: .02, sindhi: .003 },
-    hyderabad:  { telugu: .60, hindi: .10, marathi: .02, tamil: .02, kannadiga: .02, malayali: .01, bengali: .01, gujarati: .01, marwari: .02, punjabi: .005, sindhi: .003 },
-    chennai:    { tamil: .78, telugu: .09, malayali: .03, hindi: .03, kannadiga: .01, marwari: .02, bengali: .005, gujarati: .01, marathi: .003, punjabi: .003 },
-    pune:       { marathi: .65, hindi: .12, gujarati: .03, punjabi: .02, marwari: .03, sindhi: .02, bengali: .01, tamil: .01, telugu: .01, kannadiga: .02, malayali: .02 },
-    kolkata:    { bengali: .65, hindi: .22, marwari: .04, punjabi: .01, gujarati: .005, tamil: .003, telugu: .003 },
-    ahmedabad:  { gujarati: .80, hindi: .09, marwari: .04, sindhi: .03, punjabi: .01, marathi: .01 },
-    surat:      { gujarati: .70, hindi: .15, marathi: .06, marwari: .04, sindhi: .01, telugu: .01, punjabi: .005 },
+    mumbai:     { marathi: .36, gujarati: .12, hindi: .21, punjabi: .025, bengali: .01, tamil: .02, telugu: .01, kannadiga: .01, malayali: .01, marwari: .055, sindhi: .03 },
+    delhi:      { hindi: .50, punjabi: .20, bengali: .03, marwari: .06, gujarati: .01, marathi: .01, tamil: .01, telugu: .005, kannadiga: .003, malayali: .01, sindhi: .015 },
+    bengaluru:  { kannadiga: .42, tamil: .16, telugu: .14, malayali: .06, hindi: .08, marathi: .02, bengali: .02, gujarati: .01, punjabi: .01, marwari: .03, sindhi: .003 },
+    hyderabad:  { telugu: .60, hindi: .09, marathi: .02, tamil: .02, kannadiga: .02, malayali: .01, bengali: .01, gujarati: .01, marwari: .03, punjabi: .005, sindhi: .003 },
+    chennai:    { tamil: .78, telugu: .09, malayali: .03, hindi: .02, kannadiga: .01, marwari: .03, bengali: .005, gujarati: .01, marathi: .003, punjabi: .003 },
+    pune:       { marathi: .65, hindi: .10, gujarati: .03, punjabi: .02, marwari: .045, sindhi: .025, bengali: .01, tamil: .01, telugu: .01, kannadiga: .02, malayali: .02 },
+    kolkata:    { bengali: .65, hindi: .18, marwari: .08, punjabi: .01, gujarati: .005, tamil: .003, telugu: .003 },
+    ahmedabad:  { gujarati: .80, hindi: .07, marwari: .05, sindhi: .04, punjabi: .01, marathi: .01 },
+    surat:      { gujarati: .70, hindi: .13, marathi: .06, marwari: .06, sindhi: .01, telugu: .01, punjabi: .005 },
     jaipur:     { marwari: .75, hindi: .15, punjabi: .03, sindhi: .03, gujarati: .005, bengali: .005 },
-    chandigarh: { punjabi: .55, hindi: .30, bengali: .01, marwari: .01 },
-    lucknow:    { hindi: .92, punjabi: .02, bengali: .01, sindhi: .01 },
-    indore:     { hindi: .80, marathi: .07, sindhi: .03, marwari: .03, gujarati: .02, punjabi: .02, bengali: .005 },
+    chandigarh: { punjabi: .58, hindi: .27, bengali: .01, marwari: .01 },
+    lucknow:    { hindi: .905, punjabi: .03, bengali: .01, sindhi: .015 },
+    indore:     { hindi: .775, marathi: .07, sindhi: .04, marwari: .045, gujarati: .02, punjabi: .02, bengali: .005 },
     kochi:      { malayali: .90, tamil: .03, hindi: .02, gujarati: .005, kannadiga: .005 }
   };
 
@@ -836,20 +831,40 @@
     m: [[18, .99], [21, .96], [24, .85], [27, .62], [30, .38], [33, .21], [36, .13], [40, .08], [50, .06], [60, .05]]
   };
 
-  // Share with an income at all, by age.
-  var EARNING = {
-    m: [[18, .25], [21, .45], [24, .70], [27, .85], [30, .92], [45, .92], [60, .85]],
-    f: [[18, .08], [21, .18], [24, .30], [27, .32], [30, .30], [40, .28], [60, .18]]
-  };
-  // Median annual earnings at age 30 in a tier-1 metro, in lakh rupees.
-  var MEDIAN_30 = { m: 4.5, f: 4.0 };
+  // How a city's share of singles with an income (CITIES[].earn) builds up
+  // with age: most 18–22 year olds are still studying.
+  var EARN_AGE = [[18, .15], [21, .35], [23, .60], [25, .80], [28, 1.0], [50, 1.0], [60, .85]];
+  // Earnings at each age relative to age 30.
   var AGE_PAY = [[18, .35], [21, .50], [24, .70], [27, .85], [30, 1.0], [35, 1.2], [40, 1.35], [50, 1.45], [60, 1.4]];
-  var PAY_SIGMA = 0.9;
+  // Taller people earn a little more on average. Correlation between height
+  // and log earnings, so the two filters are not simply multiplied.
+  var RHO_HEIGHT_INCOME = 0.15;
 
-  // Habit prevalence among urban singles.
+  // Habit prevalence among urban singles, national urban average.
+  // Men: about three in ten drink at all (NFHS-5 puts it near one in four for
+  // all men; young urban singles run a little higher).
   var HABITS = {
-    m: { drinkNever: .62, drinkSocial: .30, cig: .16, weed: .07, drugs: .03 },
+    m: { drinkNever: .70, drinkSocial: .23, cig: .16, weed: .07, drugs: .03 },
     f: { drinkNever: .80, drinkSocial: .17, cig: .03, weed: .02, drugs: .01 }
+  };
+
+  // Habits cluster: someone who never drinks rarely smokes, and weed and
+  // other drugs go together. Each habit loads on one shared "propensity"
+  // factor; the loading sets how strongly it moves with the others
+  // (pairwise correlation = product of loadings, e.g. weed and drugs 0.64).
+  var HABIT_LOAD = { drink: 0.70, cig: 0.70, weed: 0.80, drugs: 0.80 };
+
+  // Drinking and smoking by religion, relative to the city average.
+  // Jains and Muslims rarely drink; Sikhs rarely smoke.
+  var REL_HABIT = {
+    hindu:     { drink: 1.00, cig: 1.00 },
+    muslim:    { drink: 0.30, cig: 1.10 },
+    christian: { drink: 1.40, cig: 1.00 },
+    sikh:      { drink: 1.20, cig: 0.15 },
+    jain:      { drink: 0.25, cig: 0.30 },
+    buddhist:  { drink: 1.00, cig: 1.00 },
+    parsi:     { drink: 1.50, cig: 0.80 },
+    other:     { drink: 1.30, cig: 1.10 }
   };
 
   var INCOMES = [
@@ -878,11 +893,27 @@
     return points[points.length - 1][1];
   }
 
-  // Share of the population at each single year of age (both sexes).
-  // Metros pull in young adults, so 20 to 35 gets a bump.
-  function ageShare(age) {
-    var base = 0.019 - (age - 18) * (0.0085 / 42);
-    return age >= 20 && age <= 35 ? base * 1.15 : base;
+  // Share of the city's population at each single year of age (both sexes),
+  // 18–60. Starts from the national shape, then swells the 22–35 band by the
+  // city's migration factor. The adult total is capped at 70% of the city.
+  var AGE_SHARE = {};
+  function ageWeights(city) {
+    if (AGE_SHARE[city.id]) return AGE_SHARE[city.id];
+    var w = {}, total = 0;
+    for (var a = 18; a <= 60; a++) {
+      var base = 0.019 - (a - 18) * (0.0085 / 42);
+      // Full boost from 23 to 33, tapering in from 19 and out by 38.
+      var ramp = a <= 19 ? 0 : a < 23 ? (a - 19) / 4 : a <= 33 ? 1 : a < 38 ? (38 - a) / 5 : 0;
+      w[a] = base * (1 + (city.young - 1) * ramp);
+      total += w[a];
+    }
+    var k = Math.min(1, 0.70 / total);
+    for (var b = 18; b <= 60; b++) w[b] *= k;
+    return (AGE_SHARE[city.id] = w);
+  }
+  function sexShare(city, sex) {
+    var women = city.sr / (1000 + city.sr);
+    return sex === "f" ? women : 1 - women;
   }
 
   function erf(x) {
@@ -892,6 +923,86 @@
     return s * y;
   }
   function ncdf(z) { return 0.5 * (1 + erf(z / Math.SQRT2)); }
+  function npdf(z) { return Math.exp(-z * z / 2) / Math.sqrt(2 * Math.PI); }
+
+  // Inverse normal CDF (Acklam). Turns a prevalence into a threshold.
+  function probit(p) {
+    p = Math.min(1 - 1e-9, Math.max(1e-9, p));
+    var a = [-39.69683028665376, 220.9460984245205, -275.9285104469687, 138.3577518672690, -30.66479806614716, 2.506628277459239];
+    var b = [-54.47609879822406, 161.5858368580409, -155.6989798598866, 66.80131188771972, -13.28068155288572];
+    var c = [-0.007784894002430293, -0.3223964580411365, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
+    var d = [0.007784695709041462, 0.3224671290700398, 2.445134137142996, 3.754408661907416];
+    var q, r;
+    if (p < 0.02425) {
+      q = Math.sqrt(-2 * Math.log(p));
+      return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+    }
+    if (p > 1 - 0.02425) {
+      q = Math.sqrt(-2 * Math.log(1 - p));
+      return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+    }
+    q = p - 0.5; r = q * q;
+    return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+  }
+
+  // P(zLo < height < zHi and log income above c), with the two correlated.
+  // Integrates over height: for each height, income's conditional chance.
+  function heightIncomeJoint(zLo, zHi, c, rho) {
+    var n = 48, h = (zHi - zLo) / n, sd = Math.sqrt(1 - rho * rho), sum = 0;
+    for (var i = 0; i <= n; i++) {
+      var x = zLo + i * h;
+      var f = npdf(x) * (1 - ncdf((c - rho * x) / sd));
+      sum += f * (i === 0 || i === n ? 1 : i % 2 ? 4 : 2);
+    }
+    return sum * h / 3;
+  }
+
+  // Grid over the shared habit factor, weights summing to 1.
+  var FACTOR_GRID = (function () {
+    var g = [], t = 0;
+    for (var f = -6; f <= 6.0001; f += 0.1) { var w = npdf(f); g.push([f, w]); t += w; }
+    g.forEach(function (p) { p[1] /= t; });
+    return g;
+  })();
+
+  // Joint chance of meeting every habit condition in `conds` for one sex in
+  // one city, averaged over the pool's religion mix `relMix` ([[id, weight]]).
+  // conds: { drink: "never" | "social" | "must", cig: true, weed: true, drugs: true }
+  function habitJoint(sex, city, relMix, conds) {
+    if (!conds.drink && !conds.cig && !conds.weed && !conds.drugs) return 1;
+    var H = HABITS[sex], L = HABIT_LOAD;
+    // Religion factors are relative to the city's own mix, so the city
+    // average stays at the national figure times the city's drink factor.
+    var cr = CITY_REL[city.id], nD = 0, nC = 0;
+    Object.keys(cr).forEach(function (id) { nD += cr[id] * REL_HABIT[id].drink; nC += cr[id] * REL_HABIT[id].cig; });
+    var clamp = function (x, lo, hi) { return Math.min(hi, Math.max(lo, x)); };
+    var sdOf = function (l) { return Math.sqrt(1 - l * l); };
+    var total = 0;
+    relMix.forEach(function (rw) {
+      var rf = REL_HABIT[rw[0]];
+      var fd = rf.drink / nD * city.drink, fc = rf.cig / nC;
+      var pAny = clamp((1 - H.drinkNever) * fd, 0.002, 0.97);
+      var pReg = clamp((1 - H.drinkNever - H.drinkSocial) * fd, 0.001, pAny - 0.001);
+      var tNever = probit(1 - pAny), tSocial = probit(1 - pReg);
+      var tCig = probit(1 - clamp(H.cig * fc, 0.001, 0.9));
+      var tWeed = probit(1 - H.weed), tDrugs = probit(1 - H.drugs);
+      var p = 0;
+      FACTOR_GRID.forEach(function (g) {
+        var f = g[0], prod = 1;
+        if (conds.drink) {
+          var below = function (t) { return ncdf((t - L.drink * f) / sdOf(L.drink)); };
+          prod *= conds.drink === "never" ? below(tNever) : conds.drink === "social" ? below(tSocial) : 1 - below(tNever);
+        }
+        if (conds.cig) prod *= ncdf((tCig - L.cig * f) / sdOf(L.cig));
+        if (conds.weed) prod *= ncdf((tWeed - L.weed * f) / sdOf(L.weed));
+        if (conds.drugs) prod *= ncdf((tDrugs - L.drugs * f) / sdOf(L.drugs));
+        p += g[1] * prod;
+      });
+      total += rw[1] * p;
+    });
+    return total;
+  }
+
 
   var H_MIN = 54, H_MAX = 78;
   var DEFAULTS = { sex: "f", hMin: 58, hMax: 68, aMin: 25, aMax: 30, city: "mumbai", income: 0, comm: [], rel: [], drink: "any", cig: "any", weed: "any", drugs: "any" };
@@ -909,59 +1020,69 @@
   /* ---- Model ---- */
 
   // Returns pool size at each stage for one sex:
-  // [singles, height, income, community, drink, cig, weed, drugs]
+  // [singles, height, income, community, religion, drink, cig, weed, drugs]
+  // Each stage is the joint count of everyone meeting every criterion so far,
+  // so related criteria are not double-counted.
   function stagesFor(sex, city) {
     var hs = HEIGHT[sex];
     var lo = (state.hMin - 0.5) * 2.54, hi = (state.hMax + 0.5) * 2.54;
-    var hPass = (state.hMin <= H_MIN ? 1 : 1 - ncdf((lo - hs.mean) / hs.sd)) -
-                (state.hMax >= H_MAX ? 0 : 1 - ncdf((hi - hs.mean) / hs.sd));
+    var zLo = state.hMin <= H_MIN ? -8 : (lo - hs.mean) / hs.sd;
+    var zHi = state.hMax >= H_MAX ? 8 : (hi - hs.mean) / hs.sd;
+    var hPass = ncdf(zHi) - ncdf(zLo);
 
+    var ages = ageWeights(city), half = sexShare(city, sex);
     var pool = 0, afterIncome = 0;
     for (var age = state.aMin; age <= state.aMax; age++) {
-      var singles = city.pop * 1e6 * ageShare(age) * 0.5 * interp(SINGLE[sex], age);
-      var inc = 1;
+      var singles = city.pop * 1e6 * ages[age] * half * interp(SINGLE[sex], age);
+      var both = hPass;
       if (state.income > 0) {
-        var median = MEDIAN_30[sex] * interp(AGE_PAY, age) * city.tier;
-        inc = interp(EARNING[sex], age) * (1 - ncdf(Math.log(state.income / median) / PAY_SIGMA));
+        var median = city.med[sex] * interp(AGE_PAY, age);
+        var earns = Math.min(0.97, city.earn[sex] * interp(EARN_AGE, age));
+        var c = Math.log(state.income / median) / city.sigma;
+        both = earns * heightIncomeJoint(zLo, zHi, c, RHO_HEIGHT_INCOME);
       }
       pool += singles;
-      afterIncome += singles * hPass * inc;
+      afterIncome += singles * both;
     }
 
     var mix = MIX[city.id];
-    var comm = state.comm.length
-      ? state.comm.reduce(function (s, id) { return s + (mix[id] != null ? mix[id] : 0.002); }, 0)
-      : 1;
+    var commW = function (id) { return mix[id] != null ? mix[id] : MISSING_COMM; };
+    var comm = state.comm.length ? state.comm.reduce(function (s, id) { return s + commW(id); }, 0) : 1;
 
-    var rel = 1;
-    if (state.rel.length) {
-      var share = function (dist) { return state.rel.reduce(function (s, id) { return s + (dist[id] || 0); }, 0); };
-      if (state.comm.length) {
-        // Weight each ticked community's religion mix by its size in the city.
-        var w = 0, hit = 0;
-        state.comm.forEach(function (id) {
-          var cw = mix[id] != null ? mix[id] : 0.002;
-          w += cw; hit += cw * share(COMM_REL[id]);
-        });
-        rel = w > 0 ? hit / w : 0;
-      } else {
-        rel = share(CITY_REL[city.id]);
-      }
+    // Religion mix of the pool so far: the ticked communities' own mixes,
+    // weighted by their size in the city, or the city's mix.
+    var dist = {};
+    if (state.comm.length) {
+      var wsum = 0;
+      state.comm.forEach(function (id) { wsum += commW(id); });
+      state.comm.forEach(function (id) {
+        var cr = COMM_REL[id];
+        Object.keys(cr).forEach(function (r) { dist[r] = (dist[r] || 0) + cr[r] * commW(id) / wsum; });
+      });
+    } else {
+      dist = CITY_REL[city.id];
     }
+    var relIds = state.rel.length ? state.rel : Object.keys(dist);
+    var rel = state.rel.length ? relIds.reduce(function (s, id) { return s + (dist[id] || 0); }, 0) : 1;
+    var relSum = relIds.reduce(function (s, id) { return s + (dist[id] || 0); }, 0);
+    var relMix = relIds.filter(function (id) { return dist[id] > 0; })
+      .map(function (id) { return [id, dist[id] / relSum]; });
 
-    var H = HABITS[sex];
-    var drink = 1;
-    if (state.drink === "never") drink = H.drinkNever;
-    else if (state.drink === "social") drink = H.drinkNever + H.drinkSocial;
-    else if (state.drink === "must") drink = 1 - H.drinkNever;
+    var conds = {}, steps = [];
+    if (state.drink !== "any") conds.drink = state.drink;
+    steps.push(habitJoint(sex, city, relMix, conds));
+    if (state.cig === "never") conds.cig = true;
+    steps.push(habitJoint(sex, city, relMix, conds));
+    if (state.weed === "never") conds.weed = true;
+    steps.push(habitJoint(sex, city, relMix, conds));
+    if (state.drugs === "never") conds.drugs = true;
+    steps.push(habitJoint(sex, city, relMix, conds));
 
     var s = [pool, pool * hPass, afterIncome];
     s.push(s[2] * comm);
     s.push(s[3] * rel);
-    s.push(s[4] * drink);
-    s.push(s[5] * (state.cig === "never" ? 1 - H.cig : 1));
-    s.push(s[6] * (state.weed === "never" ? 1 - H.weed : 1));
-    s.push(s[7] * (state.drugs === "never" ? 1 - H.drugs : 1));
+    var base = s[4];
+    steps.forEach(function (p) { s.push(base * p); });
     return s;
   }
 
