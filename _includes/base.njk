@@ -133,6 +133,29 @@
     }
     .nl-modal-close:hover { color: var(--tbd-text); }
 
+    /* Mobile nav — mirrors the marketing site's burger + full-screen overlay */
+    .nav-burger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 6px; cursor: pointer; }
+    .nav-burger span { width: 22px; height: 1.5px; background: var(--tbd-text); display: block; }
+
+    .nav-overlay {
+      position: fixed; inset: 0; z-index: 80; background: var(--tbd-color-ink); color: var(--tbd-color-paper);
+      display: flex; flex-direction: column; padding: 28px 22px;
+      transform: translateY(-100%); transition: transform 420ms cubic-bezier(.76,0,.24,1); visibility: hidden;
+    }
+    .nav-overlay.is-open { transform: translateY(0); visibility: visible; }
+    .nav-overlay__top { display: flex; align-items: center; justify-content: space-between; }
+    .nav-overlay .tbd-wordmark { color: var(--tbd-color-paper); }
+    .nav-overlay__close { background: none; border: none; color: var(--tbd-color-paper); font-family: var(--tbd-font-mono); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; }
+    .nav-overlay__links { display: flex; flex-direction: column; gap: 8px; margin-top: auto; margin-bottom: auto; }
+    .nav-overlay__links a { color: var(--tbd-color-paper); text-decoration: none; font-family: var(--tbd-font-display); font-style: italic; font-size: clamp(48px, 12vw, 96px); line-height: 1.02; }
+    .nav-overlay__links a:hover { color: var(--tbd-color-blue); }
+    .nav-overlay__foot { display: flex; justify-content: space-between; font-family: var(--tbd-font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tbd-color-muted); }
+
+    @media (max-width: 720px) {
+      .nav-links  { display: none !important; }
+      .nav-burger { display: flex; }
+    }
+
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
     @media (max-width: 900px) {
@@ -149,29 +172,6 @@
       .post-title    { font-size: 44px !important; }
     }
   </style>
-</head>
-<body data-tbd-surface="paper" style="min-height: 100vh; color: var(--tbd-text); font-family: var(--tbd-font-sans); transition: background 200ms ease;">
-
-  <div id="reading-progress"><div id="reading-progress-fill"></div></div>
-
-  <header style="position: sticky; top: 0; z-index: 40; border-bottom: 1px solid var(--tbd-rule); background: color-mix(in srgb, var(--tbd-bg) 88%, transparent); backdrop-filter: blur(10px);">
-    <div class="nav-wrap" style="max-width: 1180px; margin-inline: auto; padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; gap: 32px;">
-      <a href="/blog/" class="tbd-nav-link" style="display: flex; align-items: baseline; gap: 12px;">
-        <span class="tbd-wordmark" style="font-size: 26px;">tbd</span>
-        <span class="tbd-label tbd-text-muted" style="font-size: 13px;">Dispatches</span>
-      </a>
-      <nav style="display: flex; gap: 28px; align-items: center;">
-        <a href="/blog/" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">Latest</a>
-        <a href="/blog/about/" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">About</a>
-        <button id="theme-toggle" onclick="toggleTheme()" class="tbd-pill-btn" style="padding: 8px 14px; font-size: 11px;">
-          <span style="width: 8px; height: 8px; border-radius: 999px; background: var(--tbd-color-blue); display: inline-block;"></span>
-          <span id="theme-label">Dark</span>
-        </button>
-      </nav>
-    </div>
-  </header>
-
-  {{ content | safe }}
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -190,6 +190,53 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <script src="/assets/tbd-pixel.js"></script>
+</head>
+<body data-tbd-surface="paper" style="min-height: 100vh; color: var(--tbd-text); font-family: var(--tbd-font-sans); transition: background 200ms ease;">
+
+  <div id="reading-progress"><div id="reading-progress-fill"></div></div>
+
+  <header style="position: sticky; top: 0; z-index: 40; border-bottom: 1px solid var(--tbd-rule); background: color-mix(in srgb, var(--tbd-bg) 88%, transparent); backdrop-filter: blur(10px);">
+    <div class="nav-wrap" style="max-width: 1180px; margin-inline: auto; padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; gap: 32px;">
+      <a href="/blog/" class="tbd-nav-link" style="display: flex; align-items: baseline; gap: 12px;">
+        <span class="tbd-wordmark" style="font-size: 26px;">tbd</span>
+        <span class="tbd-label tbd-text-muted" style="font-size: 13px;">Dispatches</span>
+      </a>
+      <div style="display: flex; gap: 28px; align-items: center;">
+        <nav class="nav-links" style="display: flex; gap: 28px; align-items: center;">
+          <a href="/" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">Home</a>
+          <a href="/services/" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">Services</a>
+          <a href="/blog/" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">Latest</a>
+          <a href="/blog/about/" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">About</a>
+          <a href="mailto:connect@tbdonline.in" class="tbd-nav-link tbd-label tbd-text-muted" style="font-size: 12px;">Contact</a>
+        </nav>
+        <button id="theme-toggle" onclick="toggleTheme()" class="tbd-pill-btn" style="padding: 8px 14px; font-size: 11px;">
+          <span style="width: 8px; height: 8px; border-radius: 999px; background: var(--tbd-color-blue); display: inline-block;"></span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="nav-burger" aria-label="Open menu" aria-controls="navOverlay" aria-expanded="false" onclick="openNav()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-overlay" id="navOverlay">
+    <div class="nav-overlay__top">
+      <span class="tbd-wordmark" style="font-size: 24px;">tbd</span>
+      <button class="nav-overlay__close" aria-label="Close menu" onclick="closeNav()">Close &times;</button>
+    </div>
+    <nav class="nav-overlay__links">
+      <a href="/">Home</a>
+      <a href="/services/">Services</a>
+      <a href="/blog/">Latest</a>
+      <a href="/blog/about/">About</a>
+      <a href="mailto:connect@tbdonline.in">Contact</a>
+    </nav>
+    <div class="nav-overlay__foot">
+      <span>connect@tbdonline.in</span>
+      <span>Mumbai &middot; Remote</span>
+    </div>
+  </div>
+
+  {{ content | safe }}
 
   <footer style="border-top: 1px solid var(--tbd-rule); margin-top: 80px; background: color-mix(in srgb, var(--tbd-bg) 96%, var(--tbd-text));">
     <div class="footer-wrap" style="max-width: 1180px; margin-inline: auto; padding: 64px 48px; display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start;">
@@ -260,6 +307,18 @@ function toggleTheme() {
   localStorage.setItem('tbd-theme', next);
 }
 
+function openNav() {
+  document.getElementById('navOverlay').classList.add('is-open');
+  document.querySelector('.nav-burger').setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNav() {
+  document.getElementById('navOverlay').classList.remove('is-open');
+  document.querySelector('.nav-burger').setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+
 function showToast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
@@ -301,6 +360,7 @@ function submitNewsletter(e) {
       });
     }
     markNewsletterSeen();
+    if (window.tbdLead) window.tbdLead('newsletter_' + source);
     form.reset();
     closeNewsletterModal();
     showToast('Subscribed — check your inbox.');
@@ -329,7 +389,7 @@ function closeNewsletterModal() {
   if (y) y.textContent = new Date().getFullYear();
 
   document.addEventListener('keydown', function (ev) {
-    if (ev.key === 'Escape') closeNewsletterModal();
+    if (ev.key === 'Escape') { closeNewsletterModal(); closeNav(); }
   });
   var modal = document.getElementById('nl-modal');
   if (modal) {
@@ -350,4 +410,3 @@ function closeNewsletterModal() {
 
 </body>
 </html>
-    if (window.tbdLead) window.tbdLead('newsletter_' + source);
