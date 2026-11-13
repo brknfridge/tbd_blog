@@ -172,6 +172,24 @@
   </header>
 
   {{ content | safe }}
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1196138719758814');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<script src="/assets/tbd-pixel.js"></script>
 
   <footer style="border-top: 1px solid var(--tbd-rule); margin-top: 80px; background: color-mix(in srgb, var(--tbd-bg) 96%, var(--tbd-text));">
     <div class="footer-wrap" style="max-width: 1180px; margin-inline: auto; padding: 64px 48px; display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start;">
@@ -332,3 +350,4 @@ function closeNewsletterModal() {
 
 </body>
 </html>
+    if (window.tbdLead) window.tbdLead('newsletter_' + source);

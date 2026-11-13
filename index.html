@@ -6,6 +6,24 @@
 <title>[tbd] · Growth marketing</title>
 <link rel="stylesheet" href="/_ds/tbd-design-system-3a5dc6ab-3b87-4bfb-a5fd-020b5cb2c164/styles.css" />
 <link rel="stylesheet" href="/assets/site.css" />
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1196138719758814');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<script src="/assets/tbd-pixel.js"></script>
 </head>
 <body class="tbd-surface-paper" data-tbd-surface="paper" data-screen-label="HOME">
 
@@ -268,6 +286,7 @@
     // Brief form -> inline confirmation
     document.getElementById("briefForm").addEventListener("submit", function(e){
       e.preventDefault();
+      if (window.tbdLead) window.tbdLead("brief_form");
       this.innerHTML = '<div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start;">'
         + '<span class="nav-status" style="color:var(--tbd-color-paper);"><span class="nav-status__dot"></span>Received</span>'
         + '<p class="tbd-display display-md" style="margin:6px 0 0;">Brief received.</p>'
