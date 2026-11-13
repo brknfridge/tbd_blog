@@ -1,0 +1,5 @@
+# Every crawler is welcome: search engines, AI and LLM crawlers alike.
+User-agent: *
+Allow: /
+
+Sitemap: https://tbdonline.in/sitemap.xml

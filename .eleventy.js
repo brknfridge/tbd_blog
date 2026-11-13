@@ -8,6 +8,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("services");
   eleventyConfig.addPassthroughCopy("wordle");
   eleventyConfig.addPassthroughCopy("matchle");
+  eleventyConfig.addPassthroughCopy("robots.txt");
 
   // Server-side only — Vercel runs these, Eleventy must not bundle them.
   eleventyConfig.ignores.add("api");

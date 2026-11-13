@@ -13,12 +13,77 @@
   gtag('config', 'G-T4DT9ES451');
 </script>
 
-<title>[tbd] &middot; Matchle</title>
-<meta name="description" content="Set your criteria for an ideal partner. See how many people in your city fit, and how many weeks of dating it takes to meet one.">
+<title>Matchle: Ideal Partner Calculator for Indian Cities | [tbd]</title>
+<meta name="description" content="Free ideal partner calculator for India. Set height, age, income, community and religion to see how many singles in your city match, and how long it takes to meet one.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <link rel="canonical" href="https://tbdonline.in/matchle/">
-<meta property="og:title" content="[tbd] · Matchle">
-<meta property="og:description" content="How many people in your city fit your list — and how many Saturdays it takes to meet one.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="[tbd]">
+<meta property="og:locale" content="en_IN">
+<meta property="og:title" content="Matchle: How many singles in your city match your list?">
+<meta property="og:description" content="Pick your must-haves for a partner. Matchle sizes the dating pool in 14 Indian cities and tells you how many Saturdays it takes to meet one match.">
 <meta property="og:url" content="https://tbdonline.in/matchle/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Matchle: How many singles in your city match your list?">
+<meta name="twitter:description" content="Pick your must-haves for a partner. Matchle sizes the dating pool in 14 Indian cities and tells you how many Saturdays it takes to meet one match.">
+
+<!-- Structured data: describes the tool and answers the questions people
+     (and LLMs) ask about it, so the page can be quoted accurately. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://tbdonline.in/matchle/#app",
+      "name": "Matchle",
+      "alternateName": ["Matchle ideal partner calculator", "Dating pool calculator India"],
+      "url": "https://tbdonline.in/matchle/",
+      "description": "A free calculator that estimates how many single people in an Indian city match your ideal partner criteria (gender, height, age, income, community, religion, drinking, smoking and drugs) and how many weeks of one date a week it would take to meet one.",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Any (web browser)",
+      "inLanguage": "en-IN",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+      "areaServed": ["Mumbai", "Delhi NCR", "Bengaluru", "Hyderabad", "Chennai", "Pune", "Kolkata", "Ahmedabad", "Surat", "Jaipur", "Chandigarh", "Lucknow", "Indore", "Kochi"],
+      "featureList": [
+        "Filter by gender, height, age range, city and minimum annual income",
+        "Filter by community (mother tongue) and religion",
+        "Dealbreakers for drinking, cigarettes, weed and other drugs",
+        "Shows which criterion shrinks the pool the most",
+        "Shareable emoji results card"
+      ],
+      "publisher": { "@type": "Organization", "name": "[tbd]", "url": "https://tbdonline.in/" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tbdonline.in/matchle/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Matchle?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Matchle is a free ideal partner calculator for India by [tbd]. You set what you want in a partner and it estimates how many singles in your city fit, and how many weeks it would take to meet one at one date a week." }
+        },
+        {
+          "@type": "Question",
+          "name": "How does Matchle calculate the number of matches?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It starts with the adult population of the city by age and sex, keeps only people who are single, then applies each criterion as a share of that pool: height from a normal curve by sex, income from an age-adjusted earnings curve for the city, community from mother-tongue shares, religion from census shares, and habits from national survey prevalence. Sources are the Census of India, NFHS-5, PLFS and published height studies, projected to 2026." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which cities does Matchle cover?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Mumbai (MMR), Delhi NCR, Bengaluru, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad, Surat, Jaipur, Chandigarh Tricity, Lucknow, Indore and Kochi." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the Matchle result an exact count?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. It is a directional model, not a headcount. Criteria are treated as independent, and it does not account for whether the other person likes you back." }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
 <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
@@ -249,6 +314,23 @@
   .modal .actions { margin-top: 20px; }
   #modalMsg { font-size: 13px; color: var(--tbd-text-muted); margin: 10px 0 0; min-height: 18px; }
   body.has-modal { overflow: hidden; }
+
+  /* Lead form inside the popup. */
+  .lead { margin-top: 24px; padding: 24px 0; border-top: var(--tbd-border-hairline) solid var(--tbd-rule); border-bottom: var(--tbd-border-hairline) solid var(--tbd-rule); }
+  .lead__title { font-family: var(--tbd-font-sans); font-weight: var(--tbd-weight-medium); font-size: 20px; letter-spacing: -0.01em; line-height: 1.25; margin: 10px 0 6px; text-wrap: balance; }
+  .lead__copy { color: var(--tbd-text-muted); font-size: 14px; line-height: 1.5; margin: 0 0 16px; }
+  .lead__done .lead__copy { color: var(--tbd-text); font-size: 15px; margin: 0; }
+  .lead__fields { display: grid; gap: 12px; }
+  .lead__fields .tbd-input { width: 100%; box-sizing: border-box; font-size: 16px; }
+  .lead__fields .tbd-input[aria-invalid="true"] { border-color: var(--tbd-critical); }
+  .lead__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .lead__submit { width: 100%; justify-content: center; margin-top: 16px; }
+  .lead__submit[disabled] { opacity: 0.6; cursor: progress; }
+  .lead__msg { font-size: 13px; margin: 10px 0 0; min-height: 0; color: var(--tbd-critical); }
+  .lead__msg:empty { display: none; }
+  .lead__fine { font-size: 12px; line-height: 1.5; color: var(--tbd-text-muted); margin: 12px 0 0; }
+  .lead__share-label { display: block; margin-top: 24px; }
+  .modal .lead__share-label + .share-preview { margin-top: 10px; }
   @media (max-width: 560px) { .modal__card { padding: 24px 20px; } }
 
   @media (max-width: 560px) {
@@ -440,7 +522,22 @@
         <span class="q__num">03</span>
         <div>
           <p class="q__title">Location</p>
-          <label class="select"><select class="tbd-input" id="city" aria-label="City"></select></label>
+          <label class="select"><select class="tbd-input" id="city" aria-label="City">
+            <option value="mumbai">Mumbai (MMR)</option>
+            <option value="delhi">Delhi NCR</option>
+            <option value="bengaluru">Bengaluru</option>
+            <option value="hyderabad">Hyderabad</option>
+            <option value="chennai">Chennai</option>
+            <option value="pune">Pune</option>
+            <option value="kolkata">Kolkata</option>
+            <option value="ahmedabad">Ahmedabad</option>
+            <option value="surat">Surat</option>
+            <option value="jaipur">Jaipur</option>
+            <option value="chandigarh">Chandigarh Tricity</option>
+            <option value="lucknow">Lucknow</option>
+            <option value="indore">Indore</option>
+            <option value="kochi">Kochi</option>
+          </select></label>
         </div>
       </div>
 
@@ -461,7 +558,19 @@
         <div>
           <legend class="q__title">Community</legend>
           <p class="q__hint">Tick every one you are open to. Leave all unticked for any.</p>
-          <div class="checks" id="community"></div>
+          <div class="checks" id="community">
+            <label class="check"><input type="checkbox" value="gujarati"><span>Gujarati</span></label>
+            <label class="check"><input type="checkbox" value="punjabi"><span>Punjabi</span></label>
+            <label class="check"><input type="checkbox" value="marathi"><span>Marathi</span></label>
+            <label class="check"><input type="checkbox" value="bengali"><span>Bengali</span></label>
+            <label class="check"><input type="checkbox" value="tamil"><span>Tamil</span></label>
+            <label class="check"><input type="checkbox" value="telugu"><span>Telugu</span></label>
+            <label class="check"><input type="checkbox" value="kannadiga"><span>Kannadiga</span></label>
+            <label class="check"><input type="checkbox" value="malayali"><span>Malayali</span></label>
+            <label class="check"><input type="checkbox" value="marwari"><span>Marwari / Rajasthani</span></label>
+            <label class="check"><input type="checkbox" value="sindhi"><span>Sindhi</span></label>
+            <label class="check"><input type="checkbox" value="hindi"><span>UP / Bihar / MP</span></label>
+          </div>
           <button type="button" class="linkbtn" id="commClear">Clear &mdash; any community</button>
         </div>
       </fieldset>
@@ -471,7 +580,16 @@
         <div>
           <legend class="q__title">Religion</legend>
           <p class="q__hint">Tap every one you are open to. Leave all off for any.</p>
-          <div class="seg" id="religion"></div>
+          <div class="seg" id="religion">
+            <label class="pill"><input type="checkbox" value="hindu"><span class="chip">Hindu</span></label>
+            <label class="pill"><input type="checkbox" value="muslim"><span class="chip">Muslim</span></label>
+            <label class="pill"><input type="checkbox" value="christian"><span class="chip">Christian</span></label>
+            <label class="pill"><input type="checkbox" value="sikh"><span class="chip">Sikh</span></label>
+            <label class="pill"><input type="checkbox" value="jain"><span class="chip">Jain</span></label>
+            <label class="pill"><input type="checkbox" value="buddhist"><span class="chip">Buddhist</span></label>
+            <label class="pill"><input type="checkbox" value="parsi"><span class="chip">Parsi</span></label>
+            <label class="pill"><input type="checkbox" value="other"><span class="chip">Other or none</span></label>
+          </div>
         </div>
       </fieldset>
 
@@ -562,6 +680,38 @@
       <p class="weeks__note" id="modalNote"></p>
     </div>
     <p class="verdict" id="modalVerdict"></p>
+
+    <section class="lead" id="lead" aria-labelledby="leadTitle">
+      <span class="tbd-eyebrow">Want an introduction?</span>
+      <h2 class="lead__title" id="leadTitle">We&rsquo;ll reach out with potential matches.</h2>
+      <form id="leadForm" novalidate>
+        <p class="lead__copy">Leave your details and we will get in touch with people who fit your brief.</p>
+        <div class="lead__fields">
+          <label class="tbd-field">
+            <span class="tbd-field__label">Name</span>
+            <input class="tbd-input" id="leadName" name="name" type="text" autocomplete="name" maxlength="80" required>
+          </label>
+          <label class="tbd-field">
+            <span class="tbd-field__label">Email</span>
+            <input class="tbd-input" id="leadEmail" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required>
+          </label>
+          <label class="tbd-field">
+            <span class="tbd-field__label">Phone</span>
+            <input class="tbd-input" id="leadPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="+91 98765 43210" required>
+          </label>
+          <!-- Left empty by people; bots that fill every field give themselves away. -->
+          <label class="lead__trap" aria-hidden="true">Company<input type="text" name="company" id="leadTrap" tabindex="-1" autocomplete="off"></label>
+        </div>
+        <button type="submit" class="tbd-btn lead__submit" id="leadSubmit">Send me matches <span aria-hidden="true">&rarr;</span></button>
+        <p class="lead__msg" id="leadMsg" role="status" aria-live="polite"></p>
+        <p class="lead__fine">We save your brief with your details so we know who to look for. We use them only to contact you about matches.</p>
+      </form>
+      <div class="lead__done" id="leadDone" hidden>
+        <p class="lead__copy">Thanks<span id="leadDoneName"></span>. We have your brief and will reach out when we find people who fit it.</p>
+      </div>
+    </section>
+
+    <span class="tbd-eyebrow lead__share-label">Or share your result</span>
     <pre class="share-preview" id="modalPreview"></pre>
     <div class="actions">
       <button type="button" class="tbd-btn" id="modalCopy">Copy my results <span aria-hidden="true">&rarr;</span></button>
@@ -752,16 +902,9 @@
   function cityById(id) { return CITIES.filter(function (c) { return c.id === id; })[0]; }
   function incomeItem(v) { return INCOMES.filter(function (i) { return i.v === v; })[0]; }
 
-  /* ---- Build controls ---- */
-
-  $("city").innerHTML = CITIES.map(function (c) { return '<option value="' + c.id + '">' + c.name + "</option>"; }).join("");
-  $("community").innerHTML = COMMUNITIES.map(function (c) {
-    return '<label class="check"><input type="checkbox" value="' + c.id + '"><span>' + c.name + "</span></label>";
-  }).join("");
-
-  $("religion").innerHTML = RELIGIONS.map(function (r) {
-    return '<label class="pill"><input type="checkbox" value="' + r.id + '"><span class="chip">' + r.name + "</span></label>";
-  }).join("");
+  /* Controls (cities, communities, religions) are written in the HTML so
+     crawlers that don't run JavaScript can read them. Keep them in step
+     with the CITIES, COMMUNITIES and RELIGIONS lists above. */
 
   /* ---- Model ---- */
 
@@ -1166,9 +1309,83 @@
     lastFocus = document.activeElement;
     $("modal").hidden = false;
     document.body.classList.add("has-modal");
-    $("modalCopy").focus();
+    // Focus the card, not the first field, so phones don't open the keyboard
+    // over the result before it has been read.
+    var card = $("modal").querySelector(".modal__card");
+    card.scrollTop = 0;
+    card.focus();
     track("matchle_done", resultParams());
   }
+
+  /* ---- Lead form: "we'll reach out with potential matches" ---- */
+  var LEAD_ENDPOINT = "/api/matchle-lead";
+  var LEAD_KEY = "tbd-matchle-lead";
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function phoneDigits(v) { return String(v).replace(/[\s().-]/g, ""); }
+  function validPhone(v) { return /^\+?\d{7,15}$/.test(phoneDigits(v)); }
+
+  function showLeadDone(name) {
+    $("leadForm").hidden = true;
+    $("leadDone").hidden = false;
+    $("leadDoneName").textContent = name ? ", " + name.split(" ")[0] : "";
+  }
+  try {
+    var savedLead = localStorage.getItem(LEAD_KEY);
+    if (savedLead) showLeadDone(savedLead);
+  } catch (e) {}
+
+  ["leadName", "leadEmail", "leadPhone"].forEach(function (id) {
+    $(id).addEventListener("input", function () { this.removeAttribute("aria-invalid"); $("leadMsg").textContent = ""; });
+  });
+
+  $("leadForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var btn = $("leadSubmit");
+    if (btn.disabled) return;
+    var name = $("leadName").value.trim();
+    var email = $("leadEmail").value.trim();
+    var phone = $("leadPhone").value.trim();
+
+    var bad = null;
+    if (!validPhone(phone)) bad = ["leadPhone", "Enter a phone number with 7 to 15 digits."];
+    if (!EMAIL_RE.test(email)) bad = ["leadEmail", "Enter a valid email address."];
+    if (name.length < 2) bad = ["leadName", "Tell us your name."];
+    if (bad) {
+      $(bad[0]).setAttribute("aria-invalid", "true");
+      $(bad[0]).focus();
+      $("leadMsg").textContent = bad[1];
+      return;
+    }
+
+    btn.disabled = true;
+    $("leadMsg").textContent = "";
+    var params = resultParams();
+    fetch(LEAD_ENDPOINT, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: name, email: email, phone: phone,
+        company: $("leadTrap").value,
+        brief: toQuery().replace(/^\?/, ""),
+        result: params
+      })
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (d) {
+          if (!res.ok) throw new Error((d && d.error) || "Could not send your details. Try again.");
+        });
+      })
+      .then(function () {
+        try { localStorage.setItem(LEAD_KEY, name); } catch (err) {}
+        showLeadDone(name);
+        $("modal").querySelector(".modal__card").focus();
+        track("matchle_lead", params);
+      })
+      .catch(function (err) {
+        $("leadMsg").textContent = err.message || "Could not send your details. Try again.";
+      })
+      .then(function () { btn.disabled = false; });
+  });
   function closeModal() {
     $("modal").hidden = true;
     document.body.classList.remove("has-modal");
@@ -1184,9 +1401,13 @@
     if (e.key === "Escape") { closeModal(); return; }
     if (e.key === "Tab") {
       // Keep focus inside the popup.
-      var f = $("modal").querySelectorAll("button");
+      var f = Array.prototype.filter.call(
+        $("modal").querySelectorAll("button, input:not([tabindex='-1'])"),
+        function (el) { return el.offsetParent !== null && !el.disabled; }
+      );
       var first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      var onCard = document.activeElement === $("modal").querySelector(".modal__card");
+      if (e.shiftKey && (document.activeElement === first || onCard)) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });

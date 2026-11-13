@@ -1,5 +1,6 @@
 // Vercel serverless function — /api/unsubscribe?token=<uuid>
-// Marks a subscriber as unsubscribed. Handles both the GET link click (shows a
+// Marks a subscriber as unsubscribed. With ?list=matchle it does the same for a
+// Matchle lead (matchle_leads table) instead of a newsletter subscriber. Handles both the GET link click (shows a
 // confirmation page) and the RFC 8058 one-click POST from Gmail / Apple Mail.
 //
 // Uses the same SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY env vars as subscribe.mjs.
@@ -8,6 +9,8 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 export default async function handler(req, res) {
   const token = String((req.query && req.query.token) || "").trim();
+  const matchle = String((req.query && req.query.list) || "") === "matchle";
+  const table = matchle ? "matchle_leads" : "subscribers";
 
   if (req.method !== "GET" && req.method !== "POST") {
     res.setHeader("Allow", "GET, POST");
@@ -26,7 +29,7 @@ export default async function handler(req, res) {
 
   try {
     const url =
-      `${SUPABASE_URL}/rest/v1/subscribers` +
+      `${SUPABASE_URL}/rest/v1/${table}` +
       `?unsubscribe_token=eq.${encodeURIComponent(token)}`;
     const dbResp = await fetch(url, {
       method: "PATCH",
@@ -50,7 +53,9 @@ export default async function handler(req, res) {
     return sendPage(
       res, req, 200,
       "You're unsubscribed",
-      "You won't receive any more emails from [tbd] Dispatches. Changed your mind? You can resubscribe anytime from the site."
+      matchle
+        ? "You won't receive any more emails about Matchle."
+        : "You won't receive any more emails from [tbd] Dispatches. Changed your mind? You can resubscribe anytime from the site."
     );
   } catch (err) {
     console.error("Unsubscribe request error", err);
