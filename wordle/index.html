@@ -175,6 +175,15 @@
   .overlay .word { font-family: var(--tbd-font-mono); letter-spacing: 0.16em; color: var(--tbd-text); font-weight: var(--tbd-weight-medium); }
   .overlay .tbd-metric { margin-bottom: 20px; }
   .overlay .tbd-btn { width: 100%; justify-content: center; }
+  .overlay .tbd-btn + .tbd-btn { margin-top: 10px; }
+  #copyMsg { font-size: 13px; color: var(--tbd-text-muted); margin: 10px 0 0; min-height: 18px; }
+  .share-preview {
+    margin: 12px 0 0; padding: 16px; text-align: left;
+    border: var(--tbd-border-hairline) solid var(--tbd-rule); border-radius: var(--tbd-radius-md);
+    font-family: var(--tbd-font-mono); font-size: 13px; line-height: 1.6; color: var(--tbd-text);
+    white-space: pre-wrap; word-break: break-word; user-select: all;
+  }
+  .share-preview[hidden] { display: none; }
 </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -223,7 +232,10 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
       <span class="tbd-metric__value" id="overlayMetric">3 / 6</span>
     </div>
     <p id="overlayBody">The word was <span class="word">CROSS</span>.</p>
-    <button class="tbd-btn" id="againBtn">Run it back &rarr;</button>
+    <button type="button" class="tbd-btn" id="copyBtn">Copy my results <span aria-hidden="true">&rarr;</span></button>
+    <button type="button" class="tbd-btn tbd-btn--ghost" id="againBtn">Run it back</button>
+    <p id="copyMsg" role="status"></p>
+    <pre class="share-preview" id="sharePreview" hidden></pre>
   </div>
 </div>
 
@@ -236,6 +248,8 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
   var row = 0, col = 0;
   var gameOver = false;
   var keyStatus = {};
+  var guessLog = []; // statuses of each submitted row, for the share card
+  var solved = false;
 
   var boardEl = document.getElementById("board");
   var keyboardEl = document.getElementById("keyboard");
@@ -390,6 +404,7 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
     }
     var guess = rowsData[row].map(function (t) { return t.textContent; }).join("");
     var statuses = computeStatuses(guess);
+    guessLog.push(statuses);
     var tiles = rowsData[row];
 
     tiles.forEach(function (tile, i) {
@@ -422,7 +437,10 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
   }
 
   function showOverlay(won) {
+    solved = won;
     overlayEl.hidden = false;
+    copyMsg.textContent = "";
+    sharePreview.hidden = true;
     var pulls = row + 1;
     if (won) {
       overlayEyebrow.textContent = "Result — solved";
@@ -442,6 +460,7 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
   function resetGame() {
     row = 0; col = 0; gameOver = false;
     keyStatus = {};
+    guessLog = []; solved = false;
     overlayEl.hidden = true;
     buildBoard();
     buildKeyboard();
@@ -457,6 +476,54 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
   });
 
   againBtn.addEventListener("click", resetGame);
+
+  /* ---- Share ---- */
+  var copyBtn = document.getElementById("copyBtn");
+  var copyMsg = document.getElementById("copyMsg");
+  var sharePreview = document.getElementById("sharePreview");
+  var SQUARE = { correct: "\uD83D\uDFE9", present: "\uD83D\uDFE8", absent: "\u2B1B" };
+
+  function shareText() {
+    var tries = solved ? guessLog.length : "X";
+    var lines = ["[tbd] Wordle " + tries + "/" + ROWS];
+    lines.push(solved
+      ? "\u2705 Solved in " + guessLog.length + (guessLog.length === 1 ? " try" : " tries")
+      : "\u274C Unsolved in " + ROWS + " tries");
+    lines.push("");
+    guessLog.forEach(function (st) {
+      lines.push(st.map(function (x) { return SQUARE[x]; }).join(""));
+    });
+    lines.push("");
+    lines.push("https://tbdonline.in/wordle/");
+    return lines.join("\n");
+  }
+
+  function track(name, params) {
+    try { if (typeof gtag === "function") gtag("event", name, params || {}); } catch (e) {}
+  }
+
+  function copyResults() {
+    var text = shareText();
+    var done = function () { copyMsg.textContent = "Copied. Paste it in the group chat."; };
+    var fallback = function () {
+      // Older browsers and denied clipboard permission: select a hidden textarea.
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      if (ok) done(); else copyMsg.textContent = "Copy failed. Select the text below.";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+    track("wordle_share", { solved: solved, tries: guessLog.length });
+    return text;
+  }
+
+  copyBtn.addEventListener("click", function () {
+    sharePreview.textContent = copyResults();
+    sharePreview.hidden = false;
+  });
 
   buildBoard();
   buildKeyboard();
