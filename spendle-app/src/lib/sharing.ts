@@ -17,9 +17,7 @@ export function buildShareText({ mode, challengeNumber, scores, commentary }: Sh
   const label = mode === "daily" && challengeNumber ? formatChallengeNumber(challengeNumber) : "Endless";
   return [
     `spendle. 🛒 ${label}`,
-    "",
     `${formatScore(total)} / 5,000`,
-    "",
     scores.map(scoreEmoji).join(""),
     "",
     `"${commentary}"`,

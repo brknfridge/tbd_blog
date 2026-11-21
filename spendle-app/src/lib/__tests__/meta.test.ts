@@ -85,10 +85,10 @@ describe("commentary", () => {
 describe("share text", () => {
   const text = buildShareText({ mode: "daily", challengeNumber: 42, scores: [850, 650, 100, 900, 420], commentary: "The price tag fears you." });
   it("matches the Wordle-style format", () => {
-    expect(text).toBe('spendle. 🛒 #042\n\n2,920 / 5,000\n\n🟩🟨🟥🟩🟧\n\n"The price tag fears you."\n\ntbdonline.in/spendle');
+    expect(text).toBe('spendle. 🛒 #042\n2,920 / 5,000\n🟩🟨🟥🟩🟧\n\n"The price tag fears you."\n\ntbdonline.in/spendle');
   });
   it("labels endless games", () => {
-    expect(buildShareText({ mode: "endless", challengeNumber: null, scores: [0, 0, 0, 0, 0], commentary: "x" })).toContain("spendle. 🛒 Endless\n\n0 / 5,000\n\n⬛⬛⬛⬛⬛");
+    expect(buildShareText({ mode: "endless", challengeNumber: null, scores: [0, 0, 0, 0, 0], commentary: "x" })).toContain("spendle. 🛒 Endless\n0 / 5,000\n⬛⬛⬛⬛⬛");
   });
   it("contains no spoilers", () => {
     expect(text).not.toMatch(/₹|Rolex|Amul/);
