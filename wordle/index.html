@@ -486,9 +486,6 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
   function shareText() {
     var tries = solved ? guessLog.length : "X";
     var lines = ["[tbd] Wordle " + tries + "/" + ROWS];
-    lines.push(solved
-      ? "\u2705 Solved in " + guessLog.length + (guessLog.length === 1 ? " try" : " tries")
-      : "\u274C Unsolved in " + ROWS + " tries");
     lines.push("");
     guessLog.forEach(function (st) {
       lines.push(st.map(function (x) { return SQUARE[x]; }).join(""));
