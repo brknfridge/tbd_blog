@@ -8,11 +8,14 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("services");
   eleventyConfig.addPassthroughCopy("wordle");
   eleventyConfig.addPassthroughCopy("matchle");
+  // Spendle is a Vite app: `npm run build:spendle` builds it, Eleventy just ships it.
+  eleventyConfig.addPassthroughCopy({ "spendle-app/dist": "spendle" });
   eleventyConfig.addPassthroughCopy("robots.txt");
 
   // Server-side only — Vercel runs these, Eleventy must not bundle them.
   eleventyConfig.ignores.add("api");
   eleventyConfig.ignores.add("supabase");
+  eleventyConfig.ignores.add("spendle-app");
 
   eleventyConfig.addCollection("posts", function (api) {
     return api.getFilteredByGlob("blogs/*.md").sort((a, b) => b.date - a.date);

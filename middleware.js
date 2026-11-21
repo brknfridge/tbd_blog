@@ -1,12 +1,12 @@
 // Gates the marketing site behind a shared password. /blog/, the calculator,
-// /wordle and /matchle stay public, as do the static assets and API routes they depend on.
+// /wordle, /matchle and /spendle stay public, as do the static assets and API routes they depend on.
 //
 // The gate is served instead of the page, never on top of it — the real markup
 // only reaches the browser once the cookie checks out, so the blur is a curtain
 // in front of an empty room rather than a sheet over readable content.
 export const config = {
   matcher: [
-    "/((?!blog|unit-economics-calculator|wordle|matchle|_ds|assets|images|api|qr|sitemap.xml|robots.txt|favicon.ico).*)",
+    "/((?!blog|unit-economics-calculator|wordle|matchle|spendle|_ds|assets|images|api|qr|sitemap.xml|robots.txt|favicon.ico).*)",
   ],
 };
 

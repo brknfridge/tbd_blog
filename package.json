@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "eleventy",
-    "dev": "eleventy --serve --port=3000"
+    "build": "npm run build:spendle && eleventy",
+    "dev": "eleventy --serve --port=3000",
+    "build:spendle": "npm --prefix spendle-app ci --no-audit --no-fund && npm --prefix spendle-app run build"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
