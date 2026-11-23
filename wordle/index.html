@@ -248,7 +248,7 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
       <span class="tbd-metric__label">Pulls used</span>
       <span class="tbd-metric__value" id="overlayMetric">3 / 6</span>
     </div>
-    <p id="overlayBody">The word was <span class="word">CROSS</span>.</p>
+    <p id="overlayBody">The word was <span class="word">&hellip;</span>.</p>
     <button type="button" class="tbd-btn" id="copyBtn">Copy my results <span aria-hidden="true">&rarr;</span></button>
     <button type="button" class="tbd-btn tbd-btn--ghost" id="againBtn">Run it back</button>
     <p id="copyMsg" role="status"></p>
@@ -259,7 +259,16 @@ src="https://www.facebook.com/tr?id=1196138719758814&ev=PageView&noscript=1"
 <script>
 (function () {
   "use strict";
-  var ANSWER = "CROSS";
+  var WORDS = [
+    "CROSS", "PLANT", "BRAIN", "SMILE", "TRAIN", "GRAPE", "LIGHT", "OCEAN", "STONE", "RIVER", "CLOUD", "BREAD", "CHAIR", "DREAM", "FLAME", "GLASS", "HEART", "JUICE", "KNIFE", "LEMON", "MUSIC", "NIGHT", "PAINT", "QUIET", "ROUND", "SHEEP", "TIGER", "UNITY", "VOICE", "WATER", "YOUTH", "ZEBRA", "BEACH", "CANDY", "DANCE", "EARTH", "FIELD", "GIANT", "HOUSE", "IVORY", "JELLY", "KAYAK", "LAUGH", "MANGO", "NURSE", "OLIVE", "PIANO", "QUEEN", "ROBOT", "SUGAR"
+  ];
+  // Word of the day: one word per India (IST) calendar day, no repeats within the 50-word cycle.
+  var START = Date.UTC(2026, 10, 23); // 23 Nov 2026 = CROSS
+  function istDayNumber() {
+    var ist = new Date(Date.now() + 5.5 * 3600 * 1000);
+    return Math.floor((Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate()) - START) / 86400000);
+  }
+  var ANSWER = WORDS[((istDayNumber() % WORDS.length) + WORDS.length) % WORDS.length];
   var ROWS = 6, COLS = 5;
   var rowsData = [];
   var row = 0, col = 0;
