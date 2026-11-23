@@ -10,10 +10,15 @@ describe("calculateScore", () => {
   });
   it("scores half and double identically", () => {
     expect(calculateScore(50, 100)).toBe(calculateScore(200, 100));
-    expect(calculateScore(50, 100)).toBe(125); // 1000 * 2^-3
+    expect(calculateScore(50, 100)).toBe(354); // 1000 * 2^-1.5
   });
   it("is symmetric across scales", () => {
     expect(calculateScore(30, 20)).toBe(calculateScore(3_00_00_000, 2_00_00_000));
+  });
+  it("is relaxed enough: 20% off still scores over 700, 10% off over 850", () => {
+    expect(calculateScore(80, 100)).toBe(716);
+    expect(calculateScore(125, 100)).toBe(716);
+    expect(calculateScore(110, 100)).toBe(867);
   });
   it("never exceeds 1000", () => {
     for (const g of [1, 99, 100, 101, 1e9]) expect(calculateScore(g, 100)).toBeLessThanOrEqual(1000);
@@ -44,7 +49,7 @@ describe("bands and emoji", () => {
     expect(scoreEmoji(score)).toBe(emoji);
   });
   it("a valid guess that rounds to 0 points is black", () => {
-    expect(calculateScore(1, 1e9)).toBe(0);
+    expect(calculateScore(1, 1e9)).toBe(0); // 1e9x off still rounds to 0
     expect(scoreEmoji(calculateScore(1, 1e9))).toBe("⬛");
   });
 });

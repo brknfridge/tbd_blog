@@ -1,4 +1,5 @@
 import type { Category, Product } from "../types/product";
+import { POOLS } from "../config";
 import type { Slot } from "../types/game";
 import { shuffle, type Rng } from "./randomizer";
 
@@ -18,6 +19,25 @@ export class InsufficientProductsError extends Error {
     );
     this.name = "InsufficientProductsError";
   }
+}
+
+export function productPool(p: Product): number {
+  return p.pool ?? 1;
+}
+
+/** The pool live on an IST date: the last entry in POOLS whose `from` is on or before it. */
+export function poolForDate(dateKey: string): number {
+  let pool = POOLS[0]!.pool;
+  for (const p of POOLS) if (p.from <= dateKey) pool = p.pool;
+  return pool;
+}
+
+export function latestPool(): number {
+  return Math.max(...POOLS.map((p) => p.pool));
+}
+
+export function inPool(products: readonly Product[], pool: number): Product[] {
+  return products.filter((p) => productPool(p) === pool);
 }
 
 /** Only verified, priced, active records are ever playable. */

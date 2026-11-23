@@ -60,7 +60,8 @@ describe("daily challenge", () => {
     const b = dailyQuiz([...catalog].reverse(), "2026-11-22").map((q) => q.product.id);
     expect(a).toEqual(b);
     const days = new Set<string>();
-    for (let d = 1; d <= 20; d++) days.add(dailyQuiz(catalog, `2026-12-${String(d).padStart(2, "0")}`).map((q) => q.product.id).join());
+    const current = catalog.map((p) => ({ ...p, pool: 2 }));   // December dailies draw from pool 2
+    for (let d = 1; d <= 20; d++) days.add(dailyQuiz(current, `2026-12-${String(d).padStart(2, "0")}`).map((q) => q.product.id).join());
     expect(days.size).toBeGreaterThan(15);
   });
 
@@ -79,5 +80,29 @@ describe("daily challenge", () => {
     expect(challengeNumber("2026-11-22", "2026-11-22")).toBe(1);
     expect(challengeNumber("2027-01-02", "2026-11-22")).toBe(42);
     expect(formatChallengeNumber(42)).toBe("#042");
+  });
+});
+
+import { poolForDate, inPool } from "../quiz";
+
+describe("product pools", () => {
+  const pool1 = catalogOf({ grocery: 3, beauty: 3, luxury: 3, one_off: 3 }).map((p) => ({ ...p, pool: 1 }));
+  const pool2 = catalogOf({ grocery: 3, beauty: 3, luxury: 3, one_off: 3 }).map((p) => ({ ...p, id: "n-" + p.id, pool: 2 }));
+  const all = [...pool1, ...pool2];
+
+  it("switches the daily pool at midnight IST on the switch date", () => {
+    expect(poolForDate("2026-11-22")).toBe(1);
+    expect(poolForDate("2026-11-23")).toBe(1);
+    expect(poolForDate("2026-11-24")).toBe(2);
+    expect(poolForDate("2027-06-01")).toBe(2);
+  });
+
+  it("a daily only ever uses its own date's pool", () => {
+    for (const d of ["2026-11-22", "2026-11-23"]) for (const q of dailyQuiz(all, d)) expect(q.product.pool).toBe(1);
+    for (const d of ["2026-11-24", "2026-12-25"]) for (const q of dailyQuiz(all, d)) expect(q.product.pool).toBe(2);
+  });
+
+  it("a records without a pool count as the launch set", () => {
+    expect(inPool([{ ...pool1[0]!, pool: undefined }], 1)).toHaveLength(1);
   });
 });

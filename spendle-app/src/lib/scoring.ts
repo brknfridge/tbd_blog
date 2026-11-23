@@ -1,10 +1,16 @@
 import type { Band } from "../types/game";
 
+/**
+ * How fast points fall away with error. 3 was the launch value; 1.5 halves the penalty
+ * (20% off: 512 -> 716; half/double: 125 -> 354) so strong players land in the 3.5-4k range.
+ */
+export const SCORE_STEEPNESS = 1.5;
+
 /** Proportional accuracy: half and double the price score the same. */
 export function calculateScore(guess: number, actual: number): number {
   if (!(guess > 0) || !(actual > 0)) return 0;
   const error = Math.abs(Math.log(guess / actual));
-  return Math.round(1000 * Math.exp(-3 * error));
+  return Math.round(1000 * Math.exp(-SCORE_STEEPNESS * error));
 }
 
 /** Positive = overestimated, negative = underestimated. */

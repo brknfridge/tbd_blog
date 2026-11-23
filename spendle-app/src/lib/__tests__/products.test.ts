@@ -1,11 +1,17 @@
 import { PRODUCTS } from "../../data/products";
-import { eligible, MANDATORY } from "../quiz";
+import { eligible, inPool, MANDATORY } from "../quiz";
 import { dailyQuiz, addDays } from "../dailyChallenge";
 
 describe("product database", () => {
-  it("has the 50 specified entries with unique ids", () => {
-    expect(PRODUCTS).toHaveLength(50);
-    expect(new Set(PRODUCTS.map((p) => p.id)).size).toBe(50);
+  it("keeps the 50 launch products and adds the 100-product refresh, all with unique ids", () => {
+    expect(inPool(PRODUCTS, 1)).toHaveLength(50);
+    expect(inPool(PRODUCTS, 2)).toHaveLength(100);
+    expect(new Set(PRODUCTS.map((p) => p.id)).size).toBe(150);
+  });
+
+  it("splits the refresh 30 / 20 / 30 / 20 across categories", () => {
+    const n = (c: string) => inPool(PRODUCTS, 2).filter((p) => p.category === c).length;
+    expect([n("grocery"), n("beauty"), n("luxury"), n("one_off")]).toEqual([30, 20, 30, 20]);
   });
 
   it("every active product has a verified price, https source and date", () => {
@@ -21,9 +27,11 @@ describe("product database", () => {
     for (const p of PRODUCTS.filter((p) => !p.active)) expect(p.notes, p.id).toMatch(/INACTIVE/);
   });
 
-  it("covers every mandatory category", () => {
-    const pool = eligible(PRODUCTS);
-    for (const c of MANDATORY) expect(pool.some((p) => p.category === c), c).toBe(true);
+  it("each pool covers every mandatory category", () => {
+    for (const n of [1, 2]) {
+      const pool = eligible(inPool(PRODUCTS, n));
+      for (const c of MANDATORY) expect(pool.some((p) => p.category === c), `pool ${n} ${c}`).toBe(true);
+    }
   });
 
   it("can build a valid daily quiz for every day of the next year", () => {
@@ -39,10 +47,15 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 describe("product images", () => {
-  it("every active product has a local image that exists", () => {
-    for (const p of PRODUCTS.filter((p) => p.active)) {
+  it("every image a product points at exists locally", () => {
+    for (const p of PRODUCTS.filter((p) => p.imageUrl)) {
       expect(p.imageUrl, p.id).toMatch(/^products\/.+\.webp$/);
       expect(existsSync(resolve(__dirname, "../../../public", p.imageUrl)), p.imageUrl).toBe(true);
     }
+  });
+
+  it("only the known plate-only product lacks a photo", () => {
+    const noPhoto = PRODUCTS.filter((p) => p.active && !p.imageUrl).map((p) => p.id);
+    expect(noPhoto).toEqual(["longines-master-collection-40"]);   // longines.com blocks image fetches
   });
 });

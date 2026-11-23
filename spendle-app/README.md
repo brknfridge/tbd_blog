@@ -26,44 +26,48 @@ the password gate in `middleware.js`, like `/wordle` and `/matchle`.
 **Before launch:** set `LAUNCH_DATE` in `src/config.ts` to the IST date of
 Spendle #001 (currently `2026-11-22`).
 
-## Product data — `src/data/products.ts`
+## Product data — `src/data/`
 
-Every active record carries `priceINR`, `priceType`, `priceSource` (the page the
-price was seen on) and `verifiedAt`. Unverified records are `active: false` with
-the reason in `notes`; the selector never uses them. `products.test.ts` enforces
-this and proves a valid daily quiz exists for every day of the next year.
+Products live in **pools**, and `POOLS` in `src/config.ts` maps each pool to the IST date it takes
+over the daily challenge. A daily always draws from the pool live on its own date, so a mid-day
+deploy never changes that day's five products. Endless mode uses the newest pool as soon as it ships.
+Retired pools stay in the database so old results and streak history still render.
 
-As of 2026-11-22: **41 active, 9 inactive.**
+| Pool | File | Products | Daily from |
+|---|---|---|---|
+| 1 | `products-launch.ts` | 50 launch products (41 active) | 22 Nov 2026 |
+| 2 | `products-2026-11.ts` | 100 products: 30 groceries, 20 beauty, 30 luxury, 20 one-off (93 active) | 24 Nov 2026 |
 
-| Inactive | Why |
-|---|---|
-| Kissan Mixed Fruit Jam 500 g | Retailers disagree (₹199–210) |
-| Gucci GG Marmont Small | No official/authorised INR price found |
-| Rolex Datejust 36 (126234) | Only conflicting search snippets (₹9.40 L vs ₹9.86 L) |
-| Hermès Oran | No official INR price online |
-| Prada Re-Edition 2005 | No India e-commerce / authorised INR price |
-| Montblanc Meisterstück Classique | Retailer price only, changed between snapshots |
-| iPhone 17 Pro 256 GB | Discontinued on apple.com/in (iPhone 18 Pro now sold) |
-| Porsche Macan | Sources disagree (₹89.65 L vs ₹91.09 L) |
-| Powai 2 BHK (L&T Elixir Reserve) | Only an undated "from ₹3.61 Cr" portal price |
+Every active record carries `priceINR`, `priceType`, `priceSource` (the page the price was seen
+on) and `verifiedAt`. Unverified records are `active: false` with the reason in `notes`, and the
+selector never uses them. `products.test.ts` enforces this, checks the 30/20/30/20 split, and
+proves a valid daily quiz exists for every day of the next year.
 
-Substitutions where the requested pack/variant no longer exists (the record names
-what was verified): Nescafé Classic 90 g, Lay's 58 g, Tropicana Orange Delight,
-Good Day 248 g, Dairy Milk Silk 144 g, Cetaphil 118 ml, MAC MACximal 3.5 g,
-Dyson Airwrap i.d., Creta King IVT (SX(O) discontinued), Seltos GTX (no GTX+ on
-new gen). Lower-certainty actives worth a manual re-check are flagged in `notes`
-(Amul from a news report, Kellogg's/Dior/Sony from search snippets, cars from
-CarDekho/CarWale/Autocar where the official site wouldn't load, Worli flat from
-Housiey's price sheet rather than Lodha directly).
+**Pool 2 inactive (7):** Everest Kitchen King (retailers disagree), Oral-B iO2 (only a marketplace
+MRP, which conflicts with launch pricing), PS5 Pro (not officially sold in India), and Swarovski Matrix
+Tennis, Michael Kors Jet Set, Oakley Holbrook and Pandora Moments (no verifiable India price).
 
-To add or fix a product: edit the record, set `active: true` only once you've
-seen the price on the cited page, update `verifiedAt`, run `npm test`.
+**Lower-certainty actives worth a re-check** are flagged in `notes`: most cars and all two-wheelers
+come from CarDekho/CarWale/BikeWale/BikeDekho where the maker's site wouldn't render; Omega,
+TAG Heuer and Rado come from authorised Indian retailers; Bose and GoPro are retailer MRPs;
+Head & Shoulders uses P&G's official revised-MRP list over a conflicting retailer figure. Both
+homes are developer "onwards" prices for a named configuration.
+
+To add a pool: create `products-<yyyy-mm>.ts` with `pool: N` on every record, add it to
+`products.ts`, and add `{ pool: N, from: "<IST date>" }` to `POOLS`. Pick a date after the deploy.
+
+## Scoring
+
+`1000 × e^(−k·|ln(guess/actual)|)` with `k = SCORE_STEEPNESS` (`src/lib/scoring.ts`). Launch used
+k = 3; it is now **1.5**, which halves the penalty: 10% off scores 867, 20–25% off scores 716, and
+half or double the price scores 354. Bands (800 / 600 / 400) are unchanged.
 
 ## Images
 
-Every active product has a local WebP in `public/products/<id>.webp` (41 files,
-~1.3 MB total, ≤ 900 px, white margins trimmed). `products.test.ts` fails if an
-active product's image is missing. If an image fails or takes over 6 s, the card
+Product photos are local WebPs in `public/products/<id>.webp` (133 files, ~4 MB, ≤ 900 px,
+white margins trimmed). `products.test.ts` fails if a referenced image is missing. Only one
+active product, Longines Master Collection, has no photo (longines.com blocks image fetches)
+and shows the typographic plate. If an image fails or takes over 6 s, the card
 falls back to a typographic plate and the round still starts. Photos sit on a
 Pure White mount in both themes, per the design system.
 

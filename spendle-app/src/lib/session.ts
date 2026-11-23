@@ -6,7 +6,7 @@ import { challengeNumber, dailyQuiz, istDateKey } from "./dailyChallenge";
 import { createGame, gameResults, totalScore } from "./game";
 import { KEYS, readJSON, removeKey, writeJSON } from "./persistence";
 import { EVENTS, track } from "./analytics";
-import { selectQuiz } from "./quiz";
+import { inPool, latestPool, selectQuiz } from "./quiz";
 import { recordCompletion, EMPTY_STATS, type DailyStats } from "./streaks";
 
 /** Glue between pure game logic and storage. */
@@ -52,7 +52,7 @@ export function startEndless(resume = true): GameState {
   }
   const recent = readJSON<string[][]>(KEYS.endlessRecent, []);
   const avoid = new Set(recent.flat());
-  const g = createGame("endless", selectQuiz(PRODUCTS, Math.random, avoid));
+  const g = createGame("endless", selectQuiz(inPool(PRODUCTS, latestPool()), Math.random, avoid));
   saveActive(g);
   track(EVENTS.gameStart, gameParams(g));
   return g;

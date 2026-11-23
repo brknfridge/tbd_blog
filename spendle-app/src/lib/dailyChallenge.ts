@@ -1,7 +1,7 @@
 import { LAUNCH_DATE } from "../config";
 import type { Product } from "../types/product";
 import { seededRng } from "./randomizer";
-import { selectQuiz, type QuizPick } from "./quiz";
+import { inPool, poolForDate, selectQuiz, type QuizPick } from "./quiz";
 
 const IST_OFFSET_MS = 330 * 60 * 1000; // India has no DST.
 const DAY_MS = 86_400_000;
@@ -40,5 +40,5 @@ export function msUntilNextIstMidnight(now = Date.now()): number {
 
 /** Identical for every player on the same IST date (given the same database). */
 export function dailyQuiz(products: readonly Product[], dateKey: string): QuizPick[] {
-  return selectQuiz(products, seededRng(`spendle-daily-${dateKey}`));
+  return selectQuiz(inPool(products, poolForDate(dateKey)), seededRng(`spendle-daily-${dateKey}`));
 }

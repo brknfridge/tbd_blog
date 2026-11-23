@@ -16,6 +16,8 @@ export interface Product {
   priceSource: string;
   verifiedAt: string;
   active: boolean;
+  /** Which product set this belongs to (1 = launch set, 2 = Nov 2026 refresh). See POOLS in config.ts. */
+  pool?: number;
   /** Research notes: pack-size substitutions, why a record is inactive, etc. */
   notes?: string;
 }
