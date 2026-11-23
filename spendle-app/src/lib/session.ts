@@ -3,8 +3,9 @@ import type { GameState, Mode } from "../types/game";
 import { catalog, PRODUCTS } from "./catalog";
 import { computeMetrics, selectCommentary } from "./commentary";
 import { challengeNumber, dailyQuiz, istDateKey } from "./dailyChallenge";
-import { createGame, gameResults } from "./game";
+import { createGame, gameResults, totalScore } from "./game";
 import { KEYS, readJSON, removeKey, writeJSON } from "./persistence";
+import { EVENTS, track } from "./analytics";
 import { selectQuiz } from "./quiz";
 import { recordCompletion, EMPTY_STATS, type DailyStats } from "./streaks";
 
@@ -40,6 +41,7 @@ export function startDaily(): GameState {
     id: `daily-${dateKey}`,
   });
   saveActive(g);
+  track(EVENTS.gameStart, gameParams(g));
   return g;
 }
 
@@ -52,6 +54,7 @@ export function startEndless(resume = true): GameState {
   const avoid = new Set(recent.flat());
   const g = createGame("endless", selectQuiz(PRODUCTS, Math.random, avoid));
   saveActive(g);
+  track(EVENTS.gameStart, gameParams(g));
   return g;
 }
 
@@ -68,10 +71,29 @@ export function finishGame(g: GameState): GameState {
     if (!loadDailyResult(g.dateKey)) {
       writeJSON(KEYS.daily(g.dateKey), done);
       writeJSON(KEYS.stats, recordCompletion(loadStats(), g.dateKey));
+      track(EVENTS.gameComplete, completeParams(done));
     }
   } else {
     const recent = readJSON<string[][]>(KEYS.endlessRecent, []);
     writeJSON(KEYS.endlessRecent, [g.rounds.map((r) => r.productId), ...recent].slice(0, ENDLESS_MEMORY));
+    track(EVENTS.gameComplete, completeParams(done));
   }
   return done;
+}
+
+function gameParams(g: GameState) {
+  return {
+    game_mode: g.mode,
+    ...(g.challengeNumber ? { challenge_number: g.challengeNumber } : {}),
+  };
+}
+
+function completeParams(g: GameState) {
+  return {
+    ...gameParams(g),
+    score: totalScore(g),
+    rounds_missed: g.rounds.filter((r) => r.guess === null).length,
+    rounds_excellent: g.rounds.filter((r) => (r.score ?? 0) >= 800).length,
+    duration_sec: g.finishedAt ? Math.max(0, Math.round((g.finishedAt - g.startedAt) / 1000)) : 0,
+  };
 }
