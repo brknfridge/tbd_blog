@@ -21,6 +21,7 @@ export const SHARE_URL = "tbdonline.in/spendle";
 export const POOLS: readonly { pool: number; from: string }[] = [
   { pool: 1, from: "2026-11-22" },
   { pool: 2, from: "2026-11-24" },
+  { pool: 3, from: "2026-12-01" },
 ];
 
 /** How many past endless games' products to avoid repeating. */

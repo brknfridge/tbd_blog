@@ -3,15 +3,18 @@ import { eligible, inPool, MANDATORY } from "../quiz";
 import { dailyQuiz, addDays } from "../dailyChallenge";
 
 describe("product database", () => {
-  it("keeps the 50 launch products and adds the 100-product refresh, all with unique ids", () => {
+  it("keeps the 50 launch products and adds two 100-product refreshes, all with unique ids", () => {
     expect(inPool(PRODUCTS, 1)).toHaveLength(50);
     expect(inPool(PRODUCTS, 2)).toHaveLength(100);
-    expect(new Set(PRODUCTS.map((p) => p.id)).size).toBe(150);
+    expect(inPool(PRODUCTS, 3)).toHaveLength(100);
+    expect(new Set(PRODUCTS.map((p) => p.id)).size).toBe(250);
   });
 
-  it("splits the refresh 30 / 20 / 30 / 20 across categories", () => {
-    const n = (c: string) => inPool(PRODUCTS, 2).filter((p) => p.category === c).length;
-    expect([n("grocery"), n("beauty"), n("luxury"), n("one_off")]).toEqual([30, 20, 30, 20]);
+  it("splits each refresh 30 / 20 / 30 / 20 across categories", () => {
+    for (const pool of [2, 3]) {
+      const n = (c: string) => inPool(PRODUCTS, pool).filter((p) => p.category === c).length;
+      expect([n("grocery"), n("beauty"), n("luxury"), n("one_off")], `pool ${pool}`).toEqual([30, 20, 30, 20]);
+    }
   });
 
   it("every active product has a verified price, https source and date", () => {
@@ -28,7 +31,7 @@ describe("product database", () => {
   });
 
   it("each pool covers every mandatory category", () => {
-    for (const n of [1, 2]) {
+    for (const n of [1, 2, 3]) {
       const pool = eligible(inPool(PRODUCTS, n));
       for (const c of MANDATORY) expect(pool.some((p) => p.category === c), `pool ${n} ${c}`).toBe(true);
     }

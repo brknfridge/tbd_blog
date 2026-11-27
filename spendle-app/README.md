@@ -37,6 +37,7 @@ Retired pools stay in the database so old results and streak history still rende
 |---|---|---|---|
 | 1 | `products-launch.ts` | 50 launch products (41 active) | 22 Nov 2026 |
 | 2 | `products-2026-11.ts` | 100 products: 30 groceries, 20 beauty, 30 luxury, 20 one-off (93 active) | 24 Nov 2026 |
+| 3 | `products-2026-12.ts` | 100 products, same split, all active (verified 28 Nov 2026) | 1 Dec 2026 |
 
 Every active record carries `priceINR`, `priceType`, `priceSource` (the page the price was seen
 on) and `verifiedAt`. Unverified records are `active: false` with the reason in `notes`, and the
@@ -56,6 +57,12 @@ homes are developer "onwards" prices for a named configuration.
 To add a pool: create `products-<yyyy-mm>.ts` with `pool: N` on every record, add it to
 `products.ts`, and add `{ pool: N, from: "<IST date>" }` to `POOLS`. Pick a date after the deploy.
 
+**Pool 3 notes.** Groceries are Blinkit MRPs, beauty mostly Myntra MRPs (Bioderma and CeraVe from
+PharmEasy), and vehicles come from CarDekho/BikeDekho (Delhi ex-showroom), not maker sites. Luxury mixes
+official sites (Apple, Samsung, Sonos, Cartier, Coach, TUMI), Kapoor Watch Co. for Omega/TAG/IWC/Breitling/Hublot,
+and Amazon brand-store MRPs for 11 items. Worth a re-check: OnePlus 15 and Nothing Phone (3) (Amazon MRP),
+Galaxy Z Flip8 (512 GB list price), JBL Flip 7 (MRP varies by colour), and the KTM 390 Duke photo (decal unreadable).
+
 ## Scoring
 
 `1000 × e^(−k·|ln(guess/actual)|)` with `k = SCORE_STEEPNESS` (`src/lib/scoring.ts`). Launch used
@@ -64,7 +71,7 @@ half or double the price scores 354. Bands (800 / 600 / 400) are unchanged.
 
 ## Images
 
-Product photos are local WebPs in `public/products/<id>.webp` (133 files, ~4 MB, ≤ 900 px,
+Product photos are local WebPs in `public/products/<id>.webp` (233 files, ~4 MB, ≤ 900 px,
 white margins trimmed). `products.test.ts` fails if a referenced image is missing. Only one
 active product, Longines Master Collection, has no photo (longines.com blocks image fetches)
 and shows the typographic plate. If an image fails or takes over 6 s, the card

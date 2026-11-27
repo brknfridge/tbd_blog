@@ -60,7 +60,7 @@ describe("daily challenge", () => {
     const b = dailyQuiz([...catalog].reverse(), "2026-11-22").map((q) => q.product.id);
     expect(a).toEqual(b);
     const days = new Set<string>();
-    const current = catalog.map((p) => ({ ...p, pool: 2 }));   // December dailies draw from pool 2
+    const current = catalog.map((p) => ({ ...p, pool: 3 }));   // December dailies draw from pool 3
     for (let d = 1; d <= 20; d++) days.add(dailyQuiz(current, `2026-12-${String(d).padStart(2, "0")}`).map((q) => q.product.id).join());
     expect(days.size).toBeGreaterThan(15);
   });
@@ -88,18 +88,22 @@ import { poolForDate, inPool } from "../quiz";
 describe("product pools", () => {
   const pool1 = catalogOf({ grocery: 3, beauty: 3, luxury: 3, one_off: 3 }).map((p) => ({ ...p, pool: 1 }));
   const pool2 = catalogOf({ grocery: 3, beauty: 3, luxury: 3, one_off: 3 }).map((p) => ({ ...p, id: "n-" + p.id, pool: 2 }));
-  const all = [...pool1, ...pool2];
+  const pool3 = catalogOf({ grocery: 3, beauty: 3, luxury: 3, one_off: 3 }).map((p) => ({ ...p, id: "d-" + p.id, pool: 3 }));
+  const all = [...pool1, ...pool2, ...pool3];
 
   it("switches the daily pool at midnight IST on the switch date", () => {
     expect(poolForDate("2026-11-22")).toBe(1);
     expect(poolForDate("2026-11-23")).toBe(1);
     expect(poolForDate("2026-11-24")).toBe(2);
-    expect(poolForDate("2027-06-01")).toBe(2);
+    expect(poolForDate("2026-11-30")).toBe(2);
+    expect(poolForDate("2026-12-01")).toBe(3);
+    expect(poolForDate("2027-06-01")).toBe(3);
   });
 
   it("a daily only ever uses its own date's pool", () => {
     for (const d of ["2026-11-22", "2026-11-23"]) for (const q of dailyQuiz(all, d)) expect(q.product.pool).toBe(1);
-    for (const d of ["2026-11-24", "2026-12-25"]) for (const q of dailyQuiz(all, d)) expect(q.product.pool).toBe(2);
+    for (const d of ["2026-11-24", "2026-11-30"]) for (const q of dailyQuiz(all, d)) expect(q.product.pool).toBe(2);
+    for (const d of ["2026-12-01", "2026-12-25"]) for (const q of dailyQuiz(all, d)) expect(q.product.pool).toBe(3);
   });
 
   it("a records without a pool count as the launch set", () => {
